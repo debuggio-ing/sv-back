@@ -71,8 +71,8 @@ class Procl_pool(db.Entity):
 db.bind(provider='sqlite', filename='database.sqlite', create_db=True)
 db.generate_mapping(create_tables=True)
 set_sql_debug(True)
-# @db_session
-# def hola():
-#     u1 = User(mail='laumail', username='lau', password='123456', players=set())
-#     commit()
-#     select(p for p in User).show()
+@db_session
+def hola():
+    u1 = User(mail='laumail', username='lau', password='123456', players=set())
+    #commit()
+    select(p for p in User).show()
