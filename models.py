@@ -37,26 +37,16 @@ class Player(db.Entity):
 class Role(db.Entity):
     id = PrimaryKey(int, auto=True)
     player = Required('Player')
-
-
-class Voldemort(Role):
-    pass
-
-
-class Phoenix(Role):
-    pass
-
-
-class DeathEatear(Role):
-    pass
+    voldemort = Required(bool)
+    phoenix = Required(bool)
 
 
 class Lobby(db.Entity):
     id = PrimaryKey(int, auto=True)
     name = Required(str)
     max_players = Required(int)
-#    initial_card_order = Required(str)
     creation_date = Required(datetime)
+    created_by = Required('Player')
     players = Set('Player')
     match = Optional('Match')
     chat = Optional('Chat')
@@ -68,17 +58,17 @@ class Chat(db.Entity):
     lobby = Required('Lobby')
 
 
-class Match(db.Entity):
+class Match(db.Entity): #complete
     id = PrimaryKey(int, auto=True)
-    game_score = Required(str)  # rethink
-    semaphore = Optional(str)  # rethink
+    semaphore = Required(int) 
     lobby = Required('Lobby')
-    procl_pool = Optional('Procl_pool')
+    cards = Set('Card')
 
 
-class Procl_pool(db.Entity):
+class Card(db.Entity):
     id = PrimaryKey(int, auto=True)
     discarded = Required(bool)
-    phoenix = Required(bool)
-    order = Required(str)
+    proclaimed = Required(bool)
+    order = Required(int)
+    is_phoenix = Required(bool)
     match = Required('Match')

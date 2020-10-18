@@ -36,7 +36,8 @@ def create_img():
 
 @db_session
 def create_lobbies():
-    l1 = Lobby(name="fisicos", max_players=5, creation_date=datetime.now())
+    l1 = Lobby(name="fisicos", max_players=5, creation_date=datetime.now(),
+    created_by=User.select(lambda u: u.name == 'newton').get())
 
 
 @db_session
