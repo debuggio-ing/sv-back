@@ -1,17 +1,20 @@
 from fastapi import Depends, FastAPI, HTTPException
-from pony.orm import *
-
-from models import *
 from schemas import *
+from models import *
+from crud import *
 
 app = FastAPI()
-db.generate_mapping(create_tables=True)
 
 @app.post("/users/")
-async def create_user(user: UserBase):
-    with db_session:
-        User(mail = user.email, username = user.username, password = user.password)
-        commit()
-        select(p for p in User).show()
+async def create_user(user: UserSchema):
+    insert_user(user)
 
-    return {"Hello": "World"}
+    return {"hello":"world"}
+
+@app.get("/users/")
+async def get_users():
+    with db_session:
+        users = get_usernames()
+        emails = get_emails()
+
+    return dict(zip(users, emails))
