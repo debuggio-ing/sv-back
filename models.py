@@ -2,8 +2,8 @@ from pony.orm import *
 
 db = Database()
 
+# PonyORM User class.
 class User(db.Entity):
-    # id = Required(int)
     mail = Required(str)
     username = Required(str)
     password = Required(str)
