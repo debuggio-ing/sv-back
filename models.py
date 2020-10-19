@@ -80,3 +80,6 @@ class Card(db.Entity):
     order = Required(int)
     is_phoenix = Required(bool)
     match = Required('Match')
+
+
+db.bind(provider='sqlite', filename='database.sqlite', create_db=True)
