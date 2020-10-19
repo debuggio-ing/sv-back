@@ -1,19 +1,22 @@
 from datetime import datetime
+from sys import maxsize
 from pony.orm import *
 
 
 db = Database()
 
 
+# Created when a new user is registered
 class User(db.Entity):
     id = PrimaryKey(int, auto=True)
     mail = Required(str, unique=True)
     username = Required(str, unique=True)
-    password = Required(str, hidden=True)
+    password = Required(str)
     image = Optional('Image')
     players = Set('Player')
 
 
+# Created when the user uploads a profile image
 class Image(db.Entity):
     id = PrimaryKey(int, auto=True)
     height = Required(int)
@@ -22,6 +25,7 @@ class Image(db.Entity):
     user = Required('User')
 
 
+# Created when the user joins a match
 class Player(db.Entity):
     id = PrimaryKey(int, auto=True)
     alive = Required(bool)
@@ -34,6 +38,7 @@ class Player(db.Entity):
     composite_key(user, lobby)
 
 
+# Created when the user is assigned a role
 class Role(db.Entity):
     id = PrimaryKey(int, auto=True)
     player = Required('Player')
@@ -41,30 +46,33 @@ class Role(db.Entity):
     phoenix = Required(bool)
 
 
+# Created as a new game
 class Lobby(db.Entity):
     id = PrimaryKey(int, auto=True)
     name = Required(str)
     max_players = Required(int)
     creation_date = Required(datetime)
-    created_by = Required('Player')
     players = Set('Player')
     match = Optional('Match')
     chat = Optional('Chat')
 
 
+# Created with a new game
 class Chat(db.Entity):
     id = PrimaryKey(int, auto=True)
     text = Required(str)
     lobby = Required('Lobby')
 
 
-class Match(db.Entity): #complete
+# Created when a game is started
+class Match(db.Entity):
     id = PrimaryKey(int, auto=True)
-    semaphore = Required(int) 
+    semaphore = Required(int, min=0, max=3)
     lobby = Required('Lobby')
     cards = Set('Card')
 
 
+# Created when a game is started
 class Card(db.Entity):
     id = PrimaryKey(int, auto=True)
     discarded = Required(bool)

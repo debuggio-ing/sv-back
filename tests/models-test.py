@@ -1,4 +1,4 @@
-from models import *
+from ..models import *
 
 
 db.bind(provider='sqlite', filename=':memory:', create_db=True)
@@ -25,8 +25,7 @@ def create_users():
 
 @db_session
 def create_img():
-    # automatically adds the reference to the image in the user
-    i1 = Image(height=123, width=456, filename='notempty',
+    i1 = Image(height=12, width=456, filename='notempty',
                user=User.select(lambda u: u.username == 'lau').get())
     i2 = Image(height=124, width=456, filename='notempty2',
                user=User.select(lambda u: u.username == 'law').get())
@@ -36,8 +35,7 @@ def create_img():
 
 @db_session
 def create_lobbies():
-    l1 = Lobby(name="fisicos", max_players=5, creation_date=datetime.now(),
-    created_by=User.select(lambda u: u.name == 'newton').get())
+    l1 = Lobby(name="fisicos", max_players=5, creation_date=datetime.now())
 
 
 @db_session
