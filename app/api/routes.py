@@ -3,7 +3,7 @@ from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel, EmailStr
 from enum import Enum, IntEnum
 
-from models import * 
+from .models import * 
 
 
 routes = FastAPI()

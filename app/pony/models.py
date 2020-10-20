@@ -82,4 +82,4 @@ class Card(db.Entity):
     match = Required('Match')
 
 
-db.bind(provider='sqlite', filename='database.sqlite', create_db=True)
+db.bind(provider='mariadb', filename='database.mariadb', create_db=True)
