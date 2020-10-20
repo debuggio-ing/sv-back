@@ -44,6 +44,14 @@ class UserAuth(BaseModel):
     email: str
     password: str
 
+class UserGames(BaseModel):
+    email: str
+    games: List[int]
+
+#Este nombre es muy precario
+class RecoverAccount(BaseModel):
+    email: EmailStr
+
 #Información devuelta del usuario
 class UserPublic(BaseModel):
     id: int #creo que con jwt este atributo se vuelve irrelevante
