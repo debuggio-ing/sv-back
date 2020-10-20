@@ -10,6 +10,11 @@ routes = FastAPI()
 
 #Todo necesita ser ajustado para la autenticación con JWT
 
+
+#TO-DO
+#mejorar el codigo para enriqueser la documentación generada
+#todo lo demas
+
 #Esta ruta está por razones de testeo, no va en el producto final
 @routes.get("/users/")
 def get_user_list(
@@ -20,12 +25,12 @@ def get_user_list(
 
 #Conseguir la informacion publica de un usuario
 #solo por motivos de testeo, no estara presente en el producto final
-@routes.get("/users/{user_id}", response_model=UserPublic)
+@routes.get("/users/{user_id}/", response_model=UserPublic)
 def get_user(user_id: int):
     return 
 
 #Registrar un usuario nuevo
-@routes.post("/users/register",             
+@routes.post("/users/register/",             
             response_model=UserPublic,
             status_code=status.HTTP_201_CREATED)
 def create_user(new_user: UserReg) -> int:
@@ -33,7 +38,7 @@ def create_user(new_user: UserReg) -> int:
 
 
 #Autenticar el usuario y generar el token de autorización
-@routes.post("/users/login")
+@routes.post("/users/login/")
 def authenticate_user(user_auth: UserAuth) -> str:
     return "access_token"
 
@@ -54,7 +59,7 @@ def get_lobby(lobby_id: int):
 
 
 #Crear una nueva sala
-@routes.post("/lobbies/",             
+@routes.post("/lobbies/new/",             
             response_model=LobbyPublic,
             status_code=status.HTTP_201_CREATED)
 def create_lobby(new_lobby: LobbyReg) -> int:
@@ -62,13 +67,13 @@ def create_lobby(new_lobby: LobbyReg) -> int:
 
 #Unirse a una sala
 #la información del usuario se obtiene del JWT
-@routes.post("/lobbies/{lobby_id}/join")   
+@routes.post("/lobbies/{lobby_id}/join/")   
 def join_game(lobby_id: int):
     return 1
 
 
 #Empezar la partida
-@routes.post("/lobbies/{lobby_id}/start")   
+@routes.post("/lobbies/{lobby_id}/start/")   
 def start_game(lobby_id: int, current_players: LobbyStart):
     return 1
 
@@ -83,43 +88,40 @@ def get_game_list(
 
 
 #Ver la información pública del juego
-@routes.get("/games/{game_id}", response_model=GamePublic)
+@routes.get("/games/{game_id}/", response_model=GamePublic)
 def get_game(game_id: int):
     return 
 
 #el jugador vota
 #identificacion a travez del token JWT
-@routes.post("/games/{game_id}/vote", response_model=PlayerVote)
+@routes.post("/games/{game_id}/vote/", response_model=PlayerVote)
 def player_vote(game_id: int):
     return 
 
 
 #Ver rol del jugador
-@routes.get("/games/{game_id}/rol", response_model=PlayerRole)
+@routes.get("/games/{game_id}/role/", response_model=PlayerRole)
 def get_player_role(game_id: int):
     return 
 
 #El ministro utilizá un hechizo
-@routes.post("/games/{game_id}/spell")
-def cast_spell(game_id: int, spell: MinisterSpell):
+@routes.post("/games/{game_id}/spell/")
+def cast_spell(game_id: int, spell: CastSpell):
     return 
 
-#Pedir las cartas de proclamación correspondientes al ministro
-@routes.get("/games/{game_id}/minister", response_model=MinisterProc)
+#El ministro o el director pide las cartas de proclamación
+@routes.get("/games/{game_id}/proc/", response_model=LegislativeSession)
 def get_minister_proc(game_id: int):
     return 
 
-#Elección de cartas del ministro en sesion legislativa
-@routes.post("/games/{game_id}/minister")
-def minister_proc_election(game_id: int, election: MinisterProc):
+#Elección de cartas de proclamación durante la sesión legislativa
+#internamente se dan cartas correspondientes al cargo del jugador
+@routes.post("/games/{game_id}/proc/")
+def proc_election(game_id: int, election: LegislativeSession):
     return 
 
-#Pedir las cartas de proclamación correspondientes al ministro
-@routes.get("/games/{game_id}/director", response_model=DirectorProc)
-def get_director_proc(game_id: int):
+#Elección de director
+@routes.post("/games/{game_id}/director/")
+def director_candidate(game_id: int, candidate: ProposedDirector):
     return 
 
-#Elección de cartas del ministro en sesion legislativa
-@routes.post("/games/{game_id}/director")
-def director_proc_election(game_id: int, election: DirectorProc):
-    return 

@@ -13,6 +13,7 @@ Las clases estan divididas según los siguientes criterios (priorizados):
 3. Intentar ocultar información que no debería poder accederse 
        (i.e.: en vez de reutilizar una clase que comparte más información, 
        creamos una distinta más pequeña)
+=> Quiźas se puede utilizar el tipo Optional para poder reutilizar clases
 
 Ejemplo de uso:
 
@@ -79,24 +80,25 @@ class PlayerRole(BaseModel):
 class PlayerPublic(BaseModel):
     player_id: int
     vote: bool
+    dead: bool
     username: str
 
 #Información sobre el hechizo a utilizar
-class MinisterSpell(BaseModel):
-    spell_target: int #player_id
+class CastSpell(BaseModel):
+    spell_target: Optional[int] #player_id
     spell: Spell #no es necesario realmente (explicado arriba)
+
+#
+class ProposedDirector(BaseModel):
+    player: int
 
 #Informacíon sobre la decición de proclamación
 #bajo las condiciones los jugadores pueden utilizar expelliarmus 
 #en vez de resolver la sesion legislativa
-class MinisterProc(BaseModel):
-    proc: List[bool]
+class LegislativeSession(BaseModel):
+    proclamation: List[bool]
     expelliarmus: bool #ignorado al menos que se den las circunstancias
 
-#Lo mismo pero para el director
-class DirectorProc(BaseModel):
-    proc: List[bool]
-    expelliarmus: bool #ignorado al menos que se den las circunstancias
 
 #Información necesaria para crear una partida
 class LobbyReg(BaseModel):
@@ -117,6 +119,11 @@ class LobbyPublic(BaseModel):
     max_players: int
     #chat
 
+#Muestra el numero de las proclamaciones por equipo
+class Score(BaseModel):
+    good: int
+    bad: int
+
 #Información pública de la partida
 #Notese que game_id es compartido con Lobby
 #quizás no hace falta diferenciarlos
@@ -124,7 +131,8 @@ class GamePublic(BaseModel):
     player_list: List[PlayerPublic] #con el orden de los jugadores
     minister: str
     director: str
-
-
-
-
+    semaphore: int
+    end: bool
+    winners: bool
+    RoleReveal: Optional[List[Role]] #al final del juego se muestran los roles de todos los jugadores
+    score: Score
