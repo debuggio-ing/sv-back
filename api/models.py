@@ -29,6 +29,7 @@ internamente (con jwt) se verifica que realmente seamos nosotros
  una instancia de MinisterProc
 '''
 
+#Pensar en el caso de como ocultar la información de los votos hasta que se termine
 
 #Información para registrar un usuario
 class UserReg(BaseModel):
@@ -43,7 +44,7 @@ class UserAuth(BaseModel):
     password: str
 
 #Información devuelta del usuario
-class UserOut(BaseModel):
+class UserPublic(BaseModel):
     id: int #creo que con jwt este atributo se vuelve irrelevante
             #pero lo dejamos hasta que implementemos la autenticación
     username: str
@@ -66,12 +67,9 @@ class Role(str, Enum):
     voldemort = "voldemort"
     phoenix = "Order of the Phoenix"
 
-#Información que se puede requerir por el usuario
-class PlayerOut(BaseModel):
-    player_id: int
-    vote: bool
+#Información del rol del jugador
+class PlayerRole(BaseModel):
     role: Role
-    username: str
 
 #Información pública para todos los jugadores
 class PlayerPublic(BaseModel):
@@ -98,7 +96,10 @@ class DirectorProc(BaseModel):
 
 #Información necesaria para crear una partida
 class LobbyReg(BaseModel):
-    game_id: int
+    name: str
+    max_players: int
+
+class LobbyJoin(BaseModel):
     name: str
     max_players: int
 
@@ -106,25 +107,19 @@ class LobbyReg(BaseModel):
 #se va a verificar que la sala contenga la cantidad correcta de jugadores
 #a la hora de mandar la señal de inicio de partida
 class LobbyStart(BaseModel):
-    game_id: int
     current_players: int
 
 #Información pública del lobby
 class LobbyPublic(BaseModel):
-    game_id: int
     name: str
     current_players: List[str] #list of usernames
     max_players: int
     #chat
 
-#Información necesaria para pedir información sobre el juego
-#Notese que game_id es compartido con Lobby
-class GameIn(BaseModel):
-    game_id: int
-
 #Información pública de la partida
+#Notese que game_id es compartido con Lobby
+#quizás no hace falta diferenciarlos
 class GamePublic(BaseModel):
-    game_id: int
     player_list: List[PlayerPublic] #con el orden de los jugadores
     minister: str
     director: str

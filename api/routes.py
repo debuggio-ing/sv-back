@@ -8,98 +8,111 @@ from models import *
 
 routes = FastAPI()
 
+#Todo necesita ser ajustado para la autenticación con JWT
 
 #Esta ruta está por razones de testeo, no va en el producto final
 @routes.get("/users/")
-async def get_user_list(
+def get_user_list(
     user_from: Optional[int] = 0, 
     user_to: Optional[int] = None
 ):
     return
 
-@routes.get("/users/{user_id}", response_model=UserOut)
-async def get_user(user_id: int):
+#Conseguir la informacion publica de un usuario
+#solo por motivos de testeo, no estara presente en el producto final
+@routes.get("/users/{user_id}", response_model=UserPublic)
+def get_user(user_id: int):
     return 
 
-
-@routes.post("/users/",             
-            response_model=UserOut,
+#Registrar un usuario nuevo
+@routes.post("/users/register",             
+            response_model=UserPublic,
             status_code=status.HTTP_201_CREATED)
-async def create_user(new_user: UserIn) -> int:
+def create_user(new_user: UserReg) -> int:
     return 1
 
 
+#Autenticar el usuario y generar el token de autorización
+@routes.post("/users/login")
+def authenticate_user(user_auth: UserAuth) -> str:
+    return "access_token"
+
+
+#Ver la lista de salas
 @routes.get("/lobbies/")
-async def get_lobby_list(
+def get_lobby_list(
     lobby_from: Optional[int] = 0, 
     lobby_to: Optional[int] = None
 ):
     return
 
-@routes.get("/lobbies/{lobby_id}", response_model=LobbyOut)
-async def get_lobby(lobby_id: int):
+
+#Ver la información de mi sala
+@routes.get("/lobbies/{lobby_id}/", response_model=LobbyPublic)
+def get_lobby(lobby_id: int):
     return 
 
 
+#Crear una nueva sala
 @routes.post("/lobbies/",             
-            response_model=LobbyOut,
+            response_model=LobbyPublic,
             status_code=status.HTTP_201_CREATED)
-async def create_lobby(new_lobby: LobbyIn) -> int:
+def create_lobby(new_lobby: LobbyReg) -> int:
+    return 1
+
+#Unirse a una sala
+#la información del usuario se obtiene del JWT
+@routes.post("/lobbies/{lobby_id}/join")   
+def join_game(lobby_id: int):
     return 1
 
 
+#Empezar la partida
+@routes.post("/lobbies/{lobby_id}/start")   
+def start_game(lobby_id: int, current_players: LobbyStart):
+    return 1
+
+
+#ver el listado de los juegos
 @routes.get("/games/")
-async def get_game_list(
+def get_game_list(
     game_from: Optional[int] = 0, 
     game_to: Optional[int] = None
 ):
     return
 
-@routes.get("/games/{game_id}", response_model=GameOut)
-async def get_game(game_id: int):
+
+#Ver la información pública del juego
+@routes.get("/games/{game_id}", response_model=GamePublic)
+def get_game(game_id: int):
     return 
 
+#Ver rol del jugador
+@routes.get("/games/{game_id}/rol", response_model=PlayerRole)
+def get_player_role(game_id: int):
+    return 
 
-@routes.post("/games/",             
-            response_model=GameOut,
-            status_code=status.HTTP_201_CREATED)
-async def create_game(new_game: GameIn) -> int:
-    return 1
+#El ministro utilizá un hechizo
+@routes.post("/games/{game_id}/spell")
+def cast_spell(game_id: int, spell: MinisterSpell):
+    return 
 
+#Pedir las cartas de proclamación correspondientes al ministro
+@routes.get("/games/{game_id}/minister", response_model=MinisterProc)
+def get_minister_proc(game_id: int):
+    return 
 
-"""
-@routes.get("/users/{user_id}")
-async def get_user(user_id: int):
-    res_user = None
-    res_user = get_user_by_id(user_id=user_id)
-    if not res_user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, 
-            detail="user not found"
-        )
-    return res_user
- 
-@routes.get("/users/")
-async def get_user_list(
-    user_from: Optional[int] = 0, 
-    user_to: Optional[int] = None
-):
-    return USERS[user_from:user_to]
+#Elección de cartas del ministro en sesion legislativa
+@routes.post("/games/{game_id}/minister")
+def minister_proc_election(game_id: int, election: MinisterProc):
+    return 
 
-@routes.post(
-    "/users/", 
-    response_model=UserOut,
-    status_code=status.HTTP_201_CREATED
-)
-async def create_user(new_user: UserIn) -> int:
-    new_id = len(USERS) + 1
-    user_dict = new_user.dict()
-    user_dict.update({"id": new_id})
-    USERS.append(user_dict)
-    return UserOut(
-        id=new_id, 
-        name=new_user.name, 
-        operation_result="Succesfully created!")
+#Pedir las cartas de proclamación correspondientes al ministro
+@routes.get("/games/{game_id}/director", response_model=DirectorProc)
+def get_director_proc(game_id: int):
+    return 
 
-
-"""
+#Elección de cartas del ministro en sesion legislativa
+@routes.post("/games/{game_id}/director")
+def director_proc_election(game_id: int, election: DirectorProc):
+    return 
