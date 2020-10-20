@@ -9,6 +9,8 @@ from typing import Literal
 
 # dotenv file parsing requires python-dotenv to be installed
 # This can be done with either pip install python-dotenv
+
+
 class Settings(BaseSettings):
     authjwt_access_token_expires: timedelta = timedelta(minutes=15)
     authjwt_refresh_token_expires: timedelta = timedelta(days=30)
@@ -43,6 +45,8 @@ class User(BaseModel):
 # Provide a method to create access tokens. The create_access_token()
 # function is used to actually generate the token, and you can return
 # it to the caller however you choose.
+
+
 @app.post('/login', status_code=200)
 def login(user: User, Authorize: AuthJWT = Depends()):
     if user.username != 'test' or user.password != 'test':
@@ -63,6 +67,8 @@ def protected(Authorize: AuthJWT = Depends()):
     return {"logged_in_as": current_user}
 
 # Endpoint used to refresh access token.
+
+
 @app.post('/refresh', status_code=200)
 def refresh(Authorize: AuthJWT = Depends()):
     Authorize.jwt_refresh_token_required()
