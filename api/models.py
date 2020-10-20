@@ -67,6 +67,10 @@ class Role(str, Enum):
     voldemort = "voldemort"
     phoenix = "Order of the Phoenix"
 
+#Información del voto de un jugador
+class PlayerVote(BaseModel):
+    vote: bool
+
 #Información del rol del jugador
 class PlayerRole(BaseModel):
     role: Role
@@ -99,9 +103,6 @@ class LobbyReg(BaseModel):
     name: str
     max_players: int
 
-class LobbyJoin(BaseModel):
-    name: str
-    max_players: int
 
 #Información para comenzar la partida
 #se va a verificar que la sala contenga la cantidad correcta de jugadores

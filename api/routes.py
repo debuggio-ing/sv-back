@@ -87,6 +87,13 @@ def get_game_list(
 def get_game(game_id: int):
     return 
 
+#el jugador vota
+#identificacion a travez del token JWT
+@routes.post("/games/{game_id}/vote", response_model=PlayerVote)
+def player_vote(game_id: int):
+    return 
+
+
 #Ver rol del jugador
 @routes.get("/games/{game_id}/rol", response_model=PlayerRole)
 def get_player_role(game_id: int):
