@@ -3,131 +3,64 @@ from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel, EmailStr
 from enum import Enum, IntEnum
 
-
-app = FastAPI()
-
-## REVISAR LOS NOMBRES DE LAS VARIABLES, NO SON FINALES
-
-class UserIn(BaseModel):
-    username: str
-    #age: Optional[int] = None
-    mail: EmailStr
-    password: str
+from models import * 
 
 
-class UserOut(BaseModel):
-    id: int
-    username: str
-    email: EmailStr
-    #password: str
-
-class LobbyIn(BaseModel):
-    game_id: int
-    name: str
-    max_players: int
-
-class LobbyOut(BaseModel):
-    game_id: int
-    name: str
-    current_players: int
-    max_players: int
-
-#seguro no hacen falta los _ (guin bajos)
-class Role(str, Enum):
-    eater = "death_eather"
-    voldemort = "voldemort"
-    phoenix = "order_of_the_phoenix"
-
-#Hacer los valores mas bonitos
-class Spell(str, Enum):
-    divination = "divination"
-    avada = "avada_kedavra"
-    crucio = "crucio"
-    imperio = "imperio"
-
-class Proclamation(IntEnum):
-    good = 1
-    bad = 2
-
-class Player(BaseModel):
-    player_id: int
-    vote: bool
-    role: Role
-
-class Minister(BaseModel):
-    player_id: int
-    spell_target: int
-    spell: Spell
-    proc: List[Proclamation]
-    expelliarmus: bool
-
-class Director(BaseModel):
-    player_id: int
-    proc: List[Proclamation]
-    expelliarmus: bool
-
-class GameIn(BaseModel):
-    game_id: int
-
-class GameOut(BaseModel):
-    game_id: int
-    player_list: List[Player]
-    minister: Minister
-    director: Director
+routes = FastAPI()
 
 
-
-@app.get("/users/")
+#Esta ruta está por razones de testeo, no va en el producto final
+@routes.get("/users/")
 async def get_user_list(
     user_from: Optional[int] = 0, 
     user_to: Optional[int] = None
 ):
     return
 
-@app.get("/users/{user_id}", response_model=UserOut)
+@routes.get("/users/{user_id}", response_model=UserOut)
 async def get_user(user_id: int):
     return 
 
 
-@app.post("/users/",             
+@routes.post("/users/",             
             response_model=UserOut,
             status_code=status.HTTP_201_CREATED)
 async def create_user(new_user: UserIn) -> int:
     return 1
 
 
-@app.get("/lobbies/")
+@routes.get("/lobbies/")
 async def get_lobby_list(
     lobby_from: Optional[int] = 0, 
     lobby_to: Optional[int] = None
 ):
     return
 
-@app.get("/lobbies/{lobby_id}", response_model=LobbyOut)
+@routes.get("/lobbies/{lobby_id}", response_model=LobbyOut)
 async def get_lobby(lobby_id: int):
     return 
 
 
-@app.post("/lobbies/",             
+@routes.post("/lobbies/",             
             response_model=LobbyOut,
             status_code=status.HTTP_201_CREATED)
 async def create_lobby(new_lobby: LobbyIn) -> int:
     return 1
 
 
-@app.get("/games/")
+@routes.get("/games/")
 async def get_game_list(
     game_from: Optional[int] = 0, 
     game_to: Optional[int] = None
 ):
     return
 
-@app.get("/games/{game_id}", response_model=GameOut)
+@routes.get("/games/{game_id}", response_model=GameOut)
 async def get_game(game_id: int):
     return 
 
 
-@app.post("/games/",             
+@routes.post("/games/",             
             response_model=GameOut,
             status_code=status.HTTP_201_CREATED)
 async def create_game(new_game: GameIn) -> int:
@@ -135,7 +68,7 @@ async def create_game(new_game: GameIn) -> int:
 
 
 """
-@app.get("/users/{user_id}")
+@routes.get("/users/{user_id}")
 async def get_user(user_id: int):
     res_user = None
     res_user = get_user_by_id(user_id=user_id)
@@ -146,14 +79,14 @@ async def get_user(user_id: int):
         )
     return res_user
  
-@app.get("/users/")
+@routes.get("/users/")
 async def get_user_list(
     user_from: Optional[int] = 0, 
     user_to: Optional[int] = None
 ):
     return USERS[user_from:user_to]
 
-@app.post(
+@routes.post(
     "/users/", 
     response_model=UserOut,
     status_code=status.HTTP_201_CREATED
