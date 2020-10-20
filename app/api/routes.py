@@ -53,7 +53,7 @@ def get_user_games(user_id: int, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
     return 
 
-#Recuperación de contraseña
+#Recuperación de cuenta
 @routes.post("/recover/")
 def create_user(email: RecoverAccount):
     return 1
@@ -156,7 +156,7 @@ def director_candidate(game_id: int, candidate: ProposedDirector, Authorize: Aut
     return 
 
 #Endpoint donde se refresca el Refresh Token
-@routes.post('/refresh', status_code=200)
+@routes.post('users/refresh', status_code=200)
 def refresh(Authorize: AuthJWT = Depends()):
     Authorize.jwt_refresh_token_required()
 
