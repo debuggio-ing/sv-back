@@ -32,7 +32,7 @@ def test_login():
             "password": "testPassword"})
 
     assert response.status_code == 200
-    assert len(response.json()["access_token"]) == 288
+    assert response.json()["access_token"] != None
 
 
 # Try to access the protected endpoint after logging in.

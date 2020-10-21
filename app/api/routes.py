@@ -35,15 +35,18 @@ def authenticate_user(
 
     # Get all user's emails and passwords.
     users = get_users_for_login()
-    access_token = "InvalidToken"
+    tokens = {}
 
     # Crate an access token if it's a valid user.
     if user_auth.email in users and users[user_auth.email] == user_auth.password:
-        access_token = Authorize.create_access_token(identity=user_auth.email)
+        tokens = {
+            'access_token': Authorize.create_access_token(
+                identity=user_auth.email), 'refresh_token': Authorize.create_refresh_token(
+                identity=user_auth.email)}
     else:
         raise HTTPException(status_code=401, detail='Bad email or password')
 
-    return {"access_token": access_token}
+    return tokens
 
 
 # Conseguir la informacion publica de un usuario
