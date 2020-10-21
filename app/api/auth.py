@@ -8,6 +8,8 @@ from typing import Literal
 # dotenv file parsing requires python-dotenv to be installed
 
 # Modelo para la configuración del módulo AuthJWT
+
+
 class Settings(BaseSettings):
     authjwt_access_token_expires: timedelta
     authjwt_refresh_token_expires: timedelta
@@ -19,6 +21,7 @@ class Settings(BaseSettings):
     class Config:
         env_file = '.env'
         env_file_encoding = 'utf-8'
+
 
 @AuthJWT.load_env
 def get_settings():
