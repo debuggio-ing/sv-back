@@ -4,9 +4,9 @@ from fastapi_jwt_auth import AuthJWT
 from datetime import timedelta
 from typing import Literal, Optional
 
-from api.schemas import *
-from database.models import *
-from database.crud import *
+from app.api.schemas import *
+from app.database.models import *
+from app.database.crud import *
 
 r = games_router = APIRouter()
 

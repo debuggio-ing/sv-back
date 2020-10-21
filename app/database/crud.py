@@ -1,6 +1,6 @@
 from pony.orm import *
 from .models import *
-from api.schemas import *
+from app.api.schemas import *
 
 db.bind(provider='sqlite', filename='database.sqlite', create_db=True)
 db.generate_mapping(create_tables=True)

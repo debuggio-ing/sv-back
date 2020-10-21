@@ -1,14 +1,15 @@
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
-from ..routes import *
+from app.main import svapi
+from app.database.crud import *
 
 
-client = TestClient(routes)
+client = TestClient(svapi)
 
 
 # Try to access the protected endpoint without logging in.
 def test_access_protected_endpoint_unlogged():
-    response = client.get("/protected/")
+    response = client.get("/api/games/")
 
     assert response.status_code == 401
     assert response.json() == {"detail": "Missing Authorization Header"}
@@ -24,7 +25,7 @@ def test_login():
         register_user(user)
 
     response = client.post(
-        "/users/login/",
+        "api/login/",
         headers={
             "Content-Type": "application/json"},
         json={
@@ -45,7 +46,7 @@ def test_access_protected_endpoint_logged():
         register_user(user)
 
     login = client.post(
-        "/users/login/",
+        "api/login/",
         headers={
             "Content-Type": "application/json"},
         json={
@@ -54,8 +55,7 @@ def test_access_protected_endpoint_logged():
 
     token = "Bearer " + login.json()["access_token"]
 
-    response = client.get("/protected/",
+    response = client.get("api/games/",
                           headers={"Authorization": token}, )
 
     assert response.status_code == 200
-    assert response.json() == {"logged_in_as": "test@gmail.com"}

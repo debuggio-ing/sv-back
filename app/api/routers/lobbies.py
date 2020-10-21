@@ -4,9 +4,9 @@ from pydantic import BaseModel, EmailStr
 from enum import Enum, IntEnum
 from fastapi_jwt_auth import AuthJWT
 
-from api.schemas import *
-from database.models import *
-from database.crud import *
+from app.api.schemas import *
+from app.database.models import *
+from app.database.crud import *
 
 r = lobbies_router = APIRouter()
 
