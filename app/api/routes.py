@@ -4,8 +4,9 @@ from pydantic import BaseModel, EmailStr
 from enum import Enum, IntEnum
 from fastapi_jwt_auth import AuthJWT
 
-from .models import *
 from .auth import *
+from database.models import *
+from database.crud import *
 
 
 routes = FastAPI()
@@ -34,14 +35,20 @@ def create_user(new_user: UserReg) -> int:
     return 1
 
 
-#Autenticar el usuario y generar el token de autorización
+# Autenticar el usuario y generar el token de autorización
 @routes.post("/users/login/")
 def authenticate_user(user_auth: UserAuth, Authorize: AuthJWT = Depends()) -> str:
-    if user_auth.email != 'test@gmail.com' or user_auth.password != 'test':
+
+    # Get all user's emails and passwords.
+    users = get_users_for_login()
+    access_token = "InvalidToken"
+
+    # Crate an access token if it's a valid user.
+    if user_auth.email in users and users[user_auth.email] == user_auth.password:
+        access_token = Authorize.create_access_token(identity=user_auth.email)
+    else:
         raise HTTPException(status_code=401, detail='Bad email or password')
 
-    # Identity must be between string or integer.
-    access_token = Authorize.create_access_token(identity=user_auth.email)
     return {"access_token": access_token}
 
 
@@ -72,7 +79,7 @@ def get_user_games(user_id: int, Authorize: AuthJWT = Depends()):
 
 #Recuperación de cuenta
 @routes.post("/recover/")
-def create_user(email: RecoverAccount):
+def recover_user(email: RecoverAccount):
     return 1
 
 
@@ -181,3 +188,14 @@ def refresh(Authorize: AuthJWT = Depends()):
     return {
         'access_token': Authorize.create_access_token(
             identity=current_user)}
+
+
+@routes.get("/test/", status_code=200)
+def test():
+    # user = UserReg(username = 'nombre', email = 'email@gmail.com', password = 'password')
+    # insert_user(user)
+    users = get_usernames()
+    pwd = 'hola'
+    if 'nombre' in users:
+        pwd = users['nombre']
+    return {'access_token': pwd}

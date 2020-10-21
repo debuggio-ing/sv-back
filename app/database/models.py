@@ -80,6 +80,3 @@ class Card(db.Entity):
     order = Required(int)
     is_phoenix = Required(bool)
     match = Required('Match')
-
-
-db.bind(provider='mariadb', filename='database.mariadb', create_db=True)
