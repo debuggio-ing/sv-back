@@ -4,10 +4,10 @@ from fastapi_jwt_auth import AuthJWT
 from datetime import timedelta
 from typing import Literal
 
-#IMPORTANTE RECORDAR ESTO
+# IMPORTANTE RECORDAR ESTO
 # dotenv file parsing requires python-dotenv to be installed
 
-#Modelo para la configuración del módulo AuthJWT
+# Modelo para la configuración del módulo AuthJWT
 class Settings(BaseSettings):
     authjwt_access_token_expires: timedelta
     authjwt_refresh_token_expires: timedelta
@@ -29,4 +29,3 @@ def get_settings():
         ("authjwt_secret_key", "debuggioSuperRandomGeneratedKey"),
         ("authjwt_algorithm", "HS256")
     ]
-

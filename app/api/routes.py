@@ -4,7 +4,8 @@ from pydantic import BaseModel, EmailStr
 from enum import Enum, IntEnum
 from fastapi_jwt_auth import AuthJWT
 
-from .models import * 
+from .models import *
+from .auth import *
 
 
 routes = FastAPI()
@@ -19,14 +20,14 @@ routes = FastAPI()
 #Esta ruta está por razones de testeo, no va en el producto final
 @routes.get("/users/")
 def get_user_list(
-    user_from: Optional[int] = 0, 
+    user_from: Optional[int] = 0,
     user_to: Optional[int] = None
 ):
     return
 
 
 #Registrar un usuario nuevo
-@routes.post("/users/register/",             
+@routes.post("/users/register/",
             response_model=UserPublic,
             status_code=status.HTTP_201_CREATED)
 def create_user(new_user: UserReg) -> int:
@@ -36,7 +37,12 @@ def create_user(new_user: UserReg) -> int:
 #Autenticar el usuario y generar el token de autorización
 @routes.post("/users/login/")
 def authenticate_user(user_auth: UserAuth, Authorize: AuthJWT = Depends()) -> str:
-    return "access_token"
+    if user_auth.email != 'test@gmail.com' or user_auth.password != 'test':
+        raise HTTPException(status_code=401, detail='Bad email or password')
+
+    # Identity must be between string or integer.
+    access_token = Authorize.create_access_token(identity=user_auth.email)
+    return {"access_token": access_token}
 
 
 #Conseguir la informacion publica de un usuario
@@ -44,14 +50,25 @@ def authenticate_user(user_auth: UserAuth, Authorize: AuthJWT = Depends()) -> st
 @routes.get("/users/{user_id}/", response_model=UserPublic)
 def get_user(user_id: int, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
-    return 
+    return
+
+
+#solo por motivos de testeo, no estara presente en el producto final
+@routes.get('/protected/', status_code=200)
+def protected(Authorize: AuthJWT = Depends()):
+    # Protect an endpoint with jwt_required.
+    Authorize.jwt_required()
+
+    # Access the identity of the current user with get_jwt_identity.
+    current_user = Authorize.get_jwt_identity()
+    return {"logged_in_as": current_user}
 
 
 #Ver la lista de juegos a los que el jugador se unió.
 @routes.get("/users/{user_id}/games", response_model=UserGames)
 def get_user_games(user_id: int, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
-    return 
+    return
 
 #Recuperación de cuenta
 @routes.post("/recover/")
@@ -62,7 +79,7 @@ def create_user(email: RecoverAccount):
 #Ver la lista de salas
 @routes.get("/lobbies/")
 def get_lobby_list(
-    lobby_from: Optional[int] = 0, 
+    lobby_from: Optional[int] = 0,
     lobby_to: Optional[int] = None,
     Authorize: AuthJWT = Depends()
 ):
@@ -74,11 +91,11 @@ def get_lobby_list(
 @routes.get("/lobbies/{lobby_id}/", response_model=LobbyPublic)
 def get_lobby(lobby_id: int, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
-    return 
+    return
 
 
 #Crear una nueva sala
-@routes.post("/lobbies/new/",             
+@routes.post("/lobbies/new/",
             response_model=LobbyPublic,
             status_code=status.HTTP_201_CREATED)
 def create_lobby(new_lobby: LobbyReg, Authorize: AuthJWT = Depends()) -> int:
@@ -87,14 +104,14 @@ def create_lobby(new_lobby: LobbyReg, Authorize: AuthJWT = Depends()) -> int:
 
 #Unirse a una sala
 #la información del usuario se obtiene del JWT
-@routes.post("/lobbies/{lobby_id}/join/")   
+@routes.post("/lobbies/{lobby_id}/join/")
 def join_game(lobby_id: int, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
     return 1
 
 
 #Empezar la partida
-@routes.post("/lobbies/{lobby_id}/start/")   
+@routes.post("/lobbies/{lobby_id}/start/")
 def start_game(lobby_id: int, current_players: LobbyStart, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
     return 1
@@ -103,7 +120,7 @@ def start_game(lobby_id: int, current_players: LobbyStart, Authorize: AuthJWT = 
 #ver el listado de los juegos
 @routes.get("/games/")
 def get_game_list(
-    game_from: Optional[int] = 0, 
+    game_from: Optional[int] = 0,
     game_to: Optional[int] = None, Authorize: AuthJWT = Depends()
 ):
     Authorize.jwt_required()
@@ -114,49 +131,49 @@ def get_game_list(
 @routes.get("/games/{game_id}/", response_model=GamePublic)
 def get_game(game_id: int, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
-    return 
+    return
 
 #el jugador vota
 #identificacion a travez del token JWT
 @routes.post("/games/{game_id}/vote/", response_model=PlayerVote)
 def player_vote(game_id: int, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
-    return 
+    return
 
 
 #Ver rol del jugador
 @routes.get("/games/{game_id}/role/", response_model=PlayerRole)
 def get_player_role(game_id: int, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
-    return 
+    return
 
 #El ministro utilizá un hechizo
 @routes.post("/games/{game_id}/spell/")
 def cast_spell(game_id: int, spell: CastSpell, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
-    return 
+    return
 
 #El ministro o el director pide las cartas de proclamación
 @routes.get("/games/{game_id}/proc/", response_model=LegislativeSession)
 def get_minister_proc(game_id: int, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
-    return 
+    return
 
 #Elección de cartas de proclamación durante la sesión legislativa
 #internamente se dan cartas correspondientes al cargo del jugador
 @routes.post("/games/{game_id}/proc/")
 def proc_election(game_id: int, election: LegislativeSession, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
-    return 
+    return
 
 #Elección de director
 @routes.post("/games/{game_id}/director/")
 def director_candidate(game_id: int, candidate: ProposedDirector, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
-    return 
+    return
 
 #Endpoint donde se refresca el Refresh Token
-@routes.post('users/refresh', status_code=200)
+@routes.post("/users/refresh/", status_code=200)
 def refresh(Authorize: AuthJWT = Depends()):
     Authorize.jwt_refresh_token_required()
 
