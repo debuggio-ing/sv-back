@@ -60,8 +60,6 @@ def get_minister_proc(game_id: int, Authorize: AuthJWT = Depends()):
 
 # Elección de cartas de proclamación durante la sesión legislativa
 # internamente se dan cartas correspondientes al cargo del jugador
-
-
 @r.post("/games/{game_id}/proc/")
 def proc_election(
         game_id: int,
@@ -71,8 +69,6 @@ def proc_election(
     return
 
 # Elección de director
-
-
 @r.post("/games/{game_id}/director/")
 def director_candidate(
         game_id: int,

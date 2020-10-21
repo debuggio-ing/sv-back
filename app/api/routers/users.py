@@ -35,3 +35,8 @@ def get_user_games(user_id: int, Authorize: AuthJWT = Depends()):
 @r.post("/recover/")
 def recover_user(email: RecoverAccount):
     return 1
+
+#Endpoint para recibir las futuras verificaciones de email
+@r.post("/verify/", status_code=200)
+def verify_email():
+    return
