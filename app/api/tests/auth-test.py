@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from ..routes import *
 
+
 client = TestClient(routes)
 
 
@@ -15,19 +16,41 @@ def test_access_protected_endpoint_unlogged():
 
 # Try to log in.
 def test_login():
-    response = client.post("/users/login/",
-                           headers={"Content-Type": "application/json"},
-                           json={"email": "test@gmail.com", "password": "test"})
+    if 'test@gmail.com' not in get_emails():
+        user = UserReg(
+            username='test',
+            email='test@gmail.com',
+            password='testPassword')
+        register_user(user)
+
+    response = client.post(
+        "/users/login/",
+        headers={
+            "Content-Type": "application/json"},
+        json={
+            "email": "test@gmail.com",
+            "password": "testPassword"})
 
     assert response.status_code == 200
-    assert len(response.json()["access_token"]) == 288
+    assert response.json()["access_token"] != None
 
 
 # Try to access the protected endpoint after logging in.
 def test_access_protected_endpoint_logged():
-    login = client.post("/users/login/",
-                        headers={"Content-Type": "application/json"},
-                        json={"email": "test@gmail.com", "password": "test"})
+    if 'test@gmail.com' not in get_emails():
+        user = UserReg(
+            username='test',
+            email='test@gmail.com',
+            password='testPassword')
+        register_user(user)
+
+    login = client.post(
+        "/users/login/",
+        headers={
+            "Content-Type": "application/json"},
+        json={
+            "email": "test@gmail.com",
+            "password": "testPassword"})
 
     token = "Bearer " + login.json()["access_token"]
 

@@ -40,8 +40,10 @@ def create_lobbies():
 
 @db_session
 def join_lobby():
-    p1 = Player(alive=True, order=0, minister=False, director=False, user=User.select(
-        lambda u: u.username == 'newton').get(), lobby=Lobby.select(lambda l: l.id == 1).get())
+    p1 = Player(
+        alive=True, order=0, minister=False, director=False, user=User.select(
+            lambda u: u.username == 'newton').get(), lobby=Lobby.select(
+            lambda l: l.id == 1).get())
 
 
 @db_session
