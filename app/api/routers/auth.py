@@ -7,7 +7,7 @@ from typing import Literal
 from app.api.schemas import *
 from app.database.models import *
 from app.database.crud import *
-
+from app.api.hasher import *
 
 # IMPORTANTE RECORDAR ESTO
 # dotenv file parsing requires python-dotenv to be installed
@@ -48,11 +48,11 @@ def authenticate_user(
         Authorize: AuthJWT = Depends()) -> str:
 
     # Get all user's emails and passwords.
-    users = get_users_for_login()
     tokens = {}
 
+
     # Crate an access token if it's a valid user.
-    if user_auth.email in users and users[user_auth.email] == user_auth.password:
+    if check_password(user_auth.email, user_auth.password):
         tokens = {
             'access_token': Authorize.create_access_token(
                 identity=user_auth.email), 'refresh_token': Authorize.create_refresh_token(
