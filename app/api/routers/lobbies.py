@@ -30,7 +30,7 @@ def get_lobby(lobby_id: int, Authorize: AuthJWT = Depends()):
 
 # Crear una nueva sala
 @r.post("/lobbies/new/",
-             # response_model=LobbyPublic,
+             response_model=LobbyPublic,
              status_code=status.HTTP_201_CREATED)
 def create_lobby(new_lobby: LobbyReg, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
@@ -38,14 +38,14 @@ def create_lobby(new_lobby: LobbyReg, Authorize: AuthJWT = Depends()):
     user_email = Authorize.get_jwt_identity()
 
     lobby_id = insert_lobby(new_lobby)
-    # insert_player(user_email=user_email, lobby_id=lobby_id)
+    insert_player(user_email=user_email, lobby_id=lobby_id)
 
-    return {"hola":lobby_id}
+    current_players = get_lobby_player_list(lobby_id)
+
+    return {"name":new_lobby.name, "current_players":current_players, "max_players":new_lobby.max_players}
 
 # Unirse a una sala
 # la información del usuario se obtiene del JWT
-
-
 @r.post("/lobbies/{lobby_id}/join/")
 def join_game(lobby_id: int, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
