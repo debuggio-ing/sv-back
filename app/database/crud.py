@@ -1,3 +1,4 @@
+from datetime import datetime
 from pony.orm import *
 from app.database.models import *
 from app.api.schemas import *
@@ -17,6 +18,7 @@ def register_user(user: UserReg) -> int:
     commit()
     return u.id
 
+# Get password hash for solicited user.
 @db_session
 def get_password_hash(uemail:str) -> str:
     phash = list(select(u.password for u in User if u.email == uemail))
@@ -33,3 +35,22 @@ def get_users_for_login():
 def get_emails():
     emails = list(select(u.email for u in User))
     return emails
+
+# 
+@db_session
+def insert_lobby(lobby: LobbyReg) -> int:
+    l = Lobby(name=lobby.name, max_players=lobby.max_players, creation_date=datetime.now())
+    commit()
+    return l.id
+
+@db_session
+def insert_player(user_email: str, lobby_id: int) -> int:
+    lobby = select(l for l in Lobby if l.id == lobby_id)
+    user = select(u for u in User if u.email == user_email)
+
+    p = Player(user=user, lobby=lobby)
+    commit()
+
+    select(u for u in Player).show()
+
+    return p.id

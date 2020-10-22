@@ -30,11 +30,11 @@ class Image(db.Entity):
 # Created when the user joins a match
 class Player(db.Entity):
     id = PrimaryKey(int, auto=True)
-    alive = Required(bool)
-    order = Required(int)
+    alive = Required(bool, default=True)
+    order = Required(int, default=0)
     secret_role = Optional('Role')
-    minister = Required(bool)
-    director = Required(bool)
+    minister = Required(bool, default=False)
+    director = Required(bool, default=False)
     user = Required('User')
     lobby = Required('Lobby')
     composite_key(user, lobby)
