@@ -9,19 +9,21 @@ db = Database()
 # Created when a new user is registered
 class User(db.Entity):
     id = PrimaryKey(int, auto=True)
-    mail = Required(str, unique=True)
-    username = Required(str, unique=True)
+    email = Required(str, unique=True)
+    username = Required(str)
     password = Required(str)
     image = Optional('Image')
     players = Set('Player')
-
+    email_verified = Required(bool, default=True, sql_default='1')
+    last_login = Required(datetime, default=datetime.now)
+    register_date = Required(datetime, default=datetime.now)
 
 # Created when the user uploads a profile image
 class Image(db.Entity):
     id = PrimaryKey(int, auto=True)
     height = Required(int)
     width = Required(int)
-    filename = Required(str, unique=True)
+    filename = Required(str)
     user = Required('User')
 
 
