@@ -50,7 +50,6 @@ def authenticate_user(
     # Get all user's emails and passwords.
     tokens = {}
 
-
     # Crate an access token if it's a valid user.
     if check_password(user_auth.email, user_auth.password):
         tokens = {
