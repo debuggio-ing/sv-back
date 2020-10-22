@@ -8,14 +8,19 @@ from app.api.schemas import *
 from app.database.models import *
 from app.database.crud import *
 
+from app.database.crud import register_user
+
 r = users_router = APIRouter()
 
 # Registrar un usuario nuevo
 @r.post("/register/",
-             response_model=UserPublic,
              status_code=status.HTTP_201_CREATED)
 def create_user(new_user: UserReg) -> int:
-    return 1
+    
+    id = register_user(new_user)
+    if id == -1:
+        raise HTTPException(status_code=409, detail="Email already in use")
+    return id
 
 # Conseguir la informacion publica de un usuario
 # solo por motivos de testeo, no estara presente en el producto final

@@ -1,4 +1,4 @@
-from ..models import *
+from models import *
 
 
 db.bind(provider='sqlite', filename=':memory:', create_db=True)
