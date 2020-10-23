@@ -21,8 +21,13 @@ def register_user(user: UserReg) -> int:
 # Get password hash for solicited user.
 @db_session
 def get_password_hash(uemail:str) -> str:
-    phash = list(select(u.password for u in User if u.email == uemail))
-    return phash[0]
+    phashlist = list(select(u.password for u in User if u.email == uemail))
+
+    phash = encrypt_password("")
+    if len(phashlist) > 0:
+        phash = phashlist[0]
+
+    return phash
 
 # Get all users from the database.
 @db_session
