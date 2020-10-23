@@ -46,6 +46,12 @@ def get_player_id(user_email: str, game_id: int):
     return pid
 
 @db_session
+def currenly_voting(game_id: int):
+
+    lobby = Lobby.get(id=game_id)
+    return lobby.match.voting
+
+@db_session
 def is_last_vote(user_email: str, game_id: int):
 
     plist = select(lobby.match.curr_vote.player.user.email for lobby in Lobby if lobby.id == game_id)
