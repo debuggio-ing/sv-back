@@ -35,7 +35,8 @@ class Player(db.Entity):
     secret_role = Required('Role')
     minister = Required(bool)
     director = Required(bool)
-    vote = Required('Vote')
+    cur_vote = Required('CurrentVote')
+    pub_vote = Required('PublicVote')
     user = Required('User')
     lobby = Required('Lobby')
     composite_key(user, lobby)
@@ -69,14 +70,14 @@ class Chat(db.Entity):
 class CurrentVote(db.Entity):
     id = PrimaryKey(int, auto=True) #la pone el player_id
     vote = Required(bool)
-    games = Required('Match')
+    games = Set('Match')
     player = Set(Player)
 
 # Last public vote result
 class PublicVote(db.Entity):
     id = PrimaryKey(int, auto=True) #la pone el player_id
     vote = Required(bool)
-    games = Required('Match')
+    games = Set('Match')
     player = Set(Player)
 
 
@@ -93,7 +94,7 @@ class Match(db.Entity):
 
 # Created when a game is started
 class Card(db.Entity):
-    id = PrimaryKey(int, auTrueto=True)
+    id = PrimaryKey(int, auto=True)
     discarded = Required(bool)
     proclaimed = Required(bool)
     order = Required(int)

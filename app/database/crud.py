@@ -58,6 +58,35 @@ def is_last_vote(user_email: str, game_id: int):
     return len(plist) == max_players
 
 @db_session
-def set_player_vote(player_id: int, game_id: int, vote.vote: bool):
+def set_last_player_vote(player_id: int, game_id: int, vote: bool):
 
-    return
+    set_player_vote(player_id, game_id, vote)
+    update_public_vote(game_id)
+    clean_current_vote(game_id)
+ 
+    commit()
+
+
+@db_session
+def set_player_vote(player_id: int, game_id: int, vote: bool):
+    
+    player = get(lobby.match.player for lobby in Lobby if lobby.id == game_id and lobby.match.player.id == player_id)
+
+    player.cur_vote = vote
+    commit()
+
+@db_session
+def update_public_vote(game_id: int):
+
+    lob = Lobby.get(id=game_id)
+    curr_vote_dict = lob.match.curr_vote.to_dict()
+
+    lob.match.public_vote.set(**curr_vote_dict)
+    lob.match.voting = False
+    commit()
+
+@db_session
+def clean_current_vote(game_id: int):
+    
+    delete(lobby.match.curr_vote.id for lobby in Lobby if lobby.id == game_id)
+    commit()

@@ -37,6 +37,10 @@ def player_vote(game_id: int, vote: PlayerVote, Authorize: AuthJWT = Depends()):
     #con jwt obtengo el user id
     user_email = Authorize.get_jwt_identity()
 
+    if user_email == None:
+         raise HTTPException(status_code=401, detail='Corrupted JWT')
+    
+
     #con el game id y la lista de juegos obtengo el player id
     player_id = get_player_id(user_email, game_id)
 
@@ -50,12 +54,6 @@ def player_vote(game_id: int, vote: PlayerVote, Authorize: AuthJWT = Depends()):
     else:
         set_player_vote(player_id, game_id, vote.vote)
 
-
-    #modifico los votos actuales (privados)
-
-
-
-    #
     return
 
 
