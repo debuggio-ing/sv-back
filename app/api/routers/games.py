@@ -42,7 +42,7 @@ def player_vote(game_id: int, vote: PlayerVote, Authorize: AuthJWT = Depends()):
 
     #si el usuario no esta registrado en la partida, se rechaza la solicitud
     if played_id == -1:
-        
+        raise HTTPException(status_code=401, detail='User not in game')
 
     #Si este voto es el ultimo, entonces se actualiza la información publica del juego
     if is_last_vote(player_id, game_id):

@@ -13,7 +13,7 @@ class User(db.Entity):
     username = Required(str)
     password = Required(str)
     image = Optional('Image')
-    #players = Set('Player')
+    players = Set('Player')
     email_verified = Required(bool, default=False, sql_default='1')
     last_login = Required(datetime, default=datetime.now)
     register_date = Required(datetime, default=datetime.now)
@@ -32,19 +32,18 @@ class Player(db.Entity):
     id = PrimaryKey(int, auto=True)
     alive = Required(bool)
     order = Required(int)
-    secret_role = Optional('Role')
+    secret_role = Required('Role')
     minister = Required(bool)
     director = Required(bool)
-    vote = Optional('Vote')
+    vote = Required('Vote')
     user = Required('User')
     lobby = Required('Lobby')
     composite_key(user, lobby)
 
 
-# Created when the user is assigned a role
 class Role(db.Entity):
     id = PrimaryKey(int, auto=True)
-    player = Required('Player')
+    players = Set('Player')
     voldemort = Required(bool)
     phoenix = Required(bool)
 
@@ -68,17 +67,17 @@ class Chat(db.Entity):
 
 # currently voting information
 class CurrentVote(db.Entity):
-    id = PrimaryKey(int) #la pone el player_id
+    id = PrimaryKey(int, auto=True) #la pone el player_id
     vote = Required(bool)
     games = Required('Match')
-    player = Required(Player)
+    player = Set(Player)
 
 # Last public vote result
 class PublicVote(db.Entity):
-    id = PrimaryKey(int) #la pone el player_id
+    id = PrimaryKey(int, auto=True) #la pone el player_id
     vote = Required(bool)
     games = Required('Match')
-    player = Required(Player)
+    player = Set(Player)
 
 
 # Created when a game is started
@@ -88,8 +87,8 @@ class Match(db.Entity):
     lobby = Required('Lobby')
     cards = Set('Card')
     voting = Required(bool) #are players currently voting?
-    last_vote = Optional('PublicVote') #public voting information
-    curr_vote = Optional('CurrentVote') #if currently voting
+    last_vote = Required('PublicVote') #public voting information
+    curr_vote = Required('CurrentVote') #if currently voting
 
 
 # Created when a game is started
