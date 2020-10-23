@@ -13,8 +13,8 @@ class User(db.Entity):
     username = Required(str)
     password = Required(str)
     image = Optional('Image')
-    players = Set('Player')
-    email_verified = Required(bool, default=True, sql_default='1')
+    #players = Set('Player')
+    email_verified = Required(bool, default=False, sql_default='1')
     last_login = Required(datetime, default=datetime.now)
     register_date = Required(datetime, default=datetime.now)
 
@@ -35,6 +35,7 @@ class Player(db.Entity):
     secret_role = Optional('Role')
     minister = Required(bool)
     director = Required(bool)
+    vote = Optional('Vote')
     user = Required('User')
     lobby = Required('Lobby')
     composite_key(user, lobby)
@@ -65,6 +66,20 @@ class Chat(db.Entity):
     text = Required(str)
     lobby = Required('Lobby')
 
+# currently voting information
+class CurrentVote(db.Entity):
+    id = PrimaryKey(int) #la pone el player_id
+    vote = Required(bool)
+    games = Required('Match')
+    player = Required(Player)
+
+# Last public vote result
+class PublicVote(db.Entity):
+    id = PrimaryKey(int) #la pone el player_id
+    vote = Required(bool)
+    games = Required('Match')
+    player = Required(Player)
+
 
 # Created when a game is started
 class Match(db.Entity):
@@ -72,11 +87,14 @@ class Match(db.Entity):
     semaphore = Required(int, min=0, max=3)
     lobby = Required('Lobby')
     cards = Set('Card')
+    voting = Required(bool) #are players currently voting?
+    last_vote = Optional('PublicVote') #public voting information
+    curr_vote = Optional('CurrentVote') #if currently voting
 
 
 # Created when a game is started
 class Card(db.Entity):
-    id = PrimaryKey(int, auto=True)
+    id = PrimaryKey(int, auTrueto=True)
     discarded = Required(bool)
     proclaimed = Required(bool)
     order = Required(int)

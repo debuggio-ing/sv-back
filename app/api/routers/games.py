@@ -30,9 +30,32 @@ def get_game(game_id: int, Authorize: AuthJWT = Depends()):
 # identificacion a travez del token JWT
 
 
-@r.post("/games/{game_id}/vote/", response_model=PlayerVote)
-def player_vote(game_id: int, Authorize: AuthJWT = Depends()):
+@r.post("/games/{game_id}/vote/")
+def player_vote(game_id: int, vote: PlayerVote, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
+
+    #con jwt obtengo el user id
+    user_email = Authorize.get_jwt_identity()
+
+    #con el game id y la lista de juegos obtengo el player id
+    player_id = get_player_id(user_email, game_id)
+
+    #si el usuario no esta registrado en la partida, se rechaza la solicitud
+    if played_id == -1:
+        
+
+    #Si este voto es el ultimo, entonces se actualiza la información publica del juego
+    if is_last_vote(player_id, game_id):
+        set_last_player_vote(player_id, game_id, vote.vote)
+    else:
+        set_player_vote(player_id, game_id, vote.vote)
+
+
+    #modifico los votos actuales (privados)
+
+
+
+    #
     return
 
 

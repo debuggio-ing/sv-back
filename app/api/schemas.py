@@ -175,5 +175,5 @@ class GamePublic(BaseModel):
     end: bool
     winners: bool
     # al final del juego se muestran los roles de todos los jugadores
-    RoleReveal: Optional[List[Role]]
+    roleReveal: Optional[List[Role]]
     score: Score

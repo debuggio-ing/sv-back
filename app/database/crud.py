@@ -33,3 +33,7 @@ def get_users_for_login():
 def get_emails():
     emails = list(select(u.email for u in User))
     return emails
+
+@db_session
+def get_player_id(user_email: str, game_id: int):
+    
