@@ -3,8 +3,7 @@ from app.database.models import *
 from app.api.schemas import *
 from app.api.hasher import *
 
-db.bind(provider='sqlite', filename='database.sqlite', create_db=True)
-db.generate_mapping(create_tables=True)
+
 
 # Insert user into the database.
 @db_session

@@ -8,7 +8,7 @@ from app.api.routers.auth import auth_router
 from app.database.models import *
 
 
-db = Database(provider='sqlite', filename='database.sqlite', create_db=True)
+db = Database(provider='sqlite', filename=':memory:', create_db=True)
 define_entities(db)
 db.generate_mapping(create_tables=True)
 
