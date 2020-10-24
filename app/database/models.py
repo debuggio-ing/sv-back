@@ -37,6 +37,7 @@ class Player(db.Entity):
     director = Required(bool, default=False)
     user = Required('User')
     lobby = Required('Lobby')
+    composite_key(user, lobby)
 
 
 class GRole(db.Entity):
