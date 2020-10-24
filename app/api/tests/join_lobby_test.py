@@ -27,16 +27,16 @@ def test_join_valid_lobby():
         headers={
             "Content-Type": "application/json"},
         json={
-            "email": "1@gmail.com",
-            "password": "testPassword"})
+            "email": user1.email,
+            "password": user1.password})
 
     login2 = client.post(
         "api/login/",
         headers={
             "Content-Type": "application/json"},
         json={
-            "email": "2@gmail.com",
-            "password": "testPassword"})
+            "email": user2.email,
+            "password": user2.password})
 
     token1 = "Bearer " + login1.json()["access_token"]
     max_players = 5

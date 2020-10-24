@@ -10,7 +10,6 @@ db.generate_mapping(create_tables=True)
 # Insert user into the database.
 @db_session
 def register_user(user: UserReg) -> int:
-
     if len(select(u.email for u in User if u.email == user.email)) != 0:
         return -1
 
@@ -25,11 +24,11 @@ def register_user(user: UserReg) -> int:
 # Get password hash for solicited user.
 @db_session
 def get_password_hash(uemail: str) -> str:
-    phashlist = list(select(u.password for u in User if u.email == uemail))
+    user = User.get(email=uemail)
 
     phash = encrypt_password("")
-    if len(phashlist) > 0:
-        phash = phashlist[0]
+    if user != None:
+        phash = user.password
 
     return phash
 
@@ -62,7 +61,7 @@ def insert_player(user_email: str, lobby_id: int) -> int:
     user = User.get(email=user_email)
 
     player_id = -1
-    if user not in lobby.players.user:
+    if lobby != None and user not in lobby.players.user:
         p = Player(user=user, lobby=lobby)
         commit()
         player_id = p.id
@@ -81,21 +80,21 @@ def get_lobby_player_list(lobby_id: int):
 # Get lobby_id lobby's name.
 @db_session
 def get_lobby_name(lobby_id: int):
-    names = list(select(l.name for l in Lobby if lobby_id == l.id))
+    lobby = Lobby.get(id=lobby_id)
 
     name = ""
-    if len(names) > 0:
-        name = names[0]
+    if lobby != None:
+        name = lobby.name
 
     return name
 
 # Get lobby_id lobby's max_player attribute.
 @db_session
 def get_lobby_max_players(lobby_id: int):
-    mps = list(select(l.max_players for l in Lobby if lobby_id == l.id))
+    lobby = Lobby.get(id=lobby_id)
 
     max_players = 0
-    if len(mps) > 0:
-        max_players = mps[0]
+    if lobby != None:
+        max_players = lobby.max_players
 
     return max_players
