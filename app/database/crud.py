@@ -10,22 +10,25 @@ db.generate_mapping(create_tables=True)
 # Insert user into the database.
 @db_session
 def register_user(user: UserReg) -> int:
-
     if len(select(u.email for u in User if u.email == user.email)) != 0:
         return -1
 
-    u = User(email=user.email, username=user.username, password=encrypt_password(user.password))
+    u = User(
+        email=user.email,
+        username=user.username,
+        password=encrypt_password(
+            user.password))
     commit()
     return u.id
 
 # Get password hash for solicited user.
 @db_session
-def get_password_hash(uemail:str) -> str:
-    phashlist = list(select(u.password for u in User if u.email == uemail))
+def get_password_hash(uemail: str) -> str:
+    user = User.get(email=uemail)
 
     phash = encrypt_password("")
-    if len(phashlist) > 0:
-        phash = phashlist[0]
+    if user != None:
+        phash = user.password
 
     return phash
 
@@ -44,7 +47,10 @@ def get_emails():
 # Create lobby in the database.
 @db_session
 def insert_lobby(lobby: LobbyReg) -> int:
-    l = Lobby(name=lobby.name, max_players=lobby.max_players, creation_date=datetime.now())
+    l = Lobby(
+        name=lobby.name,
+        max_players=lobby.max_players,
+        creation_date=datetime.now())
     commit()
     return l.id
 
@@ -54,14 +60,41 @@ def insert_player(user_email: str, lobby_id: int) -> int:
     lobby = Lobby.get(id=lobby_id)
     user = User.get(email=user_email)
 
-    p = Player(user=user, lobby=lobby)
-    commit()
+    player_id = -1
+    if lobby != None and user not in lobby.players.user:
+        p = Player(user=user, lobby=lobby)
+        commit()
+        player_id = p.id
 
-    return p.id
+    return player_id
 
 # Get all players username who are in lobby_id lobby.
 @db_session
 def get_lobby_player_list(lobby_id: int):
-    players = list(select(p.user.username for p in Player if lobby_id == p.lobby.id))
+    players = list(
+        select(
+            p.user.username for p in Player if lobby_id == p.lobby.id))
 
     return players
+
+# Get lobby_id lobby's name.
+@db_session
+def get_lobby_name(lobby_id: int):
+    lobby = Lobby.get(id=lobby_id)
+
+    name = ""
+    if lobby != None:
+        name = lobby.name
+
+    return name
+
+# Get lobby_id lobby's max_player attribute.
+@db_session
+def get_lobby_max_players(lobby_id: int):
+    lobby = Lobby.get(id=lobby_id)
+
+    max_players = 0
+    if lobby != None:
+        max_players = lobby.max_players
+
+    return max_players
