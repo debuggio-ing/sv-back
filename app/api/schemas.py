@@ -150,6 +150,7 @@ class LobbyStart(BaseModel):
 
 
 class LobbyPublic(BaseModel):
+    id: int
     name: str
     current_players: List[str]  # list of usernames
     max_players: int

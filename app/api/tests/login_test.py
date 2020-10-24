@@ -16,7 +16,7 @@ def test_access_protected_endpoint_unlogged():
 
 
 # Try to log in.
-def test_login():
+def test_valid_login():
     if 'test@gmail.com' not in get_emails():
         user = UserReg(
             username='test',
@@ -34,6 +34,20 @@ def test_login():
 
     assert response.status_code == 200
     assert response.json()["access_token"] != None
+
+
+# Try to log in with invalid user.
+def test_invalid_login():
+    response = client.post(
+        "api/login/",
+        headers={
+            "Content-Type": "application/json"},
+        json={
+            "email": "invalid_email@gmail.com",
+            "password": "invalid_password"})
+
+    assert response.status_code == 401
+    assert response.json() == {'detail': 'Bad email or password'}
 
 
 # Try to access the protected endpoint after logging in.
