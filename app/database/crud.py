@@ -40,6 +40,19 @@ def get_emails():
     return emails
 
 @db_session
+def get_player_status() -> PlayerPublic:
+    return
+
+@db_session
+def get_game_status(game_id: int) -> GamePublic:
+
+    lobby = Lobby.get(id=game_id)
+    game = lobby.game
+    ans = GamePublic()
+    return
+
+
+@db_session
 def get_player_id(user_email: str, game_id: int):
     
 
@@ -109,7 +122,9 @@ def update_public_vote(game_id: int):
     game = lobby.game
 
     delete(v for v in PublicVote)
+
     votes = (select((v.vote, v.voter_id) for v in CurrentVote))[:]
+
     for v in votes:
         pv = PublicVote(game=game, vote=v[0], voter_id=v[1])
 
@@ -124,7 +139,7 @@ def clean_current_vote(game_id: int):
     delete(v for v in CurrentVote)
 
     lob.game.numv = 0
-    #delete(lobby.game.curr_vote.id for lobby in Lobby if lobby.id == game_id)
+
     commit()
 
 
@@ -135,11 +150,13 @@ def populate_test_db():
     user3 = User(email="lau@gmail.com", username="lau", password="$5$rounds=535000$hN.xjQV17DkWk3zX$cDFQJeakbvfB6Fn.5mB/XnSS/xjrplJ./7rh.I33Ss.")
     user4 = User(email="ulince@gmail.com", username="ulince", password="$5$rounds=535000$hN.xjQV17DkWk3zX$cDFQJeakbvfB6Fn.5mB/XnSS/xjrplJ./7rh.I33Ss.")
     user5 = User(email="nico@gmail.com", username="nico", password="$5$rounds=535000$hN.xjQV17DkWk3zX$cDFQJeakbvfB6Fn.5mB/XnSS/xjrplJ./7rh.I33Ss.")
+ 
     lobby1 = Lobby(name="mortifagos 4ever", max_players=5)
     lobby2 = Lobby(name="larga vida harry", max_players=5)
     lobby3 = Lobby(name="tom laura riddle", max_players=5)
    
     game1 = Game(lobby=lobby1, voting=True, semaphore=0, numv=3)
+
     role_vol = GRole(voldemort=True, phoenix=False)
     role_dea = GRole(voldemort=False, phoenix=False)
     role_ord = GRole(voldemort=False, phoenix=True)
@@ -164,5 +181,10 @@ def populate_test_db():
 
 @db_session
 def delete_db():
-    db.drop_all_tables(with_all_data=True)
-    db.create_tables()
+    delete(r for r in GRole)
+    delete(g for g in Game)
+    delete(l for l in Lobby)
+    delete(u for u in User)
+    delete(p for p in Player)
+    delete(v for v in PublicVote)
+    delete(v for v in CurrentVote)

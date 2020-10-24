@@ -24,6 +24,7 @@ def get_game_list(
 @r.get("/games/{game_id}/", response_model=GamePublic)
 def get_game(game_id: int, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
+    
     return
 
 # el jugador vota
