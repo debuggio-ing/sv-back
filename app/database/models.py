@@ -10,7 +10,7 @@ db = Database()
 class User(db.Entity):
     id = PrimaryKey(int, auto=True)
     email = Required(str, unique=True)
-    username = Required(str)
+    username = Required(str, unique=True)
     password = Required(str)
     image = Optional('Image')
     players = Set('Player')
