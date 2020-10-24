@@ -105,15 +105,24 @@ def set_player_vote(player_id: int, game_id: int, vote: bool):
 @db_session
 def update_public_vote(game_id: int):
 
-    lob = Lobby.get(id=game_id)
-    lob.game.voting = False
+    lobby = Lobby.get(id=game_id)
+    game = lobby.game
+
+    delete(v for v in PublicVote)
+    votes = (select((v.vote, v.voter_id) for v in CurrentVote))[:]
+    for v in votes:
+        pv = PublicVote(game=game, vote=v[0], voter_id=v[1])
+
+    lobby.game.voting = False
     commit()
 
 @db_session
 def clean_current_vote(game_id: int):
     
     lob = Lobby.get(id=game_id)
-    lob.game.curr_vote = None
+
+    delete(v for v in CurrentVote)
+
     lob.game.numv = 0
     #delete(lobby.game.curr_vote.id for lobby in Lobby if lobby.id == game_id)
     commit()
@@ -130,7 +139,7 @@ def populate_test_db():
     lobby2 = Lobby(name="larga vida harry", max_players=5)
     lobby3 = Lobby(name="tom laura riddle", max_players=5)
    
-    game1 = Game(lobby=lobby1, voting=True, semaphore=0, numv=4)
+    game1 = Game(lobby=lobby1, voting=True, semaphore=0, numv=3)
     role_vol = GRole(voldemort=True, phoenix=False)
     role_dea = GRole(voldemort=False, phoenix=False)
     role_ord = GRole(voldemort=False, phoenix=True)
@@ -142,7 +151,6 @@ def populate_test_db():
     p5 = Player(position=5,user=user5, lobby=lobby1, role=role_ord, minister=False, director=False)
 
     curr_vote1 = CurrentVote(game=game1, player=p1, vote=True, voter_id=1)
-    curr_vote2 = CurrentVote(game=game1, player=p2, vote=True, voter_id=2)
     curr_vote3 = CurrentVote(game=game1, player=p3, vote=True, voter_id=3)
     curr_vote4 = CurrentVote(game=game1, player=p4, vote=True, voter_id=4)
 
