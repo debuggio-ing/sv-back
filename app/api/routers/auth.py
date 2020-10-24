@@ -34,7 +34,7 @@ class Settings(BaseSettings):
 @AuthJWT.load_env
 def get_settings():
     return [
-        ("authjwt_access_token_expires", timedelta(minutes=2)),
+        ("authjwt_access_token_expires", timedelta(minutes=5)),
         ("authjwt_refresh_token_expires", timedelta(days=7)),
         ("authjwt_blacklist_enabled", "false"),
         ("authjwt_secret_key", "debuggioSuperRandomGeneratedKey"),
