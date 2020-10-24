@@ -25,14 +25,29 @@ def test_create_lobby():
             "password": "testPassword"})
 
     token = "Bearer " + login.json()["access_token"]
-    response = lobby.post("/api/lobbies/new/", headers={"Authorization": token}, json={"name":"test_lobby","max_players":5})
+    response = lobby.post(
+        "/api/lobbies/new/",
+        headers={
+            "Authorization": token},
+        json={
+            "name": "test_lobby",
+            "max_players": 5})
 
     assert response.status_code == 201
-    assert response.json() == {'current_players': ['test'], 'max_players': 5, 'name': 'test_lobby'}
+    assert response.json() == {
+        'current_players': ['test'],
+        'max_players': 5,
+        'name': 'test_lobby'}
 
 # Try to crate a lobby not being logged in.
+
+
 def test_create_lobby_unlogged():
-    response = lobby.post("/api/lobbies/new/", json={"name":"test_lobby","max_players":5})
+    response = lobby.post(
+        "/api/lobbies/new/",
+        json={
+            "name": "test_lobby",
+            "max_players": 5})
 
     assert response.status_code == 401
     assert response.json() == {'detail': 'Missing Authorization Header'}

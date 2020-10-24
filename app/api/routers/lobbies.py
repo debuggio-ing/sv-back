@@ -30,8 +30,8 @@ def get_lobby(lobby_id: int, Authorize: AuthJWT = Depends()):
 
 # Crear una nueva sala
 @r.post("/lobbies/new/",
-             response_model=LobbyPublic,
-             status_code=status.HTTP_201_CREATED)
+        response_model=LobbyPublic,
+        status_code=status.HTTP_201_CREATED)
 def create_lobby(new_lobby: LobbyReg, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
 
@@ -39,30 +39,39 @@ def create_lobby(new_lobby: LobbyReg, Authorize: AuthJWT = Depends()):
 
     lobby_id = insert_lobby(new_lobby)
     insert_player(user_email=user_email, lobby_id=lobby_id)
-    
-    current_players = get_lobby_player_list(lobby_id)
-    lobby = LobbyPublic(id=lobby_id, name=new_lobby.name, current_players=current_players, max_players=new_lobby.max_players)
 
-    print(user_email)
+    current_players = get_lobby_player_list(lobby_id)
+    lobby = LobbyPublic(
+        id=lobby_id,
+        name=new_lobby.name,
+        current_players=current_players,
+        max_players=new_lobby.max_players)
 
     return lobby
 
 # Unirse a una sala
 # la información del usuario se obtiene del JWT
-@r.post("/lobbies/{lobby_id}/join/"
-    ,response_model=LobbyPublic
-    )
+
+
+@r.post("/lobbies/{lobby_id}/join/", response_model=LobbyPublic
+        )
 def join_game(lobby_id: int, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
 
     user_email = Authorize.get_jwt_identity()
     player_id = insert_player(user_email=user_email, lobby_id=lobby_id)
-    print(user_email)
+
+    if player_id == -1:
+        raise HTTPException(status_code=409, detail="User already in lobby.")
 
     current_players = get_lobby_player_list(lobby_id)
     lobby_name = get_lobby_name(lobby_id)
     lobby_max_players = get_lobby_max_players(lobby_id)
-    lobby = LobbyPublic(id=lobby_id, name=lobby_name, current_players=current_players, max_players=4)
+    lobby = LobbyPublic(
+        id=lobby_id,
+        name=lobby_name,
+        current_players=current_players,
+        max_players=lobby_max_players)
 
     return lobby
 
