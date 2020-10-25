@@ -5,8 +5,6 @@ from app.api.schemas import *
 from app.api.hasher import *
 
 
-
-
 db.bind(provider='sqlite', filename='database.sqlite', create_db=True)
 db.generate_mapping(create_tables=True)
 
@@ -65,7 +63,7 @@ def get_game_status(game_id: int) -> GamePublic:
 
 @db_session
 def get_player_id(user_email: str, game_id: int):
-    
+
 
     user = User.get(email=user_email)
     lobby = Lobby.get(id=game_id)
@@ -106,13 +104,13 @@ def set_last_player_vote(player_id: int, game_id: int, vote: bool):
     set_player_vote(player_id, game_id, vote)
     update_public_vote(game_id)
     clean_current_vote(game_id)
- 
+
     commit()
 
 
 @db_session
 def set_player_vote(player_id: int, game_id: int, vote: bool):
-    
+
 
     player = Player.get(id=player_id, lobby=game_id)
     lobby = Lobby.get(id=game_id)
@@ -123,7 +121,7 @@ def set_player_vote(player_id: int, game_id: int, vote: bool):
         lobby.game.numv += 1
     else:
         player.curr_vote.vote = vote
-        
+
     commit()
 
 @db_session
@@ -144,7 +142,7 @@ def update_public_vote(game_id: int):
 
 @db_session
 def clean_current_vote(game_id: int):
-    
+
     lob = Lobby.get(id=game_id)
 
     delete(v for v in CurrentVote)
@@ -161,11 +159,11 @@ def populate_test_db():
     user3 = User(email="lau@gmail.com", username="lau", password="$5$rounds=535000$hN.xjQV17DkWk3zX$cDFQJeakbvfB6Fn.5mB/XnSS/xjrplJ./7rh.I33Ss.")
     user4 = User(email="ulince@gmail.com", username="ulince", password="$5$rounds=535000$hN.xjQV17DkWk3zX$cDFQJeakbvfB6Fn.5mB/XnSS/xjrplJ./7rh.I33Ss.")
     user5 = User(email="nico@gmail.com", username="nico", password="$5$rounds=535000$hN.xjQV17DkWk3zX$cDFQJeakbvfB6Fn.5mB/XnSS/xjrplJ./7rh.I33Ss.")
- 
+
     lobby1 = Lobby(name="mortifagos 4ever", max_players=5)
     lobby2 = Lobby(name="larga vida harry", max_players=5)
     lobby3 = Lobby(name="tom laura riddle", max_players=5)
-   
+
     game1 = Game(lobby=lobby1, voting=True, semaphore=0, numv=3)
 
     role_vol = GRole(voldemort=True, phoenix=False)
@@ -182,7 +180,6 @@ def populate_test_db():
     curr_vote3 = CurrentVote(game=game1, player=p3, vote=True, voter_id=3)
     curr_vote4 = CurrentVote(game=game1, player=p4, vote=True, voter_id=4)
 
-    #last_vote1 = 
     last_vote1 = PublicVote(game=game1, player=p1, vote=True, voter_id=1)
     last_vote2 = PublicVote(game=game1, player=p2, vote=True, voter_id=2)
     last_vote3 = PublicVote(game=game1, player=p3, vote=True, voter_id=3)
@@ -200,7 +197,7 @@ def delete_db():
     delete(v for v in PublicVote)
     delete(v for v in CurrentVote)
 
-    
+
 # Create lobby in the database.
 @db_session
 def insert_lobby(lobby: LobbyReg) -> int:
@@ -218,7 +215,7 @@ def insert_player(user_email: str, lobby_id: int) -> int:
     user = User.get(email=user_email)
 
     player_id = -1
-    if lobby != None and user not in lobby.players.user:
+    if lobby != None and user not in lobby.player.user:
         p = Player(user=user, lobby=lobby)
         commit()
         player_id = p.id
@@ -256,4 +253,12 @@ def get_lobby_max_players(lobby_id: int):
 
     return max_players
 
-  
+# Get all lobbies ids.
+@db_session
+def get_all_lobbies_ids(lobby_from: Optional[int], lobby_to: Optional[int]):
+    if lobby_to == None:
+        lobby_to = max(l.id for l in Lobby)
+
+    lobbies_ids = list(select(l.id for l in Lobby if l.id >= lobby_from and l.id <= lobby_to))
+
+    return lobbies_ids

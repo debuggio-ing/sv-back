@@ -29,8 +29,8 @@ class Image(db.Entity):
 class Player(db.Entity):
     id = PrimaryKey(int, auto=True)
     alive = Required(bool, default=True)
-    position = Required(int)
-    role = Required('GRole')
+    position = Required(int, default=0)
+    role = Optional('GRole')
     curr_vote = Optional('CurrentVote')
     pub_vote = Optional('PublicVote')
     minister = Required(bool, default=False)
@@ -66,7 +66,7 @@ class Chat(db.Entity):
 
 # currently voting information
 class CurrentVote(db.Entity):
-    id = PrimaryKey(int, auto=True) 
+    id = PrimaryKey(int, auto=True)
     vote = Required(bool)
     voter_id = Required(int) #redundancia por ahora
     game = Set('Game')
@@ -74,7 +74,7 @@ class CurrentVote(db.Entity):
 
 # Last public vote result
 class PublicVote(db.Entity):
-    id = PrimaryKey(int, auto=True) 
+    id = PrimaryKey(int, auto=True)
     vote = Required(bool)
     voter_id = Required(int) #redundancia por ahora
     game = Set('Game')
@@ -101,4 +101,3 @@ class Card(db.Entity):
     order = Required(int)
     is_phoenix = Required(bool)
     Game = Required('Game')
-

@@ -11,14 +11,23 @@ from app.database.crud import *
 r = lobbies_router = APIRouter()
 
 # Ver la lista de salas
-@r.get("/lobbies/")
+@r.get("/lobbies/", response_model=List[LobbyPublic])
 def get_lobby_list(
     lobby_from: Optional[int] = 0,
     lobby_to: Optional[int] = None,
     Authorize: AuthJWT = Depends()
 ):
     Authorize.jwt_required()
-    return
+
+    required_lobbies = get_all_lobbies_ids(lobby_from, lobby_to)
+    lobbies = []
+    for lid in required_lobbies:
+        lobby = LobbyPublic(id=lid, name=get_lobby_name(lid),
+                    current_players=get_lobby_player_list(lid),
+                    max_players=get_lobby_max_players(lid))
+        lobbies.append(lobby)
+
+    return lobbies
 
 
 # Ver la información de mi sala
