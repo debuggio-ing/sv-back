@@ -2,9 +2,7 @@ from datetime import datetime
 from sys import maxsize
 from pony.orm import *
 
-
 db = Database()
-
 
 # Created when a new user is registered
 class User(db.Entity):
@@ -14,8 +12,8 @@ class User(db.Entity):
     password = Required(str)
     image = Optional('Image')
     players = Set('Player')
-    email_verified = Required(bool, default=True, sql_default='1')
-    last_login = Required(datetime, default=datetime.now)
+    email_verified = Required(bool, default=False, sql_default='1')
+    last_login = Required(datetime  , default=datetime.now)
     register_date = Required(datetime, default=datetime.now)
 
 # Created when the user uploads a profile image
@@ -27,12 +25,14 @@ class Image(db.Entity):
     user = Required('User')
 
 
-# Created when the user joins a match
+# Created when the user joins a Game
 class Player(db.Entity):
     id = PrimaryKey(int, auto=True)
     alive = Required(bool, default=True)
-    order = Required(int, default=0)
-    secret_role = Optional('Role')
+    position = Required(int)
+    role = Required('GRole')
+    curr_vote = Optional('CurrentVote')
+    pub_vote = Optional('PublicVote')
     minister = Required(bool, default=False)
     director = Required(bool, default=False)
     user = Required('User')
@@ -40,10 +40,9 @@ class Player(db.Entity):
     composite_key(user, lobby)
 
 
-# Created when the user is assigned a role
-class Role(db.Entity):
+class GRole(db.Entity):
     id = PrimaryKey(int, auto=True)
-    player = Required('Player')
+    players = Set('Player')
     voldemort = Required(bool)
     phoenix = Required(bool)
 
@@ -53,9 +52,9 @@ class Lobby(db.Entity):
     id = PrimaryKey(int, auto=True)
     name = Required(str)
     max_players = Required(int)
-    creation_date = Required(datetime)
-    players = Set('Player')
-    match = Optional('Match')
+    creation_date = Required(datetime, default=datetime.now)
+    player = Set('Player')
+    game = Optional('Game')
     chat = Optional('Chat')
 
 
@@ -65,13 +64,33 @@ class Chat(db.Entity):
     text = Required(str)
     lobby = Required('Lobby')
 
+# currently voting information
+class CurrentVote(db.Entity):
+    id = PrimaryKey(int, auto=True) 
+    vote = Required(bool)
+    voter_id = Required(int) #redundancia por ahora
+    game = Set('Game')
+    player = Set('Player')
+
+# Last public vote result
+class PublicVote(db.Entity):
+    id = PrimaryKey(int, auto=True) 
+    vote = Required(bool)
+    voter_id = Required(int) #redundancia por ahora
+    game = Set('Game')
+    player = Set('Player')
+
 
 # Created when a game is started
-class Match(db.Entity):
+class Game(db.Entity):
     id = PrimaryKey(int, auto=True)
     semaphore = Required(int, min=0, max=3)
     lobby = Required('Lobby')
     cards = Set('Card')
+    voting = Required(bool) #are players currently voting?
+    numv = Required(int, default=0)
+    last_vote = Optional('PublicVote') #public voting information
+    curr_vote = Optional('CurrentVote') #if currently voting
 
 
 # Created when a game is started
@@ -81,4 +100,5 @@ class Card(db.Entity):
     proclaimed = Required(bool)
     order = Required(int)
     is_phoenix = Required(bool)
-    match = Required('Match')
+    Game = Required('Game')
+
