@@ -8,8 +8,6 @@ from app.api.schemas import *
 from app.database.models import *
 from app.database.crud import *
 
-from app.database.crud import register_user
-
 r = users_router = APIRouter()
 
 # Registrar un usuario nuevo
