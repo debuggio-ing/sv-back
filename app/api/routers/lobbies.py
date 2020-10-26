@@ -9,8 +9,8 @@ from app.database.models import *
 from app.database.crud import *
 
 
-# Authentication endpoints' router
-r = auth_router = APIRouter()
+# Lobbies endpoints' router
+r = lobbies_router = APIRouter()
 
 
 # Return lobbies list.

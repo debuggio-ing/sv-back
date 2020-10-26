@@ -9,8 +9,8 @@ from app.database.models import *
 from app.database.crud import *
 
 
-# Authentication endpoints' router
-r = auth_router = APIRouter()
+# Users endpoints' router
+r = users_router = APIRouter()
 
 
 # Create new user.
