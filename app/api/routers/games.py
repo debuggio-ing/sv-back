@@ -10,7 +10,8 @@ from app.database.crud import *
 
 r = games_router = APIRouter()
 
-# ver el listado de los juegos
+
+# List games in database
 @r.get("/games/")
 def get_game_list(
     game_from: Optional[int] = 0,
@@ -20,72 +21,63 @@ def get_game_list(
     return
 
 
-# Ver la información pública del juego
+# View public data about the specified game
 @r.get("/games/{game_id}/", response_model=GamePublic)
 def get_game(game_id: int, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
-    
+
     return
 
-# el jugador vota
-# identificacion a travez del token JWT
 
-
+# Player vote in game
 @r.post("/games/{game_id}/vote/")
 def player_vote(game_id: int, vote: PlayerVote, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
-
-    #con jwt obtengo el user id
+    # get user's email
     user_email = Authorize.get_jwt_identity()
-
-    #vemos que hayamos identificado correctamente
     if user_email == None:
-         raise HTTPException(status_code=409, detail='Corrupted JWT')
-    
-    #vemos si el juego esta recibiendo votaciones
-    if not currently_voting(game_id):
-        raise HTTPException(status_code=403 , detail='There isn\'t a vote ocurring')
-    
-    #con el game id y la lista de juegos obtengo el player id
-    player_id = get_player_id(user_email, game_id)
+        raise HTTPException(status_code=409, detail='Corrupted JWT')
 
-    #si el usuario no esta registrado en la partida, se rechaza la solicitud
+    # check if game receives votes at this moment
+    if not currently_voting(game_id):
+        raise HTTPException(
+            status_code=403, detail='There isn\'t a vote ocurring')
+
+    # get player in game
+    player_id = get_player_id(user_email, game_id)
     if player_id == -1:
         raise HTTPException(status_code=401, detail='User not in game')
 
-    #Si este voto es el ultimo, entonces se actualiza la información publica del juego
+    # Update public game date if this is the last vote
     if is_last_vote(player_id, game_id):
         set_last_player_vote(player_id, game_id, vote.vote)
     else:
         set_player_vote(player_id, game_id, vote.vote)
-
     return
 
 
-# Ver rol del jugador
+# Return player's role in the specified game
 @r.get("/games/{game_id}/role/", response_model=PlayerRole)
 def get_player_role(game_id: int, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
     return
 
-# El ministro utilizá un hechizo
 
-
+# Cast spell in specified game
 @r.post("/games/{game_id}/spell/")
 def cast_spell(game_id: int, spell: CastSpell, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
     return
 
-# El ministro o el director pide las cartas de proclamación
 
-
+# Return minister's proclamation cards
 @r.get("/games/{game_id}/proc/", response_model=LegislativeSession)
 def get_minister_proc(game_id: int, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
     return
 
-# Elección de cartas de proclamación durante la sesión legislativa
-# internamente se dan cartas correspondientes al cargo del jugador
+
+# Select cards to proclaim in the specified game
 @r.post("/games/{game_id}/proc/")
 def proc_election(
         game_id: int,
@@ -94,7 +86,8 @@ def proc_election(
     Authorize.jwt_required()
     return
 
-# Elección de director
+
+# Nominate director in specified game
 @r.post("/games/{game_id}/director/")
 def director_candidate(
         game_id: int,
@@ -102,4 +95,3 @@ def director_candidate(
         Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
     return
-
