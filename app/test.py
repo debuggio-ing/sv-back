@@ -13,12 +13,12 @@ from fastapi.middleware.cors import CORSMiddleware
 
 
 # svapi is the API object
-svapi = FastAPI(
+test_svapi = FastAPI(
     title="Secret-Voldemort", docs_url="/api/docs", openapi_url="/api", redoc_url="/api/redoc"
 )
 
 
-#bind_db(False)
+bind_db(True)
 
 # origins allowed by the API
 origins = [
@@ -28,7 +28,7 @@ origins = [
 
 
 # CORS setup
-svapi.add_middleware(
+test_svapi.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
@@ -38,7 +38,7 @@ svapi.add_middleware(
 
 
 # Routers handled by the API
-svapi.include_router(users_router, prefix="/api", tags=["users"])
-svapi.include_router(games_router, prefix="/api", tags=["games"])
-svapi.include_router(lobbies_router, prefix="/api", tags=["lobbies"])
-svapi.include_router(auth_router, prefix="/api", tags=["auth"])
+test_svapi.include_router(users_router, prefix="/api", tags=["users"])
+test_svapi.include_router(games_router, prefix="/api", tags=["games"])
+test_svapi.include_router(lobbies_router, prefix="/api", tags=["lobbies"])
+test_svapi.include_router(auth_router, prefix="/api", tags=["auth"])

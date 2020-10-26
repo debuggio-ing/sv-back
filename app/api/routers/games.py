@@ -21,7 +21,7 @@ def get_game_list(
     return
 
 
-# View public data about the specified game
+# View public data about a specified game
 @r.get("/games/{game_id}/", response_model=GamePublic)
 def get_game(game_id: int, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
@@ -33,22 +33,23 @@ def get_game(game_id: int, Authorize: AuthJWT = Depends()):
 @r.post("/games/{game_id}/vote/")
 def player_vote(game_id: int, vote: PlayerVote, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
+
     # get user's email
     user_email = Authorize.get_jwt_identity()
     if user_email == None:
         raise HTTPException(status_code=409, detail='Corrupted JWT')
 
-    # check if game receives votes at this moment
+    # check if there's a vote ocurring in the game
     if not currently_voting(game_id):
         raise HTTPException(
             status_code=403, detail='There isn\'t a vote ocurring')
 
-    # get player in game
+    # get the id of the user in the game (the player_id)
     player_id = get_player_id(user_email, game_id)
     if player_id == -1:
         raise HTTPException(status_code=401, detail='User not in game')
 
-    # Update public game date if this is the last vote
+    # cast vote
     if is_last_vote(player_id, game_id):
         set_last_player_vote(player_id, game_id, vote.vote)
     else:

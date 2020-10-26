@@ -9,8 +9,9 @@ from app.database.crud_helpers.lobby import *
 from app.database.crud_helpers.populate_database import *
 
 
-if True:
-    db.bind(provider='sqlite', filename='testing1.sqlite', create_db=True)
-else:
-    db.bind(provider='sqlite', filename='testing2.sqlite', create_db=True)
-db.generate_mapping(create_tables=True)
+def bind_db(test):
+    if test:
+        db.bind(provider='sqlite', filename='test.sqlite', create_db=True)
+    else:
+        db.bind(provider='sqlite', filename='database.sqlite', create_db=True)
+    db.generate_mapping(create_tables=True)
