@@ -9,7 +9,7 @@ from app.api.routers.auth import auth_router
 from app.database.models import *
 
 from fastapi.middleware.cors import CORSMiddleware
-
+from app.database.crud import create_db
 
 svapi = FastAPI(
     title="Secret-Voldemort", docs_url="/api/docs", openapi_url="/api", redoc_url="/api/redoc"
@@ -26,7 +26,7 @@ svapi.add_middleware(
     allow_headers=["*"],
 )
 
-
+create_db(True)
 
 svapi.include_router(users_router, prefix="/api", tags=["users"])
 svapi.include_router(games_router, prefix="/api", tags=["games"])
