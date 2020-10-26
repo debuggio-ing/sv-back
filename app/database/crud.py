@@ -256,9 +256,16 @@ def get_lobby_max_players(lobby_id: int):
 # Get all lobbies ids.
 @db_session
 def get_all_lobbies_ids(lobby_from: Optional[int], lobby_to: Optional[int]):
-    if lobby_to == None:
-        lobby_to = max(l.id for l in Lobby)
+    max_id = max(l.id for l in Lobby)
+    if lobby_to is None and max_id is not None:
+        # If there's an active lobby, set lobby_to = max_id.
+        lobby_to = max_id
+    elif lobby_to is None and max_id is None:
+        # If there's no active lobby, set lobby_to = 0.
+        lobby_to = 0
 
-    lobbies_ids = list(select(l.id for l in Lobby if l.id >= lobby_from and l.id <= lobby_to))
+    # Get all lobies with id within range.
+    lobbies_ids = list(select(l.id for l in Lobby if
+                              l.id >= lobby_from and l.id <= lobby_to))
 
     return lobbies_ids
