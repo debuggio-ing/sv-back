@@ -93,7 +93,6 @@ class PlayerRole(BaseModel):
 # Player output pulic data
 class PlayerPublic(BaseModel):
     player_id: int
-    vote: bool
     dead: bool
     username: str
 
@@ -149,8 +148,9 @@ class GamePublic(BaseModel):
     minister: str
     director: str
     semaphore: int
-    end: bool
-    winners: bool
+    score: Score
+    end: Optional[bool]
+    winners: Optional[bool]
     # players' role reaveal party at the end of the game
     roleReveal: Optional[List[Role]]
-    score: Score
+

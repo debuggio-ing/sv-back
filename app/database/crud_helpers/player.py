@@ -19,8 +19,12 @@ def insert_player(user_email: str, lobby_id: int) -> int:
 
 # Return the required player status.
 @db_session
-def get_player_status(user_email: str, game_id: int) -> PlayerPublic:
-    return
+def get_player_public(pid: int) -> PlayerPublic:
+    player = Player.get(id=pid)
+
+    pp = PlayerPublic(player_id=pid,
+                    dead=player.alive)
+    return pp
 
 
 # Return the required player id.
