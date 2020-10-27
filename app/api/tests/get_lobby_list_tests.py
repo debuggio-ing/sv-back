@@ -4,7 +4,6 @@ from app.test import test_svapi
 from app.database.crud import *
 
 # It's necessary to remove database before running the tests.
-
 lobby = TestClient(test_svapi)
 
 # Setup database

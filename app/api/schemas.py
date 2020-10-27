@@ -136,7 +136,7 @@ class LobbyPublic(BaseModel):
     # chat
 
 
-# Game's proclamations' status
+# Game's proclamations' statusgo
 class Score(BaseModel):
     good: int
     bad: int
@@ -145,8 +145,10 @@ class Score(BaseModel):
 # Game's public output data
 class GamePublic(BaseModel):
     player_list: List[PlayerPublic]  # players order
-    minister: str
-    director: str
+    minister: int
+    prev_minister: int
+    director: int
+    prev_director: int
     semaphore: int
     score: Score
     end: Optional[bool]

@@ -36,7 +36,9 @@ class Player(db.Entity):
     curr_vote = Optional('CurrentVote')
     pub_vote = Optional('PublicVote')
     minister = Required(bool, default=False)
+    prev_minister = Required(bool, default=False)
     director = Required(bool, default=False)
+    prev_director = Required(bool, default=False)
     user = Required('User')
     lobby = Required('Lobby')
     composite_key(user, lobby)
@@ -91,7 +93,7 @@ class Game(db.Entity):
     id = PrimaryKey(int, auto=True)
     semaphore = Required(int, min=0, max=3)
     lobby = Required('Lobby')
-    cards = Set('Card')
+    cards = Set('ProcCard')
     voting = Required(bool)  # are players currently voting?
     numv = Required(int, default=0)
     last_vote = Optional('PublicVote')  # public voting information
@@ -99,10 +101,10 @@ class Game(db.Entity):
 
 
 # Created when a game is started
-class Card(db.Entity):
+class ProcCard(db.Entity):
     id = PrimaryKey(int, auto=True)
-    discarded = Required(bool)
-    proclaimed = Required(bool)
-    order = Required(int)
-    is_phoenix = Required(bool)
-    Game = Required('Game')
+    discarded = Required(bool, default=False)
+    proclaimed = Required(bool, default=False)
+    position = Required(int)
+    phoenix = Required(bool)
+    game = Required('Game')

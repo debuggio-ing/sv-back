@@ -24,7 +24,9 @@ def get_game_list(
         game = GamePublic(id=gid,
                         player_list=get_game_player_public_list(gid),
                         minister=get_game_minister_id(gid),
+                        prev_minister=get_game_prev_minister_id(gid),
                         director=get_game_director_id(gid),
+                        prev_director=get_game_prev_director_id(gid),
                         semaphore=get_game_semaphore(gid),
                         score=get_game_score(gid))
         games.append(game)
