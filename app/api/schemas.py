@@ -3,8 +3,6 @@ from pydantic import BaseModel, EmailStr
 from enum import Enum, IntEnum
 
 
-# REVISAR LOS NOMBRES DE LAS VARIABLES, NO SON FINALES
-
 '''
 Las clases estan divididas según los siguientes criterios (priorizados):
 1. Endpoint en los que participan
@@ -32,123 +30,105 @@ internamente (con jwt) se verifica que realmente seamos nosotros
 # Pensar en el caso de como ocultar la información de los votos hasta que
 # se termine
 
-# Información para registrar un usuario
 
-
+# Register user input data
 class UserReg(BaseModel):
     username: str
-    #age: Optional[int] = None
     email: EmailStr
     password: str
 
-# Información que provée el usuario en el Login
 
-
+# Login user input data
 class UserAuth(BaseModel):
     email: str
     password: str
 
 
+# Game list output data
 class UserGames(BaseModel):
     email: str
     games: List[int]
 
-# Este nombre es muy precario
 
-
+# Recover account input data
 class RecoverAccount(BaseModel):
     email: EmailStr
 
-# Información devuelta del usuario
 
-
+# User's public output data
 class UserPublic(BaseModel):
-    id: int  # creo que con jwt este atributo se vuelve irrelevante
-    # pero lo dejamos hasta que implementemos la autenticación
+    id: int
     username: str
     email: EmailStr
-    #password: str
-    # photo?
+
 
 # Enumerado de conjuros
 # Me parece que es un dato derivado, asi que quizás la api nunca lo utilice
 # pero creo que se le puede informar al front los hechizos a mostrar en el
 # board
-
-
 class Spell(str, Enum):
     divination = "Divination"
     avada = "Avada Kedavra"
     crucio = "Crucio"
     imperio = "Imperio"
 
-# Enumerado con los posibles roles
 
-
+# [ENUM class] Players' possible roles
 class Role(str, Enum):
     eater = "Death Eater"
     voldemort = "voldemort"
     phoenix = "Order of the Phoenix"
 
-# Información del voto de un jugador
 
-
+# Player's input vote
 class PlayerVote(BaseModel):
     vote: bool
 
-# Información del rol del jugador
 
-
+# Players' output role
 class PlayerRole(BaseModel):
     role: Role
 
-# Información pública para todos los jugadores
 
-
+# Player output pulic data
 class PlayerPublic(BaseModel):
     player_id: int
     vote: bool
     dead: bool
     username: str
 
-# Información sobre el hechizo a utilizar
 
-
+# Cast spell input data
 class CastSpell(BaseModel):
     spell_target: Optional[int]  # player_id
     spell: Spell  # no es necesario realmente (explicado arriba)
 
-#
 
-
+# Proposed director input data
 class ProposedDirector(BaseModel):
     player: int
 
-# Informacíon sobre la decición de proclamación
-# bajo las condiciones los jugadores pueden utilizar expelliarmus
-# en vez de resolver la sesion legislativa
 
-
+# Legislative session's input data
+#   * proclamation indicates the cards to proclaim
+#   * expelliarmus indicates an expelliarmus spell intent
 class LegislativeSession(BaseModel):
     proclamation: List[bool]
-    expelliarmus: bool  # ignorado al menos que se den las circunstancias
+    expelliarmus: bool  # ignored unless it's usable
 
 
-# Información necesaria para crear una partida
+# Create lobby input data
 class LobbyReg(BaseModel):
     name: str
     max_players: int
 
 
-# Información para comenzar la partida
-# se va a verificar que la sala contenga la cantidad correcta de jugadores
-# a la hora de mandar la señal de inicio de partida
+# Start lobby input data
 class LobbyStart(BaseModel):
-    current_players: int
-
-# Información pública del lobby
+    current_players: int  # redundant
 
 
+# Lobby's public output data
 class LobbyPublic(BaseModel):
     id: int
     name: str
@@ -156,25 +136,21 @@ class LobbyPublic(BaseModel):
     max_players: int
     # chat
 
-# Muestra el numero de las proclamaciones por equipo
 
-
+# Game's proclamations' status
 class Score(BaseModel):
     good: int
     bad: int
 
-# Información pública de la partida
-# Notese que game_id es compartido con Lobby
-# quizás no hace falta diferenciarlos
 
-
+# Game's public output data
 class GamePublic(BaseModel):
-    player_list: List[PlayerPublic]  # con el orden de los jugadores
+    player_list: List[PlayerPublic]  # players order
     minister: str
     director: str
     semaphore: int
     end: bool
     winners: bool
-    # al final del juego se muestran los roles de todos los jugadores
+    # players' role reaveal party at the end of the game
     roleReveal: Optional[List[Role]]
     score: Score

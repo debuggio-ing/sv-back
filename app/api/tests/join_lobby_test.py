@@ -1,10 +1,10 @@
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
-from app.main import svapi
+from app.test import test_svapi
 from app.database.crud import *
 
 
-client = TestClient(svapi)
+client = TestClient(test_svapi)
 
 # Try to join a valid lobby
 def test_join_valid_lobby():

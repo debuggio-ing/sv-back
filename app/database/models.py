@@ -4,6 +4,7 @@ from pony.orm import *
 
 db = Database()
 
+
 # Created when a new user is registered
 class User(db.Entity):
     id = PrimaryKey(int, auto=True)
@@ -13,8 +14,9 @@ class User(db.Entity):
     image = Optional('Image')
     players = Set('Player')
     email_verified = Required(bool, default=False, sql_default='1')
-    last_login = Required(datetime  , default=datetime.now)
+    last_login = Required(datetime, default=datetime.now)
     register_date = Required(datetime, default=datetime.now)
+
 
 # Created when the user uploads a profile image
 class Image(db.Entity):
@@ -40,6 +42,7 @@ class Player(db.Entity):
     composite_key(user, lobby)
 
 
+# Indicates the role of a(some) player(s) in a match
 class GRole(db.Entity):
     id = PrimaryKey(int, auto=True)
     players = Set('Player')
@@ -64,19 +67,21 @@ class Chat(db.Entity):
     text = Required(str)
     lobby = Required('Lobby')
 
-# currently voting information
+
+# Current voting information
 class CurrentVote(db.Entity):
     id = PrimaryKey(int, auto=True)
     vote = Required(bool)
-    voter_id = Required(int) #redundancia por ahora
+    voter_id = Required(int)  # redundancia por ahora
     game = Set('Game')
     player = Set('Player')
+
 
 # Last public vote result
 class PublicVote(db.Entity):
     id = PrimaryKey(int, auto=True)
     vote = Required(bool)
-    voter_id = Required(int) #redundancia por ahora
+    voter_id = Required(int)  # redundancia por ahora
     game = Set('Game')
     player = Set('Player')
 
@@ -87,10 +92,10 @@ class Game(db.Entity):
     semaphore = Required(int, min=0, max=3)
     lobby = Required('Lobby')
     cards = Set('Card')
-    voting = Required(bool) #are players currently voting?
+    voting = Required(bool)  # are players currently voting?
     numv = Required(int, default=0)
-    last_vote = Optional('PublicVote') #public voting information
-    curr_vote = Optional('CurrentVote') #if currently voting
+    last_vote = Optional('PublicVote')  # public voting information
+    curr_vote = Optional('CurrentVote')  # if currently voting
 
 
 # Created when a game is started

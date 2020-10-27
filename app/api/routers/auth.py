@@ -13,11 +13,11 @@ from app.api.hasher import *
 # dotenv file parsing requires python-dotenv to be installed
 
 
-#Enrutador de endpoints de autenticación
+# Authentication endpoints' router
 r = auth_router = APIRouter()
 
 
-# Modelo para la configuración del módulo AuthJWT
+# AuthJWT module's model settings
 class Settings(BaseSettings):
     authjwt_access_token_expires: timedelta
     authjwt_refresh_token_expires: timedelta
@@ -31,6 +31,7 @@ class Settings(BaseSettings):
         env_file_encoding = 'utf-8'
 
 
+# AuthJWT module's settings
 @AuthJWT.load_env
 def get_settings():
     return [
@@ -41,15 +42,14 @@ def get_settings():
         ("authjwt_algorithm", "HS256")
     ]
 
-# Autenticar el usuario y generar el token de autorización
+
+# Return <access_token, refresh_token> if authenticated
 @r.post("/login/")
 def authenticate_user(
         user_auth: UserAuth,
         Authorize: AuthJWT = Depends()) -> str:
-
     # Get all user's emails and passwords.
     tokens = {}
-
     # Crate an access token if it's a valid user.
     if check_password(user_auth.email, user_auth.password):
         tokens = {
@@ -58,10 +58,10 @@ def authenticate_user(
                 identity=user_auth.email)}
     else:
         raise HTTPException(status_code=401, detail='Bad email or password')
-
     return tokens
 
-# Endpoint donde se refresca el Refresh Token
+
+# Return <access_token> if authenticated
 @r.post("/refresh/", status_code=200)
 def refresh(Authorize: AuthJWT = Depends()):
     Authorize.jwt_refresh_token_required()

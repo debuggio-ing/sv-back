@@ -6,6 +6,7 @@ db.generate_mapping(create_tables=True)
 set_sql_debug(True)
 
 
+# Creates users in the database
 @db_session
 def create_users():
     u1 = User(mail='laumail', username='lau', password='123456', players=set())
@@ -23,6 +24,7 @@ def create_users():
     commit()
 
 
+# Adds image to the users previously created
 @db_session
 def create_img():
     i1 = Image(height=12, width=456, filename='notempty',
@@ -33,11 +35,13 @@ def create_img():
                user=User.select(lambda u: u.username == 'newton').get())
 
 
+# Generates lobbies with the users previously created
 @db_session
 def create_lobbies():
     l1 = Lobby(name="fisicos", max_players=5, creation_date=datetime.now())
 
 
+# Adds a player to the prevously created lobby
 @db_session
 def join_lobby():
     p1 = Player(
@@ -46,6 +50,7 @@ def join_lobby():
             lambda l: l.id == 1).get())
 
 
+# [DEBUG] Shows the users stored in the database
 @db_session
 def show_users():
     select(u for u in User).show()
