@@ -17,11 +17,17 @@ def insert_player(user_email: str, lobby_id: int) -> int:
     return player_id
 
 @db_session
-def get_player_vote_status():
-    return True
+def get_player_vote_status(pid: int) -> bool:
+
+    pl = Player.get(id=pid)
+    return pl.curr_vote is not None
+
 @db_session
-def get_player_last_vote():
-    return True
+def get_player_last_vote(pid: int) -> bool:
+    pl = Player.get(id=pid)
+    return pl.pub_vote.vote
+
+
 # Return the required player status.
 @db_session
 def get_player_public(pid: int) -> PlayerPublic:
@@ -29,15 +35,15 @@ def get_player_public(pid: int) -> PlayerPublic:
 
     pp = PlayerPublic(player_id=pid,
                     alive=player.alive,
-                    voted=get_player_vote_status(),
-                    last_vote=get_player_last_vote(),
+                    voted=get_player_vote_status(pid),
+                    last_vote=get_player_last_vote(pid),
                     username=player.user.username)
     return pp
 
 
 # Return the required player id.
 @db_session
-def get_player_id(user_email: str, game_id: int):
+def get_player_id(user_email: str, game_id: int) -> int:
     user = User.get(email=user_email)
     lobby = Lobby.get(id=game_id)
 

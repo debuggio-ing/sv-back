@@ -42,7 +42,7 @@ def test_get_game_list():
         "player_id": 2,
         "alive": True,
         "last_vote": True,
-        "voted": True,#False,
+        "voted": False,
         "username": "law"
       },
       {
@@ -63,7 +63,7 @@ def test_get_game_list():
         "player_id": 5,
         "alive": True,
         "last_vote": True,
-        "voted": True,#False,
+        "voted": False,
         "username": "nico"
       }
     ],
