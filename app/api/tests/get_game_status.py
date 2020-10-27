@@ -12,7 +12,7 @@ testc = TestClient(test_svapi)
 
 populate_test_db()
 
-def get_game_public():
+def test_get_game_public():
 
     login = testc.post(
         "api/login/",
@@ -24,11 +24,58 @@ def get_game_public():
 
     token = "Bearer " + login.json()["access_token"]
 
-    game = testc.get("/api/games/", headers={"Authorization": token})
+    game = testc.get("/api/games/1", headers={"Authorization": token})
 
-    assert game.json()["semaphore"] == 0
-    assert game.json()["minister"] == 1
-    assert game.json()["director"] == 2
-    assert game.json()["prev_minister"] == 3
-    assert game.json()["prev_director"] == 4
-    assert game.json()["player_list"][0]["player_id"] == 1
+
+    #Esto es super mejorable
+    assert game.json() == {
+      "player_list": [
+        {
+          "player_id": 1,
+          "alive": True,
+          "last_vote": True,
+          "voted": True,
+          "username": "maw"
+        },
+        {
+          "player_id": 2,
+          "alive": True,
+          "last_vote": True,
+          "voted": True,#False,
+          "username": "law"
+        },
+        {
+          "player_id": 3,
+          "alive": True,
+          "last_vote": True,
+          "voted": True,
+          "username": "lau"
+        },
+        {
+          "player_id": 4,
+          "alive": True,
+          "last_vote": True,
+          "voted": True,
+          "username": "ulince"
+        },
+        {
+          "player_id": 5,
+          "alive": True,
+          "last_vote": True,
+          "voted": True,#False,
+          "username": "nico"
+        }
+      ],
+      "minister": 1,
+      "prev_minister": 3,
+      "director": 2,
+      "prev_director": 4,
+      "semaphore": 0,
+      "score": {
+        "good": 0,
+        "bad": 0
+      },
+      "end": None,
+      "winners": None,
+      "roleReveal": None
+    }

@@ -16,7 +16,12 @@ def insert_player(user_email: str, lobby_id: int) -> int:
 
     return player_id
 
-
+@db_session
+def get_player_vote_status():
+    return True
+@db_session
+def get_player_last_vote():
+    return True
 # Return the required player status.
 @db_session
 def get_player_public(pid: int) -> PlayerPublic:
@@ -24,6 +29,8 @@ def get_player_public(pid: int) -> PlayerPublic:
 
     pp = PlayerPublic(player_id=pid,
                     alive=player.alive,
+                    voted=get_player_vote_status(),
+                    last_vote=get_player_last_vote(),
                     username=player.user.username)
     return pp
 
