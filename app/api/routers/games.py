@@ -23,8 +23,8 @@ def get_game_list(
     for gid in game_id_list:
         game = GamePublic(id=gid,
                         player_list=get_game_player_public_list(gid),
-                        minister=get_game_minister(gid),
-                        director=get_game_director(gid),
+                        minister=get_game_minister_id(gid),
+                        director=get_game_director_id(gid),
                         semaphore=get_game_semaphore(gid),
                         score=get_game_score(gid))
         games.append(game)

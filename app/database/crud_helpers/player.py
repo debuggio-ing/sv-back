@@ -23,7 +23,8 @@ def get_player_public(pid: int) -> PlayerPublic:
     player = Player.get(id=pid)
 
     pp = PlayerPublic(player_id=pid,
-                    dead=player.alive)
+                    alive=player.alive,
+                    username=player.user.username)
     return pp
 
 

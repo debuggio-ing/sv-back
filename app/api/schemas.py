@@ -93,7 +93,7 @@ class PlayerRole(BaseModel):
 # Player output pulic data
 class PlayerPublic(BaseModel):
     player_id: int
-    dead: bool
+    alive: bool
     username: str
 
 
