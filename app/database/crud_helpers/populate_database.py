@@ -1,12 +1,14 @@
 from app.database.models import *
 from app.api.schemas import *
 
+import random
 
 @db_session
 def populate_test_db():
     user1 = User(
         email="maw1@gmail.com",
         username="maw",
+        #password = password
         password="$5$rounds=535000$hN.xjQV17DkWk3zX$cDFQJeakbvfB6Fn.5mB/XnSS/xjrplJ./7rh.I33Ss.")
     user2 = User(
         email="law@gmail.com",
@@ -31,6 +33,14 @@ def populate_test_db():
 
     game1 = Game(lobby=lobby1, voting=True, semaphore=0, numv=3)
 
+    positions = list(range(17))
+    random.shuffle(positions)
+    card_pool = []
+    for i in range(17):
+        c = ProcCard(game=game1, discarded=False, position=positions[i], phoenix=(i < 6))
+        card_pool.append(c)
+    
+
     role_vol = GRole(voldemort=True, phoenix=False)
     role_dea = GRole(voldemort=False, phoenix=False)
     role_ord = GRole(voldemort=False, phoenix=True)
@@ -40,7 +50,7 @@ def populate_test_db():
         user=user1,
         lobby=lobby1,
         role=role_vol,
-        minister=False,
+        minister=True,
         director=False)
     p2 = Player(
         position=2,
@@ -48,13 +58,13 @@ def populate_test_db():
         lobby=lobby1,
         role=role_dea,
         minister=False,
-        director=False)
+        director=True)
     p3 = Player(
         position=3,
         user=user3,
         lobby=lobby1,
         role=role_ord,
-        minister=False,
+        prev_minister=True,
         director=False)
     p4 = Player(
         position=4,
@@ -62,7 +72,7 @@ def populate_test_db():
         lobby=lobby1,
         role=role_ord,
         minister=False,
-        director=False)
+        prev_director=True)
     p5 = Player(
         position=5,
         user=user5,
@@ -81,13 +91,3 @@ def populate_test_db():
     last_vote4 = PublicVote(game=game1, player=p4, vote=True, voter_id=4)
     last_vote4 = PublicVote(game=game1, player=p5, vote=True, voter_id=5)
 
-
-@db_session
-def delete_db():
-    delete(r for r in GRole)
-    delete(g for g in Game)
-    delete(l for l in Lobby)
-    delete(u for u in User)
-    delete(p for p in Player)
-    delete(v for v in PublicVote)
-    delete(v for v in CurrentVote)

@@ -18,7 +18,7 @@ svapi = FastAPI(
 )
 
 
-#bind_db(False)
+bind_db(False)
 
 # origins allowed by the API
 origins = [

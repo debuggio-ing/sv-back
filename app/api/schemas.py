@@ -93,8 +93,9 @@ class PlayerRole(BaseModel):
 # Player output pulic data
 class PlayerPublic(BaseModel):
     player_id: int
-    vote: bool
-    dead: bool
+    alive: bool
+    voted: bool #if the player already voted this round
+    last_vote: bool #last public vote
     username: str
 
 
@@ -137,7 +138,7 @@ class LobbyPublic(BaseModel):
     # chat
 
 
-# Game's proclamations' status
+# Game's proclamations' statusgo
 class Score(BaseModel):
     good: int
     bad: int
@@ -146,11 +147,14 @@ class Score(BaseModel):
 # Game's public output data
 class GamePublic(BaseModel):
     player_list: List[PlayerPublic]  # players order
-    minister: str
-    director: str
+    minister: int
+    prev_minister: int
+    director: int
+    prev_director: int
     semaphore: int
-    end: bool
-    winners: bool
+    score: Score
+    end: Optional[bool]
+    winners: Optional[bool]
     # players' role reaveal party at the end of the game
     roleReveal: Optional[List[Role]]
-    score: Score
+

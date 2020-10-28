@@ -18,15 +18,27 @@ def get_game_list(
     game_to: Optional[int] = None, Authorize: AuthJWT = Depends()
 ):
     Authorize.jwt_required()
-    return
+    game_id_list = get_all_games_ids(game_from, game_to)
+    games = []
+    for gid in game_id_list:
+        game = GamePublic(id=gid,
+                        player_list=get_game_player_public_list(gid),
+                        minister=get_game_minister_id(gid),
+                        prev_minister=get_game_prev_minister_id(gid),
+                        director=get_game_director_id(gid),
+                        prev_director=get_game_prev_director_id(gid),
+                        semaphore=get_game_semaphore(gid),
+                        score=get_game_score(gid))
+        games.append(game)
+
+    return games
 
 
 # View public data about a specified game
 @r.get("/games/{game_id}/", response_model=GamePublic)
 def get_game(game_id: int, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
-
-    return
+    return get_game_public_info(game_id)
 
 
 # Player vote in game

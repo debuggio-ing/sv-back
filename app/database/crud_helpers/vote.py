@@ -60,7 +60,8 @@ def update_public_vote(game_id: int):
     votes = (select((v.vote, v.voter_id) for v in CurrentVote))[:]
 
     for v in votes:
-        pv = PublicVote(game=game, vote=v[0], voter_id=v[1])
+        player = Player.get(id=v[1])
+        pv = PublicVote(game=game, vote=v[0], voter_id=v[1], player=player)
 
     lobby.game.voting = False
     commit()
