@@ -119,5 +119,6 @@ def start_game(
     set_lobby_started(lobby_id)
 
     game_id = insert_game(lobby_id)
+    game = get_game_public_info(game_id)
 
     return StartConfirmation(started=(game_id != -1))
