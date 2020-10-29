@@ -1,16 +1,17 @@
 from app.database.models import *
 from app.api.schemas import *
 
+
 # Checks if the game has a vote ocurring
 @db_session
 def currently_voting(game_id: int):
     lobby = Lobby.get(id=game_id)
     return lobby.game.voting
 
+
 # Checks if the vote about to cast is the last vote
 @db_session
 def is_last_vote(player_id: int, game_id: int):
-
     lobby = Lobby.get(id=game_id)
     game = lobby.game
     player = Player.get(id=player_id)
@@ -24,6 +25,7 @@ def is_last_vote(player_id: int, game_id: int):
 
     return current_votes == max_players
 
+
 # Casts the last players' vote
 @db_session
 def set_last_player_vote(player_id: int, game_id: int, vote: bool):
@@ -32,6 +34,7 @@ def set_last_player_vote(player_id: int, game_id: int, vote: bool):
     clean_current_vote(game_id)
 
     commit()
+
 
 # Cast a player's vote
 @db_session
@@ -49,6 +52,7 @@ def set_player_vote(player_id: int, game_id: int, vote: bool):
 
     commit()
 
+
 # Updates the result of the election and set the voting fase to False
 @db_session
 def update_public_vote(game_id: int):
@@ -65,6 +69,7 @@ def update_public_vote(game_id: int):
 
     lobby.game.voting = False
     commit()
+
 
 # Deletes every entry in the current vote
 @db_session

@@ -16,16 +16,22 @@ def insert_player(user_email: str, lobby_id: int) -> int:
 
     return player_id
 
+
 @db_session
 def get_player_vote_status(pid: int) -> bool:
-
     pl = Player.get(id=pid)
     return pl.curr_vote is not None
 
+
 @db_session
 def get_player_last_vote(pid: int) -> bool:
-    pl = Player.get(id=pid)
-    return pl.pub_vote.vote
+    player = Player.get(id=pid)
+
+    vote = False
+    if player is not None and player.pub_vote is not None:
+        vote = player.pub_vote.vote
+
+    return vote
 
 
 # Return the required player status.
@@ -34,10 +40,10 @@ def get_player_public(pid: int) -> PlayerPublic:
     player = Player.get(id=pid)
 
     pp = PlayerPublic(player_id=pid,
-                    alive=player.alive,
-                    voted=get_player_vote_status(pid),
-                    last_vote=get_player_last_vote(pid),
-                    username=player.user.username)
+                      alive=player.alive,
+                      voted=get_player_vote_status(pid),
+                      last_vote=get_player_last_vote(pid),
+                      username=player.user.username)
     return pp
 
 
@@ -56,3 +62,54 @@ def get_player_id(user_email: str, game_id: int) -> int:
         pid = player.id
 
     return pid
+
+
+# Set player role as voldemort
+@db_session
+def set_voldemort(player_id: int):
+    player = Player.get(id=player_id)
+
+    if player is not None:
+        role = GRole(voldemort=True, phoenix=False)
+        player.role = role
+
+    commit()
+
+
+# Set players roles as death eaters
+@db_session
+def set_death_eaters(players: List[int]):
+    role = GRole(voldemort=False, phoenix=False)
+
+    for player_id in players:
+        player = Player.get(id=player_id)
+
+        if player is not None:
+            player.role = role
+
+    commit()
+
+
+# Set players roles as phoenixes
+@db_session
+def set_phoenixes(players: List[int]):
+    role = GRole(voldemort=False, phoenix=True)
+
+    for player_id in players:
+        player = Player.get(id=player_id)
+
+        if player is not None:
+            player.role = role
+
+    commit()
+
+
+# Set player as minister of magic
+@db_session
+def set_minister_of_magic(player_id: int):
+    player = Player.get(id=player_id)
+
+    if player is not None:
+        player.minister = True
+
+    commit()
