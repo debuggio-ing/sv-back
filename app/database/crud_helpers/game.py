@@ -3,6 +3,29 @@ from app.api.schemas import *
 from app.database.crud_helpers.player import *
 from typing import List
 
+
+# Create game in the database.
+@db_sesion
+def insert_game(lobby_id: int) -> int:
+    lobby = Lobby.get(id=lobby_id)
+
+    cards = list((i,i<6) for i in range(17))
+    random.shuffle(cards)
+
+    game_id = -1
+    if lobby is not None:
+        game = Game(semaphore=0, lobby=lobby, voting=False)
+
+        for cards in cards:
+            ProcCard(position=card[0], phoenix=card[1], game=game)
+
+        commit()
+        game_id = game.id
+
+    return game_id
+
+
+# Return the required game status.
 @db_session
 def get_game_public_info(gid):
     return GamePublic(id=gid,
@@ -13,6 +36,7 @@ def get_game_public_info(gid):
             prev_director=get_game_prev_director_id(gid),
             semaphore=get_game_semaphore(gid),
             score=get_game_score(gid))
+
 
 @db_session
 def get_all_games_ids(game_from: int, game_to: int) -> List[int]:

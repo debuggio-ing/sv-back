@@ -95,4 +95,12 @@ def start_game(
         current_players: LobbyStart,
         Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
-    return 1
+
+    users_in_lobby = get_lobby_player_list(lobby_id)
+    # if len(users_in_lobby) < 5:
+        # raise HTTPException(status_code=412,
+                            # detail="Not enough users in the lobby.")
+
+    game_id = insert_game(lobby_id)
+
+    return game_id

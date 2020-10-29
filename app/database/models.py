@@ -91,11 +91,11 @@ class PublicVote(db.Entity):
 # Created when a game is started
 class Game(db.Entity):
     id = PrimaryKey(int, auto=True)
-    semaphore = Required(int, min=0, max=3)
+    semaphore = Required(int, min=0, max=3, default=0)
     lobby = Required('Lobby')
     cards = Set('ProcCard')
     voting = Required(bool)  # are players currently voting?
-    numv = Required(int, default=0)
+    num_votes = Required(int, default=0)
     last_vote = Optional('PublicVote')  # public voting information
     curr_vote = Optional('CurrentVote')  # if currently voting
 
