@@ -31,7 +31,7 @@ def populate_test_db():
     lobby2 = Lobby(name="larga vida harry", max_players=5)
     lobby3 = Lobby(name="tom laura riddle", max_players=5)
 
-    game1 = Game(lobby=lobby1, voting=True, semaphore=0, numv=3)
+    game1 = Game(lobby=lobby1, voting=True, semaphore=0, num_votes=3)
 
     positions = list(range(17))
     random.shuffle(positions)

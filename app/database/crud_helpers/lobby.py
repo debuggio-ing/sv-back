@@ -21,6 +21,15 @@ def get_lobby_player_list(lobby_id: int):
     return players
 
 
+# Get all player's id who are in lobby_id lobby.
+@db_session
+def get_lobby_players_id(lobby_id: int):
+    players = list(select(
+        p.id for p in Player if lobby_id == p.lobby.id))
+
+    return players
+
+
 # Get lobby_id lobby's name.
 @db_session
 def get_lobby_name(lobby_id: int):
