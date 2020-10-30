@@ -37,7 +37,14 @@ def get_lobby_list(
 @r.get("/lobbies/{lobby_id}/", response_model=LobbyPublic)
 def get_lobby(lobby_id: int, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
-    return
+    if lobby_exists(lobby_id):
+        lobby = LobbyPublic(id=lobby_id, name=get_lobby_name(lobby_id),
+                            current_players=get_lobby_player_list(lobby_id),
+                            max_players=get_lobby_max_players(lobby_id))
+    else:
+        raise HTTPException(
+            status_code=204, detail='No content')
+    return lobby
 
 
 # Create new lobby.
