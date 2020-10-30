@@ -61,3 +61,9 @@ def get_all_lobbies_ids(lobby_from: Optional[int], lobby_to: Optional[int]):
                               l.id >= lobby_from and l.id <= lobby_to))
 
     return lobbies_ids
+
+
+# Check if lobby id==lid exists 
+@db_session
+def lobby_exists(lid):
+    return Lobby.get(id=lid) is not None
