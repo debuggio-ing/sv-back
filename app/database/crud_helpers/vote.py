@@ -78,7 +78,7 @@ def process_vote_result(gid: int):
     game = Lobby.get(id=gid).game
     max_players = Lobby.get(id=gid).max_players
     
-    result = len(select(v for v in PublicVote if v.game.id == game_id and v.vote == True))
+    result = len(select(v for v in PublicVote if v.game.id == gid and v.vote == True))
     if result < math.ceil((max_players+1)/2):
         set_next_minister_candidate(gid)
     else:
@@ -87,15 +87,25 @@ def process_vote_result(gid: int):
 
 @db_session
 def set_next_minister_candidate(gid: int):
-    game = Lobby.get(id=gid).game
-    
+    lobby = Lobby.get(id=gid)
+    #me deberia fijar q no sea none dsp
+    ex_minister = Player.get(lobby=lobby, minister=True)
+    ex_minister.minister = False
+
+    #tmb deberia chequear por errores
+    new_minister = Player.get(lobby=lobby, position=lobby.game.list_head)
+    new_minister.minister = True
+
+    #actualizar la cabeza de la lista
+    lobby.game.list_head = (lobby.game.list_head+1)%lobby.max_players
+
 # Deletes every entry in the current vote
 @db_session
 def clean_current_vote(game_id: int):
 
     lob = Lobby.get(id=game_id)
 
-    delete(v for v in CurrentVote)
+    delete(v for v in CurrentVote if v.game.id == game_id)
 
     lob.game.num_votes = 0
 
