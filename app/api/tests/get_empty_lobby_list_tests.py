@@ -1,11 +1,11 @@
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
-from app.main import svapi
+from app.test import test_svapi
 from app.database.crud import *
 
 # It's necessary to remove database before running the tests.
 
-lobby = TestClient(svapi)
+lobby = TestClient(test_svapi)
 
 # Setup database
 user1 = UserReg(

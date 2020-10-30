@@ -28,9 +28,14 @@ def insert_game(lobby_id: int) -> int:
 
         player_ids = get_lobby_players_id(lobby.id)
 
+        #Set player order
         for i, pid in enumerate(player_ids):
             player = Player.get(id=pid)
             player.position = player_order[i]
+
+        #Set first player of the list
+        game.list_head = random.randint(0, MAX_PLAYERS)
+
         # create proclamation cards.
         for card in cards:
             ProcCard(position=card[0], phoenix=card[1], game=game)

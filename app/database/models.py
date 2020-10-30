@@ -92,6 +92,7 @@ class PublicVote(db.Entity):
 class Game(db.Entity):
     id = PrimaryKey(int, auto=True)
     semaphore = Required(int, min=0, max=3, default=0)
+    list_head = Required(int, default=0)
     lobby = Required('Lobby')
     cards = Set('ProcCard')
     voting = Required(bool, default=False)  # are players currently voting?
