@@ -1,6 +1,7 @@
 from app.database.models import *
 from app.api.schemas import *
 
+import math
 
 # Checks if the game has a vote ocurring
 @db_session
@@ -31,6 +32,7 @@ def is_last_vote(player_id: int, game_id: int):
 def set_last_player_vote(player_id: int, game_id: int, vote: bool):
     set_player_vote(player_id, game_id, vote)
     update_public_vote(game_id)
+    process_vote_result(game_id)
     clean_current_vote(game_id)
 
     commit()
@@ -59,18 +61,34 @@ def update_public_vote(game_id: int):
     lobby = Lobby.get(id=game_id)
     game = lobby.game
 
-    delete(v for v in PublicVote)
+    delete(v for v in PublicVote if v.game.id == game_id)
 
-    votes = (select((v.vote, v.voter_id) for v in CurrentVote))[:]
+    votes = (select((v.vote, v.voter_id) for v in CurrentVote if v.game.id == game_id))[:]
 
     for v in votes:
         player = Player.get(id=v[1])
         pv = PublicVote(game=game, vote=v[0], voter_id=v[1], player=player)
 
-    lobby.game.voting = False
     commit()
 
+#
+@db_session
+def process_vote_result(gid: int):
 
+    game = Lobby.get(id=gid).game
+    max_players = Lobby.get(id=gid).max_players
+    
+    result = len(select(v for v in PublicVote if v.game.id == game_id and v.vote == True))
+    if result < math.ceil((max_players+1)/2):
+        set_next_minister_candidate(gid)
+    else:
+        game.voting = False
+
+
+@db_session
+def set_next_minister_candidate(gid: int):
+    game = Lobby.get(id=gid).game
+    
 # Deletes every entry in the current vote
 @db_session
 def clean_current_vote(game_id: int):
