@@ -43,11 +43,27 @@ def test_start_game():
     start_json = start.json()
     player_list = start_json['player_list']
 
+    num_voldemort = num_phoenixes = num_death_eaters = 0
+
+    for player in player_list:
+        (v, p) = get_player_id_role(player['player_id'])
+
+        if v:
+            num_voldemort += 1
+
+        if p:
+           num_phoenixes += 1
+        else:
+            num_death_eaters += 1
+
     assert start.status_code == 200
     assert start_json['director'] == -1
     assert start_json['minister'] == player_list[0]['player_id']
     assert start_json['end'] == None
     assert len(player_list) == NUM_OF_PLAYERS
+    assert num_phoenixes == 3
+    assert num_death_eaters == 2
+    assert num_voldemort == 1
     assert start_json['prev_director'] == -1
     assert start_json['prev_minister'] == -1
     assert start_json['roleReveal'] == None

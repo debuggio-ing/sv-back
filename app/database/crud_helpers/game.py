@@ -9,17 +9,17 @@ import random
 # Create game in the database.
 @db_session
 def insert_game(lobby_id: int) -> int:
-    NUMBER_OF_DEATH_EATERS = 2
-    NUMBER_OF_PHOENIX_CARDS = 6
+    NUM_DEATH_EATERS = 2
+    NUM_PHOENIX_CARDS = 6
 
     lobby = Lobby.get(id=lobby_id)
 
-    cards = list((i, i < NUMBER_OF_PHOENIX_CARDS) for i in range(17))
+    cards = list((i, i < NUM_PHOENIX_CARDS) for i in range(17))
     random.shuffle(cards)
 
     game_id = -1
     if lobby is not None:
-        game = Game(semaphore=0, lobby=lobby, voting=False)
+        game = Game(lobby=lobby)
 
         # create proclamation cards.
         for card in cards:
@@ -27,16 +27,14 @@ def insert_game(lobby_id: int) -> int:
 
         players = get_lobby_players_id(lobby.id)
 
-        # choose who will be voldemort and death eaters.
-        voldemort = random.randint(0, len(players) - 1)
-        death_eaters = random.sample(
-            range(len(players)), NUMBER_OF_DEATH_EATERS)
+        # choose who will be and death eaters.
+        death_eaters = random.sample(range(len(players)), NUM_DEATH_EATERS)
 
         # set roles.
-        set_voldemort(players[voldemort])
-        set_death_eaters(list(players[i] for i in death_eaters))
-        set_phoenixes([p for p in list(range(len(players)))
-                       if p not in death_eaters])
+        set_phoenixes([players[i]
+                       for i in range(len(players)) if i not in death_eaters])
+        set_death_eaters(list(players[i] for i in death_eaters[1:]))
+        set_voldemort(players[death_eaters[0]])
 
         # set first minister of magic.
         set_minister_of_magic(players[0])

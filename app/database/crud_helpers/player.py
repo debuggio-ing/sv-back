@@ -72,8 +72,7 @@ def set_voldemort(player_id: int):
     if player is not None:
         role = GRole(voldemort=True, phoenix=False)
         player.role = role
-
-    commit()
+        commit()
 
 
 # Set players roles as death eaters
@@ -113,3 +112,16 @@ def set_minister_of_magic(player_id: int):
         player.minister = True
 
     commit()
+
+
+# Return player_id player role.
+@db_session
+def get_player_id_role(player_id: int) -> (bool, bool):
+    player = Player.get(id=player_id)
+
+    voldemort = phoenix = False
+    if player is not None and player.role is not None:
+        voldemort = player.role.voldemort
+        phoenix = player.role.phoenix
+
+    return (voldemort, phoenix)

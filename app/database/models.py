@@ -94,7 +94,7 @@ class Game(db.Entity):
     semaphore = Required(int, min=0, max=3, default=0)
     lobby = Required('Lobby')
     cards = Set('ProcCard')
-    voting = Required(bool)  # are players currently voting?
+    voting = Required(bool, default=False)  # are players currently voting?
     num_votes = Required(int, default=0)
     last_vote = Optional('PublicVote')  # public voting information
     curr_vote = Optional('CurrentVote')  # if currently voting
