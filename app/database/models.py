@@ -95,6 +95,8 @@ class Game(db.Entity):
     list_head = Required(int, default=0)
     lobby = Required('Lobby')
     cards = Set('ProcCard')
+    in_session = Required(bool, default=False) #currently in legislative session
+    gov_elected = Required(bool, default=False) #if not, then there's a need for election
     voting = Required(bool, default=False)  # are players currently voting?
     num_votes = Required(int, default=0)
     last_vote = Optional('PublicVote')  # public voting information

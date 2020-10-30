@@ -51,15 +51,20 @@ def player_vote(game_id: int, vote: PlayerVote, Authorize: AuthJWT = Depends()):
     if user_email == None:
         raise HTTPException(status_code=409, detail='Corrupted JWT')
 
+    # get the id of the user in the game (the player_id)
+    player_id = get_player_id(user_email, game_id)
+    if player_id == -1:
+        raise HTTPException(status_code=401, detail='User not in game or game id incorrect')
+
+
     # check if there's a vote ocurring in the game
     if not currently_voting(game_id):
         raise HTTPException(
             status_code=403, detail='There isn\'t a vote ocurring')
 
-    # get the id of the user in the game (the player_id)
-    player_id = get_player_id(user_email, game_id)
-    if player_id == -1:
-        raise HTTPException(status_code=401, detail='User not in game')
+    # Check if player is Alive
+    # TO-DO
+
 
     # cast vote
     if is_last_vote(player_id, game_id):
@@ -107,4 +112,25 @@ def director_candidate(
         candidate: ProposedDirector,
         Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
+
+    # get user's email
+    user_email = Authorize.get_jwt_identity()
+    if user_email == None:
+        raise HTTPException(status_code=409, detail='Corrupted JWT')
+
+    #Esta en el juego?
+    pid = get_player_id(user_email, game_id)
+    if pid == -1:
+        raise HTTPException(status_code=401, detail='User not in game or game id incorrect')
+
+    #Es el ministro?
+    if not get_game_minister_id(game_id) == pid:
+        raise HTTPException(status_code=409, detail='You are not the minister!')
+
+    #Es hora de elegir gobierno?
+    if not goverment_proposal_needed(game_id):
+        raise HTTPException(status_code=409, detail='No es momento de proponer director')
+
+    propose_goverment(game_id, candidate.player)
+
     return

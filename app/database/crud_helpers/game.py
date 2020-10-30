@@ -78,7 +78,7 @@ def get_all_games_ids(game_from: int, game_to: int) -> List[int]:
 
 
 @db_session
-def get_game_player_public_list(gid) -> List[PlayerPublic]:
+def get_game_player_public_list(gid: int) -> List[PlayerPublic]:
     pid_list = list(select(
         p.id for p in Player if gid == p.lobby.id))
 
@@ -88,7 +88,7 @@ def get_game_player_public_list(gid) -> List[PlayerPublic]:
 
 
 @db_session
-def get_game_minister_id(gid) -> int:
+def get_game_minister_id(gid: int) -> int:
     minister = Player.get(lobby=gid, minister=True)
 
     minister_id = -1
@@ -99,7 +99,7 @@ def get_game_minister_id(gid) -> int:
 
 
 @db_session
-def get_game_director_id(gid) -> int:
+def get_game_director_id(gid: int) -> int:
     director = Player.get(lobby=gid, director=True)
 
     director_id = -1
@@ -110,7 +110,7 @@ def get_game_director_id(gid) -> int:
 
 
 @db_session
-def get_game_prev_minister_id(gid) -> int:
+def get_game_prev_minister_id(gid: int) -> int:
     prev_minister = Player.get(lobby=gid, prev_minister=True)
 
     prev_minister_id = -1
@@ -121,7 +121,7 @@ def get_game_prev_minister_id(gid) -> int:
 
 
 @db_session
-def get_game_prev_director_id(gid) -> int:
+def get_game_prev_director_id(gid: int) -> int:
     prev_director = Player.get(lobby=gid, prev_director=True)
 
     prev_director_id = -1
@@ -132,7 +132,7 @@ def get_game_prev_director_id(gid) -> int:
 
 
 @db_session
-def get_game_semaphore(gid) -> int:
+def get_game_semaphore(gid: int) -> int:
     lobby = Lobby.get(id=gid)
 
     sem = -1
@@ -143,7 +143,7 @@ def get_game_semaphore(gid) -> int:
 
 
 @db_session
-def get_game_score(gid) -> Score:
+def get_game_score(gid: int) -> Score:
     lobby = Lobby.get(id=gid)
     card_pool = select(c for c in lobby.game.cards)
 
@@ -155,3 +155,17 @@ def get_game_score(gid) -> Score:
             c for c in card_pool if c.proclaimed and c.phoenix))
 
     return Score(good=good_score, bad=bad_score)
+
+
+@db_session
+def goverment_proposal_needed(gid: int) -> bool:
+    game = Lobby.get(id=gid).game    
+    return not game.voting and not game.in_session and not game.gov_elected
+
+@db_session
+def propose_goverment(gid: int, dir_id: int):
+    lobby = Lobby.get(id=gid)
+
+    player = Player.get(id=dir_id)
+    player.director = True
+    lobby.game.voting = True
