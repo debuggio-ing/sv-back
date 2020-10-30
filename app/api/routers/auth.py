@@ -9,9 +9,6 @@ from app.database.models import *
 from app.database.crud import *
 from app.api.hasher import *
 
-# IMPORTANTE RECORDAR ESTO
-# dotenv file parsing requires python-dotenv to be installed
-
 
 # Authentication endpoints' router
 r = auth_router = APIRouter()

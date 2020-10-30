@@ -24,18 +24,23 @@ def create_user(new_user: UserReg) -> int:
     return id
 
 
-# Return user_id user information.
-@r.get("/users/{user_id}/", response_model=UserPublic)
-def get_user(user_id: int, Authorize: AuthJWT = Depends()):
+# Return user information.
+@r.get("/users/info/", response_model=UserPublic)
+def get_user(Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
     return
 
 
-# Return all lobies that user_id user is in.
-@r.get("/users/{user_id}/games", response_model=UserGames)
-def get_user_games(user_id: int, Authorize: AuthJWT = Depends()):
+# Return all lobies that user with jwt is in.
+@r.get("/users/games/", response_model=UserGames)
+def get_user_active_games(Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
-    return
+
+    user_email = Authorize.get_jwt_identity()
+
+    games = get_active_games(user_email)
+
+    return UserGames(email=user_email, games=games)
 
 
 # Send email to recover account.
