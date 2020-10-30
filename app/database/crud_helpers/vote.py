@@ -17,7 +17,7 @@ def is_last_vote(player_id: int, game_id: int):
     player = Player.get(id=player_id)
     max_players = lobby.max_players
 
-    current_votes = lobby.game.numv
+    current_votes = lobby.game.num_votes
     already_vote = CurrentVote.get(voter_id=player_id)
 
     if already_vote is None:
@@ -46,7 +46,7 @@ def set_player_vote(player_id: int, game_id: int, vote: bool):
     if player.curr_vote is None:
         player.curr_vote = CurrentVote(
             game=game, player=player, vote=vote, voter_id=player_id)
-        lobby.game.numv += 1
+        lobby.game.num_votes += 1
     else:
         player.curr_vote.vote = vote
 
@@ -79,6 +79,6 @@ def clean_current_vote(game_id: int):
 
     delete(v for v in CurrentVote)
 
-    lob.game.numv = 0
+    lob.game.num_votes = 0
 
     commit()

@@ -14,6 +14,11 @@ def insert_game(lobby_id: int) -> int:
 
     lobby = Lobby.get(id=lobby_id)
 
+    MAX_PLAYERS = lobby.max_players 
+
+    player_order = [i for i in range(MAX_PLAYERS)]
+    random.shuffle(player_order)
+
     cards = list((i, i < NUM_PHOENIX_CARDS) for i in range(17))
     random.shuffle(cards)
 
@@ -21,23 +26,27 @@ def insert_game(lobby_id: int) -> int:
     if lobby is not None:
         game = Game(lobby=lobby)
 
+        player_ids = get_lobby_players_id(lobby.id)
+
+        for i, pid in enumerate(player_ids):
+            player = Player.get(id=pid)
+            player.position = player_order[i]
         # create proclamation cards.
         for card in cards:
             ProcCard(position=card[0], phoenix=card[1], game=game)
 
-        players = get_lobby_players_id(lobby.id)
 
         # choose who will be and death eaters.
-        death_eaters = random.sample(range(len(players)), NUM_DEATH_EATERS)
+        death_eaters = random.sample(range(len(player_ids)), NUM_DEATH_EATERS)
 
         # set roles.
-        set_phoenixes([players[i]
-                       for i in range(len(players)) if i not in death_eaters])
-        set_death_eaters(list(players[i] for i in death_eaters[1:]))
-        set_voldemort(players[death_eaters[0]])
+        set_phoenixes([player_ids[i]
+                       for i in range(len(player_ids)) if i not in death_eaters])
+        set_death_eaters(list(player_ids[i] for i in death_eaters[1:]))
+        set_voldemort(player_ids[death_eaters[0]])
 
         # set first minister of magic.
-        set_minister_of_magic(players[0])
+        set_minister_of_magic(player_ids[0])
 
         commit()
         game_id = game.id
@@ -112,7 +121,7 @@ def get_game_prev_director_id(gid) -> int:
 
     prev_director_id = -1
     if prev_director is not None:
-        prev_director_id = prev_director_id.id
+        prev_director_id = prev_director.id
 
     return prev_director_id
 
