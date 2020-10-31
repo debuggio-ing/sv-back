@@ -40,7 +40,9 @@ def test_start_game():
     start = testc.post("api/lobbies/" + str(lobby_id) + "/start/",
         headers={"Authorization": tokens[0]})
 
-    start_json = start.json()
+    game_state = testc.get("api/games/" + str(lobby_id) , headers={"Authorization": tokens[0]})
+
+    start_json = game_state.json()
     player_list = start_json['player_list']
 
     num_voldemort = num_phoenixes = num_death_eaters = 0
