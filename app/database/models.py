@@ -60,6 +60,7 @@ class Lobby(db.Entity):
     creation_date = Required(datetime, default=datetime.now)
     player = Set('Player')
     game = Optional('Game')
+    started = Required(bool, default=False)
     chat = Optional('Chat')
 
 
@@ -70,13 +71,14 @@ class Chat(db.Entity):
     lobby = Required('Lobby')
 
 
+
 # Current voting information
 class CurrentVote(db.Entity):
     id = PrimaryKey(int, auto=True)
     vote = Required(bool)
     voter_id = Required(int)  # redundancia por ahora
-    game = Set('Game')
-    player = Set('Player')
+    game = Optional('Game')
+    player = Optional('Player')
 
 
 # Last public vote result
@@ -84,21 +86,23 @@ class PublicVote(db.Entity):
     id = PrimaryKey(int, auto=True)
     vote = Required(bool)
     voter_id = Required(int)  # redundancia por ahora
-    game = Set('Game')
-    player = Set('Player')
+    game = Optional('Game')
+    player = Optional('Player')
 
 
 # Created when a game is started
 class Game(db.Entity):
     id = PrimaryKey(int, auto=True)
     semaphore = Required(int, min=0, max=3, default=0)
+    list_head = Required(int, default=0)
     lobby = Required('Lobby')
     cards = Set('ProcCard')
+    in_session = Required(bool, default=False) #currently in legislative session
+    minister_proclaimed = Required(bool, default=False) #did the minister pass the proc cards?
     voting = Required(bool, default=False)  # are players currently voting?
     num_votes = Required(int, default=0)
     last_vote = Optional('PublicVote')  # public voting information
     curr_vote = Optional('CurrentVote')  # if currently voting
-
 
 # Created when a game is started
 class ProcCard(db.Entity):

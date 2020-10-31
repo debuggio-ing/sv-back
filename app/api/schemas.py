@@ -135,6 +135,7 @@ class LobbyPublic(BaseModel):
     name: str
     current_players: List[str]  # list of usernames
     max_players: int
+    started: bool
     # chat
 
 
@@ -147,6 +148,9 @@ class Score(BaseModel):
 # Game's public output data
 class GamePublic(BaseModel):
     player_list: List[PlayerPublic]  # players order
+    voting: bool
+    in_session: bool #currently in legislative session
+    minister_proclaimed: bool #did the minister pass the proc cards?
     minister: int
     prev_minister: int
     director: int

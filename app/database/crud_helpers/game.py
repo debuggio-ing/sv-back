@@ -64,7 +64,11 @@ def get_game_public_info(gid):
                       director=get_game_director_id(gid),
                       prev_director=get_game_prev_director_id(gid),
                       semaphore=get_game_semaphore(gid),
-                      score=get_game_score(gid))
+                      score=get_game_score(gid),
+                      voting=get_game_voting(gid),
+                      in_session=get_game_in_session(gid),
+                      minister_proclaimed=get_game_minister_proclaimed(gid)
+                      )
 
 
 @db_session
@@ -136,6 +140,37 @@ def get_game_semaphore(gid) -> int:
 
     return sem
 
+@db_session
+def get_game_voting(gid) -> bool:
+    game = Lobby.get(id=gid).game
+
+    ans = -1
+    if game is not None:
+        ans = game.voting
+
+    return ans
+
+
+@db_session
+def get_game_in_session(gid) -> bool:
+    game = Lobby.get(id=gid).game
+
+    ans = -1
+    if game is not None:
+        ans = game.in_session
+
+    return ans
+
+
+@db_session
+def get_game_minister_proclaimed(gid) -> bool:
+    game = Lobby.get(id=gid).game
+
+    ans = -1
+    if game is not None:
+        ans = game.minister_proclaimed
+
+    return ans
 
 @db_session
 def get_game_score(gid) -> Score:

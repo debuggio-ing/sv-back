@@ -40,7 +40,8 @@ def test_create_lobby():
         'id': response.json()['id'],
         'current_players': [user.username],
         'max_players': lobby_mp,
-        'name': lobby_name}
+        'name': lobby_name,
+        "started": False}
 
 # Try to crate a lobby not being logged in.
 
