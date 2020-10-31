@@ -71,6 +71,7 @@ def get_game_public_info(gid):
                       )
 
 
+
 @db_session
 def get_all_games_ids(game_from: int, game_to: int) -> List[int]:
     return list(select(g.id for g in Game))
