@@ -70,7 +70,8 @@ def test_get_lobby():
         "id": lobby1_id,
         "name": join.json()["name"],
         "current_players": join.json()["current_players"],
-        "max_players": join.json()["max_players"]
+        "max_players": join.json()["max_players"],
+                               "started":join.json()["started"]
     }
 
 

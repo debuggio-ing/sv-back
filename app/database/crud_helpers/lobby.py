@@ -53,6 +53,24 @@ def get_lobby_max_players(lobby_id: int):
 
     return max_players
 
+# Get lobby_id lobby's started attribute.
+@db_session
+def get_lobby_started(lobby_id: int) -> bool:
+    lobby = Lobby.get(id=lobby_id)
+
+    started = 0
+    if lobby is not None:
+        started = lobby.started
+
+    return started
+
+@db_session
+def set_lobby_started(lobby_id: int):
+    lobby = Lobby.get(id=lobby_id)
+
+    if lobby is not None:
+        lobby.started = True
+
 
 # Get all lobbies ids.
 @db_session

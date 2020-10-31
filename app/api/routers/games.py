@@ -21,14 +21,7 @@ def get_game_list(
     game_id_list = get_all_games_ids(game_from, game_to)
     games = []
     for gid in game_id_list:
-        game = GamePublic(id=gid,
-                        player_list=get_game_player_public_list(gid),
-                        minister=get_game_minister_id(gid),
-                        prev_minister=get_game_prev_minister_id(gid),
-                        director=get_game_director_id(gid),
-                        prev_director=get_game_prev_director_id(gid),
-                        semaphore=get_game_semaphore(gid),
-                        score=get_game_score(gid))
+        game = get_game_public_info(gid)
         games.append(game)
 
     return games
@@ -51,15 +44,18 @@ def player_vote(game_id: int, vote: PlayerVote, Authorize: AuthJWT = Depends()):
     if user_email == None:
         raise HTTPException(status_code=409, detail='Corrupted JWT')
 
-    # check if there's a vote ocurring in the game
-    if not currently_voting(game_id):
-        raise HTTPException(
-            status_code=403, detail='There isn\'t a vote ocurring')
 
     # get the id of the user in the game (the player_id)
     player_id = get_player_id(user_email, game_id)
     if player_id == -1:
         raise HTTPException(status_code=401, detail='User not in game')
+
+    # check if there's a vote ocurring in the game
+    if not currently_voting(game_id):
+        raise HTTPException(
+            status_code=403, detail='There isn\'t a vote ocurring')
+
+
 
     # cast vote
     if is_last_vote(player_id, game_id):

@@ -27,7 +27,8 @@ def get_lobby_list(
     for lid in required_lobbies:
         lobby = LobbyPublic(id=lid, name=get_lobby_name(lid),
                             current_players=get_lobby_player_list(lid),
-                            max_players=get_lobby_max_players(lid))
+                            max_players=get_lobby_max_players(lid),
+                            started=get_lobby_started(lid))
         lobbies.append(lobby)
 
     return lobbies
@@ -40,7 +41,8 @@ def get_lobby(lobby_id: int, Authorize: AuthJWT = Depends()):
     if lobby_exists(lobby_id):
         lobby = LobbyPublic(id=lobby_id, name=get_lobby_name(lobby_id),
                             current_players=get_lobby_player_list(lobby_id),
-                            max_players=get_lobby_max_players(lobby_id))
+                            max_players=get_lobby_max_players(lobby_id),
+                            started=get_lobby_started(lobby_id))
     else:
         raise HTTPException(
             status_code=204, detail='No content')
@@ -64,7 +66,8 @@ def create_lobby(new_lobby: LobbyReg, Authorize: AuthJWT = Depends()):
         id=lobby_id,
         name=new_lobby.name,
         current_players=current_players,
-        max_players=new_lobby.max_players)
+        max_players=new_lobby.max_players,
+        started=get_lobby_started(lobby_id))
 
     return lobby
 
@@ -90,7 +93,8 @@ def join_game(lobby_id: int, Authorize: AuthJWT = Depends()):
         id=lobby_id,
         name=lobby_name,
         current_players=current_players,
-        max_players=lobby_max_players)
+        max_players=lobby_max_players,
+        started=get_lobby_started(lobby_id))
 
     return lobby
 
@@ -112,6 +116,7 @@ def start_game(
     if len(users_in_lobby) < 5:
         raise HTTPException(status_code=412,
                             detail="Not enough users in the lobby.")
+    set_lobby_started(lobby_id)
 
     game_id = insert_game(lobby_id)
 

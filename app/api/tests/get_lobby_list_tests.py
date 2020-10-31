@@ -76,11 +76,13 @@ def test_get_lobby_list():
     assert get_all.json() == [{"id": lobby1_id,
                                "name": join.json()["name"],
                                "current_players":join.json()["current_players"],
-                               "max_players":join.json()["max_players"]},
+                               "max_players":join.json()["max_players"],
+                               "started":join.json()["started"]},
                               {"id": create2.json()["id"],
                                "name":create2.json()["name"],
                                "current_players":create2.json()["current_players"],
-                               "max_players":create2.json()["max_players"]}]
+                               "max_players":create2.json()["max_players"],
+                               "started":join.json()["started"]}]
 
 # Try to get all lobbies not being logged in.
 def test_get_lobbies_not_logged_in():
@@ -100,7 +102,8 @@ def test_lobby_from():
     assert get_all.json() == [{"id": create2.json()["id"],
                                "name":create2.json()["name"],
                                "current_players":create2.json()["current_players"],
-                               "max_players":create2.json()["max_players"]}]
+                               "max_players":create2.json()["max_players"],
+                               "started":join.json()["started"]}]
 
 # Test lobby_to argument.
 def test_lobby_to():
@@ -113,4 +116,5 @@ def test_lobby_to():
     assert get_all.json() == [{"id": lobby1_id,
                                "name": join.json()["name"],
                                "current_players":join.json()["current_players"],
-                               "max_players":join.json()["max_players"]},]
+                               "max_players":join.json()["max_players"],
+                               "started":join.json()["started"]}]
