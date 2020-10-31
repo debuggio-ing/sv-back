@@ -35,35 +35,41 @@ def test_get_game_public():
           "alive": True,
           "last_vote": True,
           "voted": True,
-          "username": "maw"
+          "username": "maw",
+          "position": 1
         },
         {
           "player_id": 2,
           "alive": True,
           "last_vote": True,
           "voted": False,
-          "username": "law"
+          "username": "law",
+          "position": 2
         },
         {
           "player_id": 3,
           "alive": True,
           "last_vote": True,
           "voted": True,
-          "username": "lau"
+          "username": "lau",
+          
+          "position": 3
         },
         {
           "player_id": 4,
           "alive": True,
           "last_vote": True,
           "voted": True,
-          "username": "ulince"
+          "username": "ulince",
+          "position": 4
         },
         {
           "player_id": 5,
           "alive": True,
           "last_vote": True,
           "voted": False,
-          "username": "nico"
+          "username": "nico",
+          "position": 5
         }
       ],    "voting": True,
     "in_session": False,

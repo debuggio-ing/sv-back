@@ -81,6 +81,7 @@ def process_vote_result(gid: int):
     result = len(select(v for v in PublicVote if v.game.id == gid and v.vote == True))
     if result < math.ceil((max_players+1)/2):
         set_next_minister_candidate(gid)
+        game.semaphore +=1
     else:
         game.voting = False
 

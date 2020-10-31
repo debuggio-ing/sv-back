@@ -99,6 +99,7 @@ class PlayerPublic(BaseModel):
     alive: bool
     voted: bool #if the player already voted this round
     last_vote: bool #last public vote
+    position: int
     username: str
 
 

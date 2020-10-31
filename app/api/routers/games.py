@@ -96,10 +96,10 @@ def proc_election(
 
 
 # Nominate director in specified game
-@r.post("/games/{game_id}/director/")
+@r.post("/games/{game_id}/director/{candidate_id}")
 def director_candidate(
         game_id: int,
-        candidate: ProposedDirector,
+        candidate_id: int,
         Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
 
@@ -121,6 +121,6 @@ def director_candidate(
     if not goverment_proposal_needed(game_id):
         raise HTTPException(status_code=409, detail='No es momento de proponer director')
 
-    propose_goverment(game_id, candidate.player)
+    propose_goverment(game_id, candidate_id)
 
     return

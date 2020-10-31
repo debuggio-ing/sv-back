@@ -7,7 +7,6 @@ from app.database.crud import *
 testc = TestClient(test_svapi)
 
 
-<<<<<<< HEAD
 NUM_OF_PLAYERS = 5
 
 tokens = []
@@ -30,30 +29,6 @@ create_lobby = testc.post("/api/lobbies/new/",
 lobby_id = create_lobby.json()["id"]
 
 def test_start_game():
-=======
-def test_start_game():
-    NUM_OF_PLAYERS = 5
-
-    tokens = []
-    for x in range(NUM_OF_PLAYERS):
-        user = UserReg(username="user" + str(x), email=str(x)+'@gmail.com',
-            password='testPassword')
-        if user.email not in get_emails():
-            register_user(user)
-        
-        login = testc.post("api/login/",
-            headers={"Content-Type": "application/json"},
-            json={"email": user.email, "password": user.password})
-
-        token = "Bearer " + login.json()["access_token"]
-        tokens.append(token)
-
-    create_lobby = testc.post("/api/lobbies/new/",
-        headers={"Authorization": tokens[0]},
-        json={"name": "lobby_test", "max_players": 7})
-    lobby_id = create_lobby.json()["id"]
-
->>>>>>> 32ab4efacab8727ded0627c640aa442a5168f1d2
     for x in range(1, len(tokens)):
         join = testc.post(
             "/api/lobbies/" +
@@ -65,13 +40,9 @@ def test_start_game():
     start = testc.post("api/lobbies/" + str(lobby_id) + "/start/",
         headers={"Authorization": tokens[0]})
 
-<<<<<<< HEAD
     game_state = testc.get("api/games/" + str(lobby_id) , headers={"Authorization": tokens[0]})
 
     start_json = game_state.json()
-=======
-    start_json = start.json()
->>>>>>> 32ab4efacab8727ded0627c640aa442a5168f1d2
     player_list = start_json['player_list']
 
     num_voldemort = num_phoenixes = num_death_eaters = 0
@@ -89,7 +60,7 @@ def test_start_game():
 
     assert start.status_code == 200
     assert start_json['director'] == -1
-    assert start_json['minister'] == player_list[0]['player_id']
+    assert start_json['minister'] == player_list[2]['player_id']
     assert start_json['end'] == None
     assert len(player_list) == NUM_OF_PLAYERS
     assert num_phoenixes == 3

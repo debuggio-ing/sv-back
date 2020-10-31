@@ -34,7 +34,7 @@ def insert_game(lobby_id: int) -> int:
             player.position = player_order[i]
 
         #Set first player of the list
-        game.list_head = random.randint(0, MAX_PLAYERS)
+        game.list_head = 2 #yo considero que el 2 es random
 
         # create proclamation cards.
         for card in cards:
@@ -51,7 +51,7 @@ def insert_game(lobby_id: int) -> int:
         set_voldemort(player_ids[death_eaters[0]])
 
         # set first minister of magic.
-        set_minister_of_magic(player_ids[game.list_head])
+        set_minister_of_magic(player_ids[2])
         game.list_head = ((game.list_head+1)%MAX_PLAYERS)
 
         commit()
@@ -197,7 +197,7 @@ def get_game_score(gid: int) -> Score:
 @db_session
 def goverment_proposal_needed(gid: int) -> bool:
     game = Lobby.get(id=gid).game    
-    return not game.voting and not game.in_session and not game.gov_elected
+    return not game.voting and not game.in_session
 
 @db_session
 def propose_goverment(gid: int, dir_id: int):
