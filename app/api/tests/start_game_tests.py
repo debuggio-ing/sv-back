@@ -7,28 +7,28 @@ from app.database.crud import *
 testc = TestClient(test_svapi)
 
 
+NUM_OF_PLAYERS = 5
+
+tokens = []
+for x in range(NUM_OF_PLAYERS):
+    user = UserReg(username="user" + str(x), email=str(x)+'@gmail.com',
+        password='testPassword')
+    if user.email not in get_emails():
+        register_user(user)
+    
+    login = testc.post("api/login/",
+        headers={"Content-Type": "application/json"},
+        json={"email": user.email, "password": user.password})
+
+    token = "Bearer " + login.json()["access_token"]
+    tokens.append(token)
+
+create_lobby = testc.post("/api/lobbies/new/",
+    headers={"Authorization": tokens[0]},
+    json={"name": "lobby_test", "max_players": 7})
+lobby_id = create_lobby.json()["id"]
+
 def test_start_game():
-    NUM_OF_PLAYERS = 5
-
-    tokens = []
-    for x in range(NUM_OF_PLAYERS):
-        user = UserReg(username="user" + str(x), email=str(x)+'@gmail.com',
-            password='testPassword')
-        if user.email not in get_emails():
-            register_user(user)
-        
-        login = testc.post("api/login/",
-            headers={"Content-Type": "application/json"},
-            json={"email": user.email, "password": user.password})
-
-        token = "Bearer " + login.json()["access_token"]
-        tokens.append(token)
-
-    create_lobby = testc.post("/api/lobbies/new/",
-        headers={"Authorization": tokens[0]},
-        json={"name": "lobby_test", "max_players": 7})
-    lobby_id = create_lobby.json()["id"]
-
     for x in range(1, len(tokens)):
         join = testc.post(
             "/api/lobbies/" +
@@ -72,6 +72,7 @@ def test_start_game():
     assert start_json['winners'] == None
 
 
+# start game with less than 5 players
 def test_start_game_with_not_enough_players():
     # Setup database
     user1 = UserReg(username='user1', email='1@gmail.com',
@@ -95,3 +96,12 @@ def test_start_game_with_not_enough_players():
 
     assert start.status_code == 412
     assert start.json() == {'detail': 'Not enough users in the lobby.'}
+
+
+# Try to start game twice.
+def test_start_game_twice():
+    start = testc.post("api/lobbies/" + str(lobby_id) + "/start/",
+        headers={"Authorization": tokens[0]})
+
+    assert start.status_code == 409
+    assert start.json() == {'detail': 'Game has already started.'}
