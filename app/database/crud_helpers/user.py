@@ -52,6 +52,8 @@ def get_active_games(user_email: str):
 
     games = []
     if user is not None:
-        games = list(select(g.id for g in Game if user in g.lobby.player.user and g.lobby.active == True))
+        games = list(
+            select(g.id for g in Game
+                   if user in g.lobby.player.user and g.lobby.active))
 
     return games
