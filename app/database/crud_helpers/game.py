@@ -51,7 +51,8 @@ def insert_game(lobby_id: int) -> int:
         set_voldemort(player_ids[death_eaters[0]])
 
         # set first minister of magic.
-        set_minister_of_magic(player_ids[0])
+        set_minister_of_magic(player_ids[game.list_head])
+        game.list_head = ((game.list_head+1)%MAX_PLAYERS)
 
         commit()
         game_id = game.id
