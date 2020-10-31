@@ -61,6 +61,9 @@ class UserPublic(BaseModel):
     username: str
     email: EmailStr
 
+# Confirmation if the game started
+class StartConfirmation(BaseModel):
+    started: bool
 
 # Enumerado de conjuros
 # Me parece que es un dato derivado, asi que quizás la api nunca lo utilice

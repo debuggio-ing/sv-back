@@ -96,7 +96,8 @@ def join_game(lobby_id: int, Authorize: AuthJWT = Depends()):
 
 
 # Start lobby_id lobby.
-@r.post("/lobbies/{lobby_id}/start/")
+@r.post("/lobbies/{lobby_id}/start/", 
+                response_model=StartConfirmation)
 def start_game(
         lobby_id: int,
         # current_players: LobbyStart,
@@ -109,6 +110,5 @@ def start_game(
                             detail="Not enough users in the lobby.")
 
     game_id = insert_game(lobby_id)
-    game = get_game_public_info(game_id)
 
-    return game
+    return StartConfirmation(started=(game_id != -1))
