@@ -56,7 +56,6 @@ def player_vote(game_id: int, vote: PlayerVote, Authorize: AuthJWT = Depends()):
             status_code=403, detail='There isn\'t a vote ocurring')
 
 
-
     # cast vote
     if is_last_vote(player_id, game_id):
         set_last_player_vote(player_id, game_id, vote.vote)
