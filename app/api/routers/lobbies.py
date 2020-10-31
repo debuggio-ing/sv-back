@@ -104,6 +104,10 @@ def start_game(
         Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
 
+    if is_lobby_started(lobby_id):
+        raise HTTPException(status_code=409,
+                            detail="Game has already started.")
+
     users_in_lobby = get_lobby_player_list(lobby_id)
     if len(users_in_lobby) < 5:
         raise HTTPException(status_code=412,

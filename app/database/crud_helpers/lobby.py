@@ -76,3 +76,14 @@ def get_all_lobbies_ids(lobby_from: Optional[int], lobby_to: Optional[int]):
 @db_session
 def lobby_exists(lid):
     return Lobby.get(id=lid) is not None
+
+# Check if lobby has started.
+@db_session
+def is_lobby_started(lobby_id: int) -> bool:
+    lobby = Lobby.get(id=lobby_id)  
+
+    started = False
+    if lobby is not None and lobby.game is not None:
+        started = True
+
+    return started

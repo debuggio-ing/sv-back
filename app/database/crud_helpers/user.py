@@ -43,3 +43,17 @@ def get_users_for_login():
 def get_emails():
     emails = list(select(u.email for u in User))
     return emails
+
+
+# Get all user_id user active games.
+@db_session
+def get_active_games(user_email: str):
+    user = User.get(email=user_email)
+
+    games = []
+    if user is not None:
+        games = list(
+            select(g.id for g in Game
+                   if user in g.lobby.player.user and g.lobby.active))
+
+    return games

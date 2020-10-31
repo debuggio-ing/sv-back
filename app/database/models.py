@@ -58,6 +58,7 @@ class Lobby(db.Entity):
     name = Required(str)
     max_players = Required(int)
     creation_date = Required(datetime, default=datetime.now)
+    active = Required(bool, default=True) # set to false if game has finished.
     player = Set('Player')
     game = Optional('Game')
     chat = Optional('Chat')
