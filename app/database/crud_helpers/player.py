@@ -139,3 +139,10 @@ def is_director(player_id: int) -> bool:
 def director_chooses_proc(game_id):
     game = Game.get(id=game_id)
     return game.in_session and game.minister_proclaimed
+
+
+# Discharge director
+@db_session
+def discharge_director(player_id):
+    Player.get(id=player_id).director = False
+    commit()
