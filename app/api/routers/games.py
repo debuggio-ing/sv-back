@@ -77,22 +77,80 @@ def cast_spell(game_id: int, spell: CastSpell, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
     return
 
-
-# Return minister's proclamation cards
-@r.get("/games/{game_id}/proc/", response_model=LegislativeSession)
-def get_minister_proc(game_id: int, Authorize: AuthJWT = Depends()):
+# Return to the director the cards selected by the minister
+@r.get("/games/{game_id}/dir/proc/")
+def get_director_proc(game_id: int, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
-    return
+    # get user's email
+    user_email = Authorize._get_jwt_identity()
+    if user_email == None:
+        raise HTTPException(status_code=409, detail='Corrupted JWT')
+
+    # get the id of the user in the game
+    player_id = get_player_id(user_email, game_id)
+    if player_id == -1:
+        raise HTTPException(status_code=401, detail='User not in game')
+
+    # check if it's time for a director to choose
+    if not director_chooses_proc(game_id):
+        raise HTTPException(status_code=401, detail='It\'s not time to choose')
+
+    # check if the player is the director
+    if not is_director(player_id):
+        raise HTTPException(status_code=401, detail='Player isn\'nt director')
+
+    # get the cards selected by the minister
+    selected_cards = get_selected_cards(game_id)
+    cards = []
+    for card in selected_cards:
+        cards.append(CardToProclaim(card.id, card.phoenix))
+    return cards
 
 
-# Select cards to proclaim in the specified game
-@r.post("/games/{game_id}/proc/")
+# Director chooses the cards to proclaim
+# At this point expelliarmus is not implemented
+# Returns True if game continues or False if game is over
+@r.post("/games/{game_id}/dir/proc/", response_model=bool)
 def proc_election(
         game_id: int,
         election: LegislativeSession,
         Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
-    return
+    
+
+    # get user's email
+    user_email = Authorize._get_jwt_identity()
+    if user_email == None:
+        raise HTTPException(status_code=409, detail='Corrupted JWT')
+
+    # get the id of the user in the game
+    player_id = get_player_id(user_email, game_id)
+    if player_id == -1:
+        raise HTTPException(status_code=401, detail='User not in game')
+
+    # check if it's time for a director to choose
+    if not director_chooses_proc(game_id):
+        raise HTTPException(status_code=401, detail='It\'s not time to choose')
+
+    # check if the player is the director
+    if not is_director(player_id):
+        raise HTTPException(status_code=401, detail='Player isn\'nt director')
+
+    # check if the received proclamation is valid
+    proclamation_count = sum(map(lambda t: t[1], election.proclamation))
+    if proclamation_count != 1 or len(election.proclamation) != 2:
+        raise HTTPException(
+            status_code=401, detail='Invalid selection of cards')
+
+    # proclaim card if it's not proclaimed
+    if proclaim_card(election.proclamation, game_id) == False:
+        raise HTTPException(
+            status_code=401, detail='Invalid selection of cards')
+
+    # check if game is over
+    score = get_game_score(game_id)
+    return score.good == 5 or score.bad == 6
+
 
 
 # Nominate director in specified game

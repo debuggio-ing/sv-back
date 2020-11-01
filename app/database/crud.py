@@ -6,6 +6,7 @@ from app.database.crud_helpers.game import *
 from app.database.crud_helpers.player import *
 from app.database.crud_helpers.user import *
 from app.database.crud_helpers.lobby import *
+from app.database.crud_helpers.card import *
 from app.database.crud_helpers.populate_database import *
 
 
