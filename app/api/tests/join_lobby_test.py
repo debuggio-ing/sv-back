@@ -66,7 +66,8 @@ def test_join_valid_lobby():
         'id': lobby_id,
         'max_players': max_players,
         'name': lobby_name,
-        "started": False}
+        'started': False,
+        'is_owner': False}
 
 # Try to join twice with the same user.
 def test_join_lobby_twice():
