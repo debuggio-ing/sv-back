@@ -38,6 +38,18 @@ def get_users_for_login():
     return users
 
 
+# Get user_email user id.
+@db_session
+def get_user_id(user_email: str) -> int:
+    user = User.get(email=user_email)
+
+    user_id = -1
+    if user is not None:
+        user_id = user.id
+
+    return user_id
+
+
 # Get all emails from the database.
 @db_session
 def get_emails():
@@ -45,7 +57,7 @@ def get_emails():
     return emails
 
 
-# Get all user_id user active games.
+# Get all user_email user active games.
 @db_session
 def get_active_games(user_email: str):
     user = User.get(email=user_email)

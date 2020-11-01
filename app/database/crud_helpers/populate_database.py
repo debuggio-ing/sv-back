@@ -1,5 +1,6 @@
 from app.database.models import *
 from app.api.schemas import *
+from app.database.crud_helpers.user import *
 
 import random
 
@@ -27,9 +28,11 @@ def populate_test_db():
         username="nico",
         password="$5$rounds=535000$hN.xjQV17DkWk3zX$cDFQJeakbvfB6Fn.5mB/XnSS/xjrplJ./7rh.I33Ss.")
 
-    lobby1 = Lobby(name="mortifagos 4ever", max_players=5)
-    lobby2 = Lobby(name="larga vida harry", max_players=5)
-    lobby3 = Lobby(name="tom laura riddle", max_players=5)
+    user_id = 1 # cant use get_user_id(user1.email) because is not stored on the db.
+
+    lobby1 = Lobby(name="mortifagos 4ever", max_players=5, owner_id=user_id)
+    lobby2 = Lobby(name="larga vida harry", max_players=5, owner_id=user_id)
+    lobby3 = Lobby(name="tom laura riddle", max_players=5, owner_id=user_id)
 
     game1 = Game(lobby=lobby1, voting=True, semaphore=0, num_votes=3, list_head=2)
     game2 = Game(lobby=lobby2, voting=False, in_session=False, semaphore=0, num_votes=3, list_head=2)

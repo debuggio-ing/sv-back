@@ -41,11 +41,11 @@ def test_create_lobby():
         'current_players': [user.username],
         'max_players': lobby_mp,
         'name': lobby_name,
-        "started": False}
+        'started': False,
+        'is_owner': True}
+
 
 # Try to crate a lobby not being logged in.
-
-
 def test_create_lobby_unlogged():
     response = lobby.post(
         "/api/lobbies/new/",

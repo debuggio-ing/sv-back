@@ -154,6 +154,8 @@ class LobbyPublic(BaseModel):
     current_players: List[str]  # list of usernames
     max_players: int
     started: bool
+    # is_owner is true if player who sends the request is lobby's owner.
+    is_owner: bool
     # chat
 
 

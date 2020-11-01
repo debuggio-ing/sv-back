@@ -22,13 +22,16 @@ def get_lobby_list(
 ):
     Authorize.jwt_required()
 
+    user_email = Authorize.get_jwt_identity()
+
     required_lobbies = get_all_lobbies_ids(lobby_from, lobby_to)
     lobbies = []
     for lid in required_lobbies:
         lobby = LobbyPublic(id=lid, name=get_lobby_name(lid),
                             current_players=get_lobby_player_list(lid),
                             max_players=get_lobby_max_players(lid),
-                            started=get_lobby_started(lid))
+                            started=get_lobby_started(lid),
+                            is_owner=get_lobby_is_owner(lid, user_email))
         lobbies.append(lobby)
 
     return lobbies
@@ -38,11 +41,15 @@ def get_lobby_list(
 @r.get("/lobbies/{lobby_id}/", response_model=LobbyPublic)
 def get_lobby(lobby_id: int, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
+
+    user_email = Authorize.get_jwt_identity()
+
     if lobby_exists(lobby_id):
         lobby = LobbyPublic(id=lobby_id, name=get_lobby_name(lobby_id),
                             current_players=get_lobby_player_list(lobby_id),
                             max_players=get_lobby_max_players(lobby_id),
-                            started=get_lobby_started(lobby_id))
+                            started=get_lobby_started(lobby_id),
+                            is_owner=get_lobby_is_owner(lobby_id, user_email))
     else:
         raise HTTPException(
             status_code=204, detail='No content')
@@ -58,16 +65,17 @@ def create_lobby(new_lobby: LobbyReg, Authorize: AuthJWT = Depends()):
 
     user_email = Authorize.get_jwt_identity()
 
-    lobby_id = insert_lobby(new_lobby)
+    lobby_id = insert_lobby(lobby=new_lobby, user_email=user_email)
     insert_player(user_email=user_email, lobby_id=lobby_id)
 
-    current_players = get_lobby_player_list(lobby_id)
+    current_players = get_lobby_player_list(lobby_id=lobby_id)
     lobby = LobbyPublic(
         id=lobby_id,
         name=new_lobby.name,
         current_players=current_players,
         max_players=new_lobby.max_players,
-        started=get_lobby_started(lobby_id))
+        started=get_lobby_started(lobby_id),
+        is_owner=get_lobby_is_owner(lobby_id, user_email))
 
     return lobby
 
@@ -80,11 +88,7 @@ def join_game(lobby_id: int, Authorize: AuthJWT = Depends()):
 
     # Get information from jwt_token.
     user_email = Authorize.get_jwt_identity()
-    player_id = insert_player(user_email=user_email, lobby_id=lobby_id)
-
-    # If player is already in lobby return exception.
-    if player_id == -1:
-        raise HTTPException(status_code=409, detail="User already in lobby.")
+    insert_player(user_email=user_email, lobby_id=lobby_id)
 
     current_players = get_lobby_player_list(lobby_id)
     lobby_name = get_lobby_name(lobby_id)
@@ -94,7 +98,8 @@ def join_game(lobby_id: int, Authorize: AuthJWT = Depends()):
         name=lobby_name,
         current_players=current_players,
         max_players=lobby_max_players,
-        started=get_lobby_started(lobby_id))
+        started=get_lobby_started(lobby_id),
+        is_owner=get_lobby_is_owner(lobby_id, user_email))
 
     return lobby
 
@@ -102,11 +107,16 @@ def join_game(lobby_id: int, Authorize: AuthJWT = Depends()):
 # Start lobby_id lobby.
 @r.post("/lobbies/{lobby_id}/start/", 
                 response_model=StartConfirmation)
-def start_game(
-        lobby_id: int,
+def start_game(lobby_id: int,
         # current_players: LobbyStart,
         Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
+
+    user_email = Authorize.get_jwt_identity()
+
+    if not get_lobby_is_owner(lobby_id=lobby_id, user_email=user_email):
+        raise HTTPException(status_code=409,
+                            detail="User is not game's owner.")
 
     if is_lobby_started(lobby_id):
         raise HTTPException(status_code=409,

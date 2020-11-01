@@ -77,12 +77,15 @@ def test_get_lobby_list():
                                "name": join.json()["name"],
                                "current_players":join.json()["current_players"],
                                "max_players":join.json()["max_players"],
-                               "started":join.json()["started"]},
+                               "started":join.json()["started"],
+                               "is_owner":True},
                               {"id": create2.json()["id"],
                                "name":create2.json()["name"],
                                "current_players":create2.json()["current_players"],
                                "max_players":create2.json()["max_players"],
-                               "started":join.json()["started"]}]
+                               "started":create2.json()["started"],
+                               "is_owner":True}]
+
 
 # Try to get all lobbies not being logged in.
 def test_get_lobbies_not_logged_in():
@@ -90,6 +93,7 @@ def test_get_lobbies_not_logged_in():
 
     assert get_all.status_code == 401
     assert get_all.json() == {'detail': 'Missing Authorization Header'}
+
 
 # Test lobby_from argument.
 def test_lobby_from():
@@ -103,7 +107,8 @@ def test_lobby_from():
                                "name":create2.json()["name"],
                                "current_players":create2.json()["current_players"],
                                "max_players":create2.json()["max_players"],
-                               "started":join.json()["started"]}]
+                               "started":create2.json()["started"],
+                               "is_owner":create2.json()["is_owner"]}]
 
 # Test lobby_to argument.
 def test_lobby_to():
@@ -117,4 +122,5 @@ def test_lobby_to():
                                "name": join.json()["name"],
                                "current_players":join.json()["current_players"],
                                "max_players":join.json()["max_players"],
-                               "started":join.json()["started"]}]
+                               "started":join.json()["started"],
+                               "is_owner":True}]
