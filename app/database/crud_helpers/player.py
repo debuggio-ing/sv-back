@@ -43,7 +43,8 @@ def get_player_public(pid: int) -> PlayerPublic:
                       alive=player.alive,
                       voted=get_player_vote_status(pid),
                       last_vote=get_player_last_vote(pid),
-                      username=player.user.username)
+                      username=player.user.username,
+                      position=player.position)
     return pp
 
 

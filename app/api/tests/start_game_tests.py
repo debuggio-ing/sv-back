@@ -60,7 +60,7 @@ def test_start_game():
 
     assert start.status_code == 200
     assert start_json['director'] == -1
-    assert start_json['minister'] == player_list[0]['player_id']
+    assert start_json['minister'] == player_list[2]['player_id']
     assert start_json['end'] == None
     assert len(player_list) == NUM_OF_PLAYERS
     assert num_phoenixes == 3
