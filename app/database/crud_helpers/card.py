@@ -5,7 +5,7 @@ from app.api.schemas import *
 # Return selected cards in a game
 @db_session
 def get_selected_cards(game_id):
-    return ProcCard.get(game == game_id and selected == True)
+    return list(ProcCard.select(lambda c: c.game.id == game_id and c.selected == True))
 
 
 # Proclaim card, return false if it couldn't be proclaimed
@@ -19,7 +19,7 @@ def proclaim_card(proclamation: [(int, bool)], game_id: int):
 
     # update cards' status in database
     for (card_pos, proclaim) in proclamation:
-        card = ProcCard.get(position == card_pos)
+        card = ProcCard.get(position = card_pos)
         card.selected = False
         if proclaim:
             card.proclaimed = True

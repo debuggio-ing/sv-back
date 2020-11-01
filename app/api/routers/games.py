@@ -82,7 +82,7 @@ def cast_spell(game_id: int, spell: CastSpell, Authorize: AuthJWT = Depends()):
 def get_director_proc(game_id: int, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
     # get user's email
-    user_email = Authorize._get_jwt_identity()
+    user_email = Authorize.get_jwt_identity()
     if user_email == None:
         raise HTTPException(status_code=409, detail='Corrupted JWT')
 
@@ -103,7 +103,8 @@ def get_director_proc(game_id: int, Authorize: AuthJWT = Depends()):
     selected_cards = get_selected_cards(game_id)
     cards = []
     for card in selected_cards:
-        cards.append(CardToProclaim(card.id, card.phoenix))
+        cards.append(CardToProclaim(card_pos = card.position, phoenix = card.phoenix))
+
     return cards
 
 
