@@ -19,6 +19,7 @@ def set_db_for_procl():
     user_id = 1 # cant use get_user_id(user1.email) because is not stored on the db.
 
     lobby1 = Lobby(name="mortifagos 4ever", max_players=5, owner_id=user_id)
+
     # Set the game so that the director can get and post the cards to proclaim
     game1 = Game(lobby=lobby1, voting=False, semaphore=0,
                  in_session=True, minister_proclaimed=True)
