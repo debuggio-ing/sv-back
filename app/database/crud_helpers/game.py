@@ -193,12 +193,10 @@ def get_game_minister_proclaimed(gid) -> bool:
 def get_game_score(gid: int) -> Score:
     lobby = Lobby.get(id=gid)
 
-
     bad_score = 0
     good_score = 0
     if lobby is not None and lobby.game is not None:
         card_pool = select(c for c in lobby.game.cards)
-        print(gid, lobby, lobby.game, card_pool)
 
         bad_score = len(
             select(
