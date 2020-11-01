@@ -83,7 +83,8 @@ def process_vote_result(gid: int):
         set_next_minister_candidate(gid)
         game.semaphore +=1
     else:
-        game.voting = False
+        game.in_session = True
+    game.voting = False
 
 
 @db_session
