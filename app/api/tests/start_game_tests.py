@@ -28,6 +28,7 @@ create_lobby = testc.post("/api/lobbies/new/",
     json={"name": "lobby_test", "max_players": 7})
 lobby_id = create_lobby.json()["id"]
 
+# Start a valid game.
 def test_start_game():
     for x in range(1, len(tokens)):
         join = testc.post(
@@ -72,6 +73,27 @@ def test_start_game():
     assert start_json['score'] == {'bad':0, 'good':0}
     assert start_json['semaphore'] == 0
     assert start_json['winners'] == None
+
+# Some user that's not the owner of the game starts the game.
+def test_start_game_by_other_user():
+    create_lobby2 = testc.post("/api/lobbies/new/",
+        headers={"Authorization": tokens[0]},
+        json={"name": "lobby_test", "max_players": 7})
+    lobby2_id = create_lobby2.json()["id"]
+
+    for x in range(1, len(tokens)):
+        join = testc.post(
+            "/api/lobbies/" +
+            str(lobby2_id) +
+            "/join/",
+            headers={
+                "Authorization": tokens[x]})
+
+    start2 = testc.post("api/lobbies/" + str(lobby2_id) + "/start/",
+        headers={"Authorization": tokens[1]})
+
+    assert start2.status_code == 409
+    assert start2.json() == {'detail': "User is not game's owner."}
 
 
 # start game with less than 5 players

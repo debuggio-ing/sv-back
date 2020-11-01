@@ -111,11 +111,16 @@ def join_game(lobby_id: int, Authorize: AuthJWT = Depends()):
 # Start lobby_id lobby.
 @r.post("/lobbies/{lobby_id}/start/", 
                 response_model=StartConfirmation)
-def start_game(
-        lobby_id: int,
+def start_game(lobby_id: int,
         # current_players: LobbyStart,
         Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
+
+    user_email = Authorize.get_jwt_identity()
+
+    if not get_lobby_is_owner(lobby_id=lobby_id, user_email=user_email):
+        raise HTTPException(status_code=409,
+                            detail="User is not game's owner.")
 
     if is_lobby_started(lobby_id):
         raise HTTPException(status_code=409,
