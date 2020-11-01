@@ -11,6 +11,9 @@ import random
 def insert_game(lobby_id: int) -> int:
     NUM_DEATH_EATERS = 2
     NUM_PHOENIX_CARDS = 6
+    PROC_CARD_NUMBER = 17
+    #This number is hidden and therefore its random
+    ULTRA_RANDOM_NUMBER = 2
 
     lobby = Lobby.get(id=lobby_id)
 
@@ -19,7 +22,7 @@ def insert_game(lobby_id: int) -> int:
     player_order = [i for i in range(MAX_PLAYERS)]
     random.shuffle(player_order)
 
-    cards = list((i, i < NUM_PHOENIX_CARDS) for i in range(17))
+    cards = list((i, i < NUM_PHOENIX_CARDS) for i in range(PROC_CARD_NUMBER))
     random.shuffle(cards)
 
     game_id = -1
@@ -34,7 +37,7 @@ def insert_game(lobby_id: int) -> int:
             player.position = player_order[i]
 
         #Set first player of the list
-        game.list_head = 2 #yo considero que el 2 es random
+        game.list_head = ULTRA_RANDOM_NUMBER 
 
         # create proclamation cards.
         for card in cards:
