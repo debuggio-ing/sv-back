@@ -129,6 +129,7 @@ def get_game_prev_minister_id(gid: int) -> int:
     return prev_minister_id
 
 
+# Get previous director's player_id
 @db_session
 def get_game_prev_director_id(gid: int) -> int:
     prev_director = Player.get(lobby=gid, prev_director=True)
@@ -140,6 +141,7 @@ def get_game_prev_director_id(gid: int) -> int:
     return prev_director_id
 
 
+# Get game's semaphore
 @db_session
 def get_game_semaphore(gid: int) -> int:
     lobby = Lobby.get(id=gid)
@@ -150,6 +152,8 @@ def get_game_semaphore(gid: int) -> int:
 
     return sem
 
+
+# Check if the game is in election
 @db_session
 def get_game_voting(gid) -> bool:
     game = Lobby.get(id=gid).game
@@ -161,6 +165,7 @@ def get_game_voting(gid) -> bool:
     return ans
 
 
+# Check if game is in legislative session
 @db_session
 def get_game_in_session(gid) -> bool:
     game = Lobby.get(id=gid).game
@@ -172,6 +177,7 @@ def get_game_in_session(gid) -> bool:
     return ans
 
 
+# Check if the minister has already proclaimed cards
 @db_session
 def get_game_minister_proclaimed(gid) -> bool:
     game = Lobby.get(id=gid).game
@@ -182,6 +188,8 @@ def get_game_minister_proclaimed(gid) -> bool:
 
     return ans
 
+
+# Get game's total proclaimed cards (phoenix = good, death eaters = bad)
 @db_session
 def get_game_score(gid: int) -> Score:
     lobby = Lobby.get(id=gid)
@@ -197,11 +205,14 @@ def get_game_score(gid: int) -> Score:
     return Score(good=good_score, bad=bad_score)
 
 
+# Check if it's time for a government proposal
 @db_session
 def goverment_proposal_needed(gid: int) -> bool:
     game = Lobby.get(id=gid).game    
     return not game.voting and not game.in_session
 
+
+# Purpose a director specified by the user id dir_id
 @db_session
 def propose_goverment(gid: int, dir_id: int):
     lobby = Lobby.get(id=gid)
@@ -209,3 +220,11 @@ def propose_goverment(gid: int, dir_id: int):
     player = Player.get(id=dir_id)
     player.director = True
     lobby.game.voting = True
+
+# Finish the current legislative session
+@db_session
+def finish_legislative_session(game_id):
+    game = Game.get(id=game_id)
+    game.in_session = False
+    game.minister_proclaimed= False
+    commit()

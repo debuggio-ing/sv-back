@@ -126,3 +126,23 @@ def get_player_id_role(player_id: int) -> (bool, bool):
         phoenix = player.role.phoenix
 
     return (voldemort, phoenix)
+
+
+# Check if the player identified by player_id is the director
+@db_session
+def is_director(player_id: int) -> bool:
+    return Player.get(id=player_id).director
+
+
+# Check if it's time for the director to choose a proclamation card
+@db_session
+def director_chooses_proc(game_id):
+    game = Game.get(id=game_id)
+    return game.in_session and game.minister_proclaimed
+
+
+# Discharge director
+@db_session
+def discharge_director(player_id):
+    Player.get(id=player_id).director = False
+    commit()

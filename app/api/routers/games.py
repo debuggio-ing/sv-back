@@ -47,14 +47,13 @@ def player_vote(game_id: int, vote: PlayerVote, Authorize: AuthJWT = Depends()):
     # get the id of the user in the game (the player_id)
     player_id = get_player_id(user_email, game_id)
     if player_id == -1:
-        raise HTTPException(status_code=401, detail='User not in game or game id incorrect')
-
+        raise HTTPException(
+            status_code=401, detail='User not in game or game id incorrect')
 
     # check if there's a vote ocurring in the game
     if not currently_voting(game_id):
         raise HTTPException(
             status_code=403, detail='There isn\'t a vote ocurring')
-
 
     # cast vote
     if is_last_vote(player_id, game_id):
@@ -78,21 +77,84 @@ def cast_spell(game_id: int, spell: CastSpell, Authorize: AuthJWT = Depends()):
     return
 
 
-# Return minister's proclamation cards
-@r.get("/games/{game_id}/proc/", response_model=LegislativeSession)
-def get_minister_proc(game_id: int, Authorize: AuthJWT = Depends()):
+# Return to the director the cards selected by the minister
+@r.get("/games/{game_id}/dir/proc/")
+def get_director_proc(game_id: int, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
-    return
+    # get user's email
+    user_email = Authorize.get_jwt_identity()
+    if user_email == None:
+        raise HTTPException(status_code=409, detail='Corrupted JWT')
+
+    # get the id of the user in the game
+    player_id = get_player_id(user_email, game_id)
+    if player_id == -1:
+        raise HTTPException(status_code=401, detail='User not in game')
+
+    # check if it's time for a director to choose
+    if not director_chooses_proc(game_id):
+        raise HTTPException(status_code=401, detail='It\'s not time to choose')
+
+    # check if the player is the director
+    if not is_director(player_id):
+        raise HTTPException(status_code=401, detail='Player isn\'nt director')
+
+    # get the cards selected by the minister
+    selected_cards = get_selected_cards(game_id)
+    cards = []
+    for card in selected_cards:
+        cards.append(CardToProclaim(card_pos = card.position, phoenix = card.phoenix))
+
+    return cards
 
 
-# Select cards to proclaim in the specified game
-@r.post("/games/{game_id}/proc/")
+# Director chooses the cards to proclaim
+# At this point expelliarmus is not implemented
+# Returns True if game continues or False if game is over
+@r.post("/games/{game_id}/dir/proc/", response_model=bool)
 def proc_election(
         game_id: int,
         election: LegislativeSession,
         Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
-    return
+
+    # get user's email
+    user_email = Authorize.get_jwt_identity()
+    if user_email == None:
+        raise HTTPException(status_code=409, detail='Corrupted JWT')
+
+    # get the id of the user in the game
+    player_id = get_player_id(user_email, game_id)
+    if player_id == -1:
+        raise HTTPException(status_code=401, detail='User not in game')
+
+    # check if it's time for a director to choose
+    if not director_chooses_proc(game_id):
+        raise HTTPException(status_code=401, detail='It\'s not time to choose')
+
+    # check if the player is the director
+    if not is_director(player_id):
+        raise HTTPException(status_code=401, detail='Player isn\'nt director')
+
+    # check if the received proclamation is valid
+    proclamation_count = sum(map(lambda c: c.to_proclaim, election.proclamation))
+    if proclamation_count != 1 or len(election.proclamation) != 2:
+        raise HTTPException(
+            status_code=401, detail='Invalid selection of cards')
+
+    # proclaim card if it's not proclaimed
+    if proclaim_card(election.proclamation, game_id) == False:
+        raise HTTPException(
+            status_code=401, detail='Invalid selection of cards')
+
+    # finish legislative session and release the director
+    finish_legislative_session(game_id)
+    discharge_director(player_id)
+
+    # check if game is over
+    score = get_game_score(game_id)
+
+    return score.good == 5 or score.bad == 6
 
 
 # Nominate director in specified game
@@ -108,18 +170,21 @@ def director_candidate(
     if user_email == None:
         raise HTTPException(status_code=409, detail='Corrupted JWT')
 
-    #Esta en el juego?
+    # Esta en el juego?
     pid = get_player_id(user_email, game_id)
     if pid == -1:
-        raise HTTPException(status_code=401, detail='User not in game or game id incorrect')
+        raise HTTPException(
+            status_code=401, detail='User not in game or game id incorrect')
 
-    #Es el ministro?
+    # Es el ministro?
     if not get_game_minister_id(game_id) == pid:
-        raise HTTPException(status_code=409, detail='You are not the minister!')
+        raise HTTPException(
+            status_code=409, detail='You are not the minister!')
 
-    #Es hora de elegir gobierno?
+    # Es hora de elegir gobierno?
     if not goverment_proposal_needed(game_id):
-        raise HTTPException(status_code=409, detail='No es momento de proponer director')
+        raise HTTPException(
+            status_code=409, detail='No es momento de proponer director')
 
     propose_goverment(game_id, candidate_id)
 

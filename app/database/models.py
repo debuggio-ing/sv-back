@@ -58,7 +58,7 @@ class Lobby(db.Entity):
     name = Required(str)
     max_players = Required(int)
     creation_date = Required(datetime, default=datetime.now)
-    active = Required(bool, default=True) # set to false if game has finished.
+    active = Required(bool, default=True)  # set to false if game has finished.
     player = Set('Player')
     game = Optional('Game')
     started = Required(bool, default=False)
@@ -70,7 +70,6 @@ class Chat(db.Entity):
     id = PrimaryKey(int, auto=True)
     text = Required(str)
     lobby = Required('Lobby')
-
 
 
 # Current voting information
@@ -98,18 +97,20 @@ class Game(db.Entity):
     list_head = Required(int, default=0)
     lobby = Required('Lobby')
     cards = Set('ProcCard')
-    in_session = Required(bool, default=False) #currently in legislative session
-    minister_proclaimed = Required(bool, default=False) #did the minister pass the proc cards?
+    in_session = Required(bool, default=False)  # in legislative session
+    minister_proclaimed = Required(bool, default=False)  # minister chose cards
     voting = Required(bool, default=False)  # are players currently voting?
     num_votes = Required(int, default=0)
     last_vote = Optional('PublicVote')  # public voting information
     curr_vote = Optional('CurrentVote')  # if currently voting
+
 
 # Created when a game is started
 class ProcCard(db.Entity):
     id = PrimaryKey(int, auto=True)
     discarded = Required(bool, default=False)
     proclaimed = Required(bool, default=False)
+    selected = Required(bool, default=False)  # selected in legislative session
     position = Required(int)
     phoenix = Required(bool)
     game = Required('Game')

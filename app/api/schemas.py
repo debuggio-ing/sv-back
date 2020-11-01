@@ -61,9 +61,11 @@ class UserPublic(BaseModel):
     username: str
     email: EmailStr
 
+
 # Confirmation if the game started
 class StartConfirmation(BaseModel):
     started: bool
+
 
 # Enumerado de conjuros
 # Me parece que es un dato derivado, asi que quizás la api nunca lo utilice
@@ -97,8 +99,8 @@ class PlayerRole(BaseModel):
 class PlayerPublic(BaseModel):
     player_id: int
     alive: bool
-    voted: bool #if the player already voted this round
-    last_vote: bool #last public vote
+    voted: bool  # if the player already voted this round
+    last_vote: bool  # last public vote
     position: int
     username: str
 
@@ -114,11 +116,23 @@ class ProposedDirector(BaseModel):
     player: int
 
 
+# Card output data
+class CardToProclaim(BaseModel):
+    card_pos: int
+    phoenix: bool
+
+
+# Card input data
+class Card(BaseModel):
+    card_pos: int
+    to_proclaim: bool
+
+
 # Legislative session's input data
 #   * proclamation indicates the cards to proclaim
 #   * expelliarmus indicates an expelliarmus spell intent
 class LegislativeSession(BaseModel):
-    proclamation: List[bool]
+    proclamation: List[Card]
     expelliarmus: bool  # ignored unless it's usable
 
 
@@ -153,8 +167,8 @@ class Score(BaseModel):
 class GamePublic(BaseModel):
     player_list: List[PlayerPublic]  # players order
     voting: bool
-    in_session: bool #currently in legislative session
-    minister_proclaimed: bool #did the minister pass the proc cards?
+    in_session: bool  # currently in legislative session
+    minister_proclaimed: bool  # did the minister pass the proc cards?
     minister: int
     prev_minister: int
     director: int
@@ -165,4 +179,3 @@ class GamePublic(BaseModel):
     winners: Optional[bool]
     # players' role reaveal party at the end of the game
     roleReveal: Optional[List[Role]]
-
