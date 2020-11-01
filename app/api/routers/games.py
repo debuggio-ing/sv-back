@@ -119,7 +119,7 @@ def proc_election(
     Authorize.jwt_required()
 
     # get user's email
-    user_email = Authorize._get_jwt_identity()
+    user_email = Authorize.get_jwt_identity()
     if user_email == None:
         raise HTTPException(status_code=409, detail='Corrupted JWT')
 
@@ -137,7 +137,7 @@ def proc_election(
         raise HTTPException(status_code=401, detail='Player isn\'nt director')
 
     # check if the received proclamation is valid
-    proclamation_count = sum(map(lambda t: t[1], election.proclamation))
+    proclamation_count = sum(map(lambda c: c.to_proclaim, election.proclamation))
     if proclamation_count != 1 or len(election.proclamation) != 2:
         raise HTTPException(
             status_code=401, detail='Invalid selection of cards')
