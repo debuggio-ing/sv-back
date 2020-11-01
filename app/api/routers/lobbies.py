@@ -88,11 +88,7 @@ def join_game(lobby_id: int, Authorize: AuthJWT = Depends()):
 
     # Get information from jwt_token.
     user_email = Authorize.get_jwt_identity()
-    player_id = insert_player(user_email=user_email, lobby_id=lobby_id)
-
-    # If player is already in lobby return exception.
-    if player_id == -1:
-        raise HTTPException(status_code=409, detail="User already in lobby.")
+    insert_player(user_email=user_email, lobby_id=lobby_id)
 
     current_players = get_lobby_player_list(lobby_id)
     lobby_name = get_lobby_name(lobby_id)
