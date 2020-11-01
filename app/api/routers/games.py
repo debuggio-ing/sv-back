@@ -18,10 +18,15 @@ def get_game_list(
     game_to: Optional[int] = None, Authorize: AuthJWT = Depends()
 ):
     Authorize.jwt_required()
+    user_email = Authorize.get_jwt_identity()
+    if user_email == None:
+        raise HTTPException(status_code=409, detail='Corrupted JWT')
+
     game_id_list = get_all_games_ids(game_from, game_to)
     games = []
     for gid in game_id_list:
-        game = get_game_public_info(gid)
+        pid = get_player_id(user_email, gid)
+        game = get_game_public_info(gid, pid)
         games.append(game)
 
     return games
@@ -30,8 +35,14 @@ def get_game_list(
 # View public data about a specified game
 @r.get("/games/{game_id}/", response_model=GamePublic)
 def get_game(game_id: int, Authorize: AuthJWT = Depends()):
+    
     Authorize.jwt_required()
-    return get_game_public_info(game_id)
+    user_email = Authorize.get_jwt_identity()
+    if user_email == None:
+        raise HTTPException(status_code=409, detail='Corrupted JWT')
+
+    pid = get_player_id(user_email, game_id)
+    return get_game_public_info(game_id, pid)
 
 
 # Player vote in game

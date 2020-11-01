@@ -64,7 +64,7 @@ def insert_game(lobby_id: int) -> int:
 
 # Return the required game status.
 @db_session
-def get_game_public_info(gid):
+def get_game_public_info(gid: int, pid: int):
     return GamePublic(id=gid,
                       player_list=get_game_player_public_list(gid),
                       minister=get_game_minister_id(gid),
@@ -75,9 +75,22 @@ def get_game_public_info(gid):
                       score=get_game_score(gid),
                       voting=get_game_voting(gid),
                       in_session=get_game_in_session(gid),
-                      minister_proclaimed=get_game_minister_proclaimed(gid)
+                      minister_proclaimed=get_game_minister_proclaimed(gid),
+                      client_minister=is_player_minister(pid),
+                      client_director=is_player_director(pid)
                       )
 
+@db_session
+def is_player_minister(pid: int) -> bool:
+    player = Player.get(id=pid)
+
+    return player.minister == True
+
+@db_session
+def is_player_director(pid: int) -> bool:
+    player = Player.get(id=pid)
+
+    return player.director == True
 
 
 @db_session
