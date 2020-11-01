@@ -52,7 +52,7 @@ def get_lobby(lobby_id: int, Authorize: AuthJWT = Depends()):
                             is_owner=get_lobby_is_owner(lobby_id, user_email))
     else:
         raise HTTPException(
-            status_code=204, detail='No content')
+            status_code=404, detail='Lobby not found.')
     return lobby
 
 
@@ -105,7 +105,7 @@ def join_game(lobby_id: int, Authorize: AuthJWT = Depends()):
 
 
 # Start lobby_id lobby.
-@r.post("/lobbies/{lobby_id}/start/", 
+@r.post("/lobbies/{lobby_id}/start/",
                 response_model=StartConfirmation)
 def start_game(lobby_id: int,
         # current_players: LobbyStart,
@@ -129,6 +129,5 @@ def start_game(lobby_id: int,
     set_lobby_started(lobby_id)
 
     game_id = insert_game(lobby_id)
-    game = get_game_public_info(game_id)
 
-    return StartConfirmation(started=(game_id != -1))
+    return StartConfirmation(game_id=game_id)

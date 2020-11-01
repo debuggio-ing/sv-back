@@ -64,7 +64,7 @@ class UserPublic(BaseModel):
 
 # Confirmation if the game started
 class StartConfirmation(BaseModel):
-    started: bool
+    game_id: int
 
 
 # Enumerado de conjuros
