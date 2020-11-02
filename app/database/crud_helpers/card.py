@@ -5,7 +5,7 @@ from app.api.schemas import *
 # Return selected cards in a game
 @db_session
 def get_selected_cards(game_id):
-    return list(ProcCard.select(lambda c: c.game.id == game_id and c.selected == True))
+    return list(ProcCard.select(lambda c: c.game.lobby.id == game_id and c.selected == True))
 
 
 # Proclaim card, return false if it couldn't be proclaimed
