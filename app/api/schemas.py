@@ -64,7 +64,7 @@ class UserPublic(BaseModel):
 
 # Confirmation if the game started
 class StartConfirmation(BaseModel):
-    started: bool
+    game_id: int
 
 
 # Enumerado de conjuros
@@ -181,3 +181,5 @@ class GamePublic(BaseModel):
     winners: Optional[bool]
     # players' role reaveal party at the end of the game
     roleReveal: Optional[List[Role]]
+    client_minister: bool
+    client_director: bool

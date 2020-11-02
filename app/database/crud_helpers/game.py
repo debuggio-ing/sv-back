@@ -17,7 +17,7 @@ def insert_game(lobby_id: int) -> int:
 
     lobby = Lobby.get(id=lobby_id)
 
-    MAX_PLAYERS = lobby.max_players 
+    MAX_PLAYERS = lobby.max_players
 
     player_order = [i for i in range(MAX_PLAYERS)]
     random.shuffle(player_order)
@@ -37,12 +37,11 @@ def insert_game(lobby_id: int) -> int:
             player.position = player_order[i]
 
         #Set first player of the list
-        game.list_head = ULTRA_RANDOM_NUMBER 
+        game.list_head = ULTRA_RANDOM_NUMBER
 
         # create proclamation cards.
         for card in cards:
             ProcCard(position=card[0], phoenix=card[1], game=game)
-
 
         # choose who will be and death eaters.
         death_eaters = random.sample(range(len(player_ids)), NUM_DEATH_EATERS)
@@ -65,7 +64,7 @@ def insert_game(lobby_id: int) -> int:
 
 # Return the required game status.
 @db_session
-def get_game_public_info(gid):
+def get_game_public_info(gid: int, pid: int):
     return GamePublic(id=gid,
                       player_list=get_game_player_public_list(gid),
                       minister=get_game_minister_id(gid),
@@ -76,9 +75,22 @@ def get_game_public_info(gid):
                       score=get_game_score(gid),
                       voting=get_game_voting(gid),
                       in_session=get_game_in_session(gid),
-                      minister_proclaimed=get_game_minister_proclaimed(gid)
+                      minister_proclaimed=get_game_minister_proclaimed(gid),
+                      client_minister=is_player_minister(pid),
+                      client_director=is_player_director(pid)
                       )
 
+@db_session
+def is_player_minister(pid: int) -> bool:
+    player = Player.get(id=pid)
+
+    return player.minister == True
+
+@db_session
+def is_player_director(pid: int) -> bool:
+    player = Player.get(id=pid)
+
+    return player.director == True
 
 
 @db_session
@@ -158,7 +170,7 @@ def get_game_semaphore(gid: int) -> int:
 def get_game_voting(gid) -> bool:
     game = Lobby.get(id=gid).game
 
-    ans = -1
+    ans = False
     if game is not None:
         ans = game.voting
 
@@ -170,7 +182,7 @@ def get_game_voting(gid) -> bool:
 def get_game_in_session(gid) -> bool:
     game = Lobby.get(id=gid).game
 
-    ans = -1
+    ans = False
     if game is not None:
         ans = game.in_session
 
@@ -182,7 +194,7 @@ def get_game_in_session(gid) -> bool:
 def get_game_minister_proclaimed(gid) -> bool:
     game = Lobby.get(id=gid).game
 
-    ans = -1
+    ans = False
     if game is not None:
         ans = game.minister_proclaimed
 
@@ -193,14 +205,18 @@ def get_game_minister_proclaimed(gid) -> bool:
 @db_session
 def get_game_score(gid: int) -> Score:
     lobby = Lobby.get(id=gid)
-    card_pool = select(c for c in lobby.game.cards)
 
-    bad_score = len(
-        select(
-            c for c in card_pool if c.proclaimed and c.phoenix == False))
-    good_score = len(
-        select(
-            c for c in card_pool if c.proclaimed and c.phoenix))
+    bad_score = 0
+    good_score = 0
+    if lobby is not None and lobby.game is not None:
+        card_pool = select(c for c in lobby.game.cards)
+
+        bad_score = len(
+            select(
+                c for c in card_pool if c.proclaimed and c.phoenix == False))
+        good_score = len(
+            select(
+                c for c in card_pool if c.proclaimed and c.phoenix))
 
     return Score(good=good_score, bad=bad_score)
 
@@ -208,7 +224,7 @@ def get_game_score(gid: int) -> Score:
 # Check if it's time for a government proposal
 @db_session
 def goverment_proposal_needed(gid: int) -> bool:
-    game = Lobby.get(id=gid).game    
+    game = Lobby.get(id=gid).game
     return not game.voting and not game.in_session
 
 
@@ -220,6 +236,9 @@ def propose_goverment(gid: int, dir_id: int):
     player = Player.get(id=dir_id)
     player.director = True
     lobby.game.voting = True
+
+    commit()
+
 
 # Finish the current legislative session
 @db_session

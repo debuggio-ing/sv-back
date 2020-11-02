@@ -91,5 +91,5 @@ def test_get_inexistent_lobby():
         headers={"Authorization": token1}
     )
 
-    assert get_lobby.status_code == 204
-    assert get_lobby.json() == {'detail': 'No content'}
+    assert get_lobby.status_code == 404
+    assert get_lobby.json() == {'detail': 'Lobby not found.'}

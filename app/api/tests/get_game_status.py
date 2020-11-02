@@ -85,5 +85,8 @@ def test_get_game_public():
       },
       "end": None,
       "winners": None,
-      "roleReveal": None
+      "roleReveal": None,
+      "client_minister": False,
+      "client_director": True
+
     }
