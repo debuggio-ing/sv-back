@@ -137,8 +137,9 @@ def is_director(player_id: int) -> bool:
 # Check if it's time for the director to choose a proclamation card
 @db_session
 def director_chooses_proc(game_id):
-    game = Game.get(id=game_id)
-    return game.in_session and game.minister_proclaimed
+    lobby = Lobby.get(id=game_id)
+    game = lobby.game
+    return game and game.in_session and game.minister_proclaimed
 
 
 # Discharge director

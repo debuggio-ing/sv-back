@@ -32,17 +32,21 @@ def get_game_list(
     return games
 
 
+
 # View public data about a specified game
 @r.get("/games/{game_id}/", response_model=GamePublic)
 def get_game(game_id: int, Authorize: AuthJWT = Depends()):
-    
     Authorize.jwt_required()
+
+    # get user's email
     user_email = Authorize.get_jwt_identity()
     if user_email == None:
         raise HTTPException(status_code=409, detail='Corrupted JWT')
 
-    pid = get_player_id(user_email, game_id)
-    return get_game_public_info(game_id, pid)
+    # get the id of the user in the game (the player_id)
+    player_id = get_player_id(user_email, game_id)
+
+    return get_game_public_info(gid=game_id, pid=player_id)
 
 
 # Player vote in game
@@ -114,7 +118,8 @@ def get_director_proc(game_id: int, Authorize: AuthJWT = Depends()):
     selected_cards = get_selected_cards(game_id)
     cards = []
     for card in selected_cards:
-        cards.append(CardToProclaim(card_pos = card.position, phoenix = card.phoenix))
+        cards.append(CardToProclaim(
+            card_pos=card.position, phoenix=card.phoenix))
 
     return cards
 
@@ -135,7 +140,7 @@ def proc_election(
         raise HTTPException(status_code=409, detail='Corrupted JWT')
 
     # get the id of the user in the game
-    player_id = get_player_id(user_email, game_id)
+    player_id = get_player_id(user_email=user_email, game_id=game_id)
     if player_id == -1:
         raise HTTPException(status_code=401, detail='User not in game')
 
@@ -148,7 +153,8 @@ def proc_election(
         raise HTTPException(status_code=401, detail='Player isn\'nt director')
 
     # check if the received proclamation is valid
-    proclamation_count = sum(map(lambda c: c.to_proclaim, election.proclamation))
+    proclamation_count = sum(
+        map(lambda c: c.to_proclaim, election.proclamation))
     if proclamation_count != 1 or len(election.proclamation) != 2:
         raise HTTPException(
             status_code=401, detail='Invalid selection of cards')
