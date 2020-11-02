@@ -234,9 +234,10 @@ def propose_goverment(gid: int, dir_id: int):
     lobby = Lobby.get(id=gid)
 
     old_dir_id = get_game_director_id(gid=gid)
-
     old_dir = Player.get(id=old_dir_id)
-    old_dir.director = False
+
+    if old_dir is not None:
+        old_dir.director = False
 
     player = Player.get(id=dir_id)
     player.director = True

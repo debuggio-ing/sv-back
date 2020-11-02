@@ -28,7 +28,7 @@ def test_choose_candidate():
             "password": "password"})
 
     token = "Bearer " + login.json()["access_token"]
-    vote_response = testc.post("/api/games/2/director/10",
+    vote_response = testc.post("/api/games/2/director/10/",
                                headers={"Authorization": token},
                                json={"vote": "false"})
 
