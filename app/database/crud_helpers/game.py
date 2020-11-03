@@ -5,7 +5,6 @@ from app.database.crud_helpers.lobby import *
 from typing import List
 import random
 
-
 # Create game in the database.
 @db_session
 def insert_game(lobby_id: int) -> int:
@@ -13,7 +12,7 @@ def insert_game(lobby_id: int) -> int:
     NUM_PHOENIX_CARDS = 6
     PROC_CARD_NUMBER = 17
     #This number is hidden and therefore its random
-    ULTRA_RANDOM_NUMBER = 2
+    ULTRA_RANDOM_NUMBER = random.randint(0,4)
 
     lobby = Lobby.get(id=lobby_id)
 
@@ -53,7 +52,7 @@ def insert_game(lobby_id: int) -> int:
         set_voldemort(player_ids[death_eaters[0]])
 
         # set first minister of magic.
-        set_minister_of_magic(player_ids[2])
+        set_minister_of_magic(player_ids[ULTRA_RANDOM_NUMBER])
         game.list_head = ((game.list_head+1)%MAX_PLAYERS)
 
         commit()
@@ -252,4 +251,6 @@ def finish_legislative_session(game_id):
     game = Game.get(id=game_id)
     game.in_session = False
     game.minister_proclaimed= False
+    set_next_minister_candidate(game_id)
+
     commit()

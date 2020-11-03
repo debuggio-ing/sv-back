@@ -1,6 +1,6 @@
 from app.database.models import *
 from app.api.schemas import *
-
+from app.database.crud_helpers.vote import *
 
 # Create player in the database.
 @db_session
@@ -19,19 +19,16 @@ def insert_player(user_email: str, lobby_id: int) -> int:
 
 @db_session
 def get_player_vote_status(pid: int) -> bool:
-    pl = Player.get(id=pid)
-    return pl.curr_vote is not None
+    cv = CurrentVote.get(player=pid)
+    return cv is not None
 
 
 @db_session
 def get_player_last_vote(pid: int) -> bool:
-    player = Player.get(id=pid)
-
-    vote = False
-    if player is not None and player.pub_vote is not None:
-        vote = player.pub_vote.vote
-
-    return vote
+    pv = PublicVote.get(voter_id=pid)
+    if pv is None:
+        return False
+    return pv.vote
 
 
 # Return the required player status.
@@ -139,6 +136,7 @@ def is_director(player_id: int) -> bool:
 def director_chooses_proc(game_id):
     lobby = Lobby.get(id=game_id)
     game = lobby.game
+    
     return game and game.in_session and game.minister_proclaimed
 
 

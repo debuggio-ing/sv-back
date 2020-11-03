@@ -30,18 +30,19 @@ def is_last_vote(player_id: int, game_id: int):
 @db_session
 def demo_database(game_id:int):
     assigned = 0
-    pos = 0
+    pos = 3
+    lobby = Lobby.get(id=game_id)
     while assigned < 2 and pos <=17:
-        card = ProcCard.get(position=pos, game=game_id)
+        card = ProcCard.get(position=pos, game=lobby.game.id)
         if not card.proclaimed:
             card.selected = True
             assigned += 1
         pos += 1
 
 
-    game = Game.get(id=game_id)
-    game.minister_proclaimed = True
-    game.in_session = True
+    #game = Game.get(id=game_id)
+    lobby.game.minister_proclaimed = True
+   # game.in_session = True
 
     commit()
 
@@ -63,15 +64,14 @@ def set_last_player_vote(player_id: int, game_id: int, vote: bool):
 # Cast a player's vote
 @db_session
 def set_player_vote(player_id: int, game_id: int, vote: bool):
-    player = Player.get(id=player_id, lobby=game_id)
-    lobby = Lobby.get(id=game_id)
-    game = lobby.game
 
-    if player.curr_vote is None:
-        # CurrentVote(game=game, player=player, vote=vote, voter_id=player_id)
+    lobby = Lobby.get(id=game_id)
+    cv = CurrentVote.get(player=player_id, game=game_id)
+    if cv is None:
+        CurrentVote(game=game_id, player=player_id, vote=vote, voter_id=player_id)
         lobby.game.num_votes += 1
     else:
-        player.curr_vote.vote = vote
+        cv.vote = vote
 
     commit()
 
@@ -82,13 +82,13 @@ def update_public_vote(game_id: int):
     lobby = Lobby.get(id=game_id)
     game = lobby.game
 
-    delete(v for v in PublicVote if v.game.id == game_id)
+    delete(v for v in PublicVote if v.game == game_id)
 
-    votes = (select((v.vote, v.voter_id) for v in CurrentVote if v.game.id == game_id))[:]
+    votes = (select((v.vote, v.voter_id) for v in CurrentVote if v.game == game_id))[:]
 
     for v in votes:
         player = Player.get(id=v[1])
-        pv = PublicVote(game=game, vote=v[0], voter_id=v[1], player=player)
+        pv = PublicVote(game=game_id, vote=v[0], voter_id=v[1], player=player.id)
 
     commit()
 
@@ -96,19 +96,23 @@ def update_public_vote(game_id: int):
 #
 @db_session
 def process_vote_result(gid: int):
-    game = Lobby.get(id=gid).game
-    max_players = Lobby.get(id=gid).max_players
+    lobby = Lobby.get(id=gid)
+    game = lobby.game
+    max_players = lobby.max_players
 
-    result = len(select(v for v in PublicVote if v.game.id == gid and v.vote == True))
-    if result > math.ceil((max_players+1)/2):
+    result = len(select(v for v in PublicVote if v.game == gid and v.vote == True))
+    if result < math.ceil((max_players+1)/2):
         set_next_minister_candidate(gid)
-        game.semaphore +=1
+        game.semaphore = (game.semaphore+1)%4
+        dir = Player.get(lobby=lobby, director=True)
+        dir.director = False
     else:
         game.in_session = True
+
     game.voting = False
 
     #para la demo
-    game.in_session = True
+   # game.in_session = True
 
 
 @db_session
@@ -131,7 +135,7 @@ def clean_current_vote(game_id: int):
 
     lob = Lobby.get(id=game_id)
 
-    delete(v for v in CurrentVote if v.game.id == game_id)
+    delete(v for v in CurrentVote if v.game == game_id)
 
     lob.game.num_votes = 0
 
