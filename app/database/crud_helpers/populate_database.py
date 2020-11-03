@@ -122,13 +122,13 @@ def populate_test_db():
         minister=False,
         director=False)
 
-    curr_vote1 = CurrentVote(game=game1, player=p1, vote=True, voter_id=1)
-    curr_vote3 = CurrentVote(game=game1, player=p3, vote=True, voter_id=3)
-    curr_vote4 = CurrentVote(game=game1, player=p4, vote=True, voter_id=4)
+    # curr_vote1 = CurrentVote(game=game1, player=p1, vote=True, voter_id=1)
+    # curr_vote3 = CurrentVote(game=game1, player=p3, vote=True, voter_id=3)
+    # curr_vote4 = CurrentVote(game=game1, player=p4, vote=True, voter_id=4)
 
-    curr_vote2 = CurrentVote(game=game2, player=p6, vote=True, voter_id=6)
-    curr_vote6 = CurrentVote(game=game2, player=p8, vote=True, voter_id=8)
-    curr_vote8 = CurrentVote(game=game2, player=p9, vote=True, voter_id=9)
+    # curr_vote2 = CurrentVote(game=game2, player=p6, vote=True, voter_id=6)
+    # curr_vote6 = CurrentVote(game=game2, player=p8, vote=True, voter_id=8)
+    # curr_vote8 = CurrentVote(game=game2, player=p9, vote=True, voter_id=9)
 
     last_vote1 = PublicVote(game=game1, player=p1, vote=True, voter_id=1)
     last_vote2 = PublicVote(game=game1, player=p2, vote=True, voter_id=2)

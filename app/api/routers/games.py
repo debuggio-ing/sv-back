@@ -32,7 +32,6 @@ def get_game_list(
     return games
 
 
-
 # View public data about a specified game
 @r.get("/games/{game_id}/", response_model=GamePublic)
 def get_game(game_id: int, Authorize: AuthJWT = Depends()):
@@ -75,7 +74,7 @@ def player_vote(game_id: int, vote: PlayerVote, Authorize: AuthJWT = Depends()):
         set_last_player_vote(player_id, game_id, vote.vote)
     else:
         set_player_vote(player_id, game_id, vote.vote)
-    return
+    return 1
 
 
 # Return player's role in the specified game
