@@ -40,8 +40,8 @@ def demo_database(game_id:int):
         pos += 1
 
 
-    game = Game.get(id=game_id)
-    game.minister_proclaimed = True
+    #game = Game.get(id=game_id)
+    lobby.game.minister_proclaimed = True
    # game.in_session = True
 
     commit()
