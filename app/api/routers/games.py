@@ -175,7 +175,7 @@ def proc_election(
 
 
 # Nominate director in specified game
-@r.post("/games/{game_id}/director/{candidate_id}")
+@r.post("/games/{game_id}/director/{candidate_id}/")
 def director_candidate(
         game_id: int,
         candidate_id: int,
