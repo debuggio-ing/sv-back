@@ -33,8 +33,6 @@ class Player(db.Entity):
     alive = Required(bool, default=True)
     position = Required(int, default=0)
     role = Optional('GRole')
-    curr_vote = Optional('CurrentVote')
-    pub_vote = Optional('PublicVote')
     minister = Required(bool, default=False)
     prev_minister = Required(bool, default=False)
     director = Required(bool, default=False)
@@ -78,8 +76,8 @@ class CurrentVote(db.Entity):
     id = PrimaryKey(int, auto=True)
     vote = Required(bool)
     voter_id = Required(int)  # redundancia por ahora
-    game = Optional('Game')
-    player = Optional('Player')
+    game = Optional(int)
+    player = Optional(int)
 
 
 # Last public vote result
@@ -87,8 +85,8 @@ class PublicVote(db.Entity):
     id = PrimaryKey(int, auto=True)
     vote = Required(bool)
     voter_id = Required(int)  # redundancia por ahora
-    game = Optional('Game')
-    player = Optional('Player')
+    game = Optional(int)
+    player = Optional(int)
 
 
 # Created when a game is started
@@ -102,8 +100,6 @@ class Game(db.Entity):
     minister_proclaimed = Required(bool, default=False)  # minister chose cards
     voting = Required(bool, default=False)  # are players currently voting?
     num_votes = Required(int, default=0)
-    last_vote = Optional('PublicVote')  # public voting information
-    curr_vote = Optional('CurrentVote')  # if currently voting
 
 
 # Created when a game is started
