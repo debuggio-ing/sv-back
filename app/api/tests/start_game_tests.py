@@ -61,7 +61,7 @@ def test_start_game():
 
     assert start.status_code == 200
     assert start_json['director'] == -1
-    assert start_json['minister'] == player_list[2]['player_id']
+    assert start_json['minister'] <= NUM_OF_PLAYERS
     assert start_json['end'] == None
     assert len(player_list) == NUM_OF_PLAYERS
     assert num_phoenixes == 3
@@ -73,6 +73,7 @@ def test_start_game():
     assert start_json['score'] == {'bad':0, 'good':0}
     assert start_json['semaphore'] == 0
     assert start_json['winners'] == None
+
 
 # Some user that's not the owner of the game starts the game.
 def test_start_game_by_other_user():

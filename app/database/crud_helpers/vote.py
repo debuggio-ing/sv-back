@@ -39,15 +39,12 @@ def demo_database(game_id:int):
             assigned += 1
         pos += 1
 
-
-    #game = Game.get(id=game_id)
     lobby.game.minister_proclaimed = True
-   # game.in_session = True
 
     commit()
 
 
-# Casts the last players' vote
+# Casts last player's vote
 @db_session
 def set_last_player_vote(player_id: int, game_id: int, vote: bool):
     set_player_vote(player_id, game_id, vote)
@@ -55,8 +52,6 @@ def set_last_player_vote(player_id: int, game_id: int, vote: bool):
     update_public_vote(game_id)
     process_vote_result(game_id)
     clean_current_vote(game_id)
-
-    demo_database(game_id)
 
     commit()
 
@@ -93,7 +88,7 @@ def update_public_vote(game_id: int):
     commit()
 
 
-#
+# Set voting results
 @db_session
 def process_vote_result(gid: int):
     lobby = Lobby.get(id=gid)
@@ -110,24 +105,27 @@ def process_vote_result(gid: int):
         game.in_session = True
 
     game.voting = False
-
-    #para la demo
-   # game.in_session = True
+    commit()
 
 
 @db_session
 def set_next_minister_candidate(gid: int):
     lobby = Lobby.get(id=gid)
-    #me deberia fijar q no sea none dsp
+    
+    # discharge former minister
     ex_minister = Player.get(lobby=lobby, minister=True)
-    ex_minister.minister = False
+    if ex_minister is not None:
+        ex_minister.minister = False
 
-    #tmb deberia chequear por errores
+    # set new minister
     new_minister = Player.get(lobby=lobby, position=lobby.game.list_head)
-    new_minister.minister = True
+    if new_minister is not None:
+        new_minister.minister = True
 
-    #actualizar la cabeza de la lista
+    # update list head
     lobby.game.list_head = (lobby.game.list_head+1)%lobby.max_players
+    commit()
+
 
 # Deletes every entry in the current vote
 @db_session

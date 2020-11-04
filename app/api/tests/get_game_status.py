@@ -6,7 +6,6 @@ from app.database.crud import *
 # It's necessary to remove database before running the tests.
 
 
-
 testc = TestClient(test_svapi)
 
 
@@ -24,10 +23,10 @@ def test_get_game_public():
 
     token = "Bearer " + login.json()["access_token"]
 
-    game = testc.get("/api/games/1", headers={"Authorization": token})
+    game = testc.get("/api/games/1/", headers={"Authorization": token})
 
 
-    #Esto es super mejorable
+    # Esto es super mejorable
     assert game.json() == {
       "player_list": [
         {
@@ -51,8 +50,7 @@ def test_get_game_public():
           "alive": True,
           "last_vote": True,
           "voted": True,
-          "username": "lau",
-          
+          "username": "lau", 
           "position": 3
         },
         {
