@@ -10,9 +10,9 @@ lobby = TestClient(test_svapi)
 # Try to crate a lobby.
 def test_create_lobby():
     user = UserReg(
-            username='test',
-            email='test@gmail.com',
-            password='testPassword')
+        username='test',
+        email='test@gmail.com',
+        password='testPassword')
     if 'test@gmail.com' not in get_emails():
         register_user(user)
 

@@ -9,8 +9,8 @@ testc = TestClient(test_svapi)
 
 populate_test_db()
 
-def test_not_last_vote():
 
+def test_not_last_vote():
 
     login = testc.post(
         "api/login/",
@@ -21,9 +21,12 @@ def test_not_last_vote():
             "password": "password"})
 
     token = "Bearer " + login.json()["access_token"]
-    vote_response = testc.post("/api/games/1/vote/", headers={"Authorization": token}, json={"vote":"false"})
+    vote_response = testc.post(
+        "/api/games/1/vote/", headers={"Authorization": token}, json={"vote": "false"})
 
     assert vote_response.status_code == 200
+
+
 """
     game = testc.get(
         "api/games/1/",
@@ -33,8 +36,8 @@ def test_not_last_vote():
     game.json()[]
 """
 
-def test_redo_vote():
 
+def test_redo_vote():
 
     login = testc.post(
         "api/login/",
@@ -45,13 +48,13 @@ def test_redo_vote():
             "password": "password"})
 
     token = "Bearer " + login.json()["access_token"]
-    response = testc.post("/api/games/1/vote/", headers={"Authorization": token}, json={"vote":"true"})
+    response = testc.post(
+        "/api/games/1/vote/", headers={"Authorization": token}, json={"vote": "true"})
 
     assert response.status_code == 200
 
 
 def test_last_vote():
-
 
     login = testc.post(
         "api/login/",
@@ -62,6 +65,7 @@ def test_last_vote():
             "password": "password"})
 
     token = "Bearer " + login.json()["access_token"]
-    response = testc.post("/api/games/1/vote/", headers={"Authorization": token}, json={"vote":"false"})
+    response = testc.post(
+        "/api/games/1/vote/", headers={"Authorization": token}, json={"vote": "false"})
 
     assert response.status_code == 200

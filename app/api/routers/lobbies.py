@@ -106,10 +106,10 @@ def join_game(lobby_id: int, Authorize: AuthJWT = Depends()):
 
 # Start lobby_id lobby.
 @r.post("/lobbies/{lobby_id}/start/",
-                response_model=StartConfirmation)
+        response_model=StartConfirmation)
 def start_game(lobby_id: int,
-        # current_players: LobbyStart,
-        Authorize: AuthJWT = Depends()):
+               # current_players: LobbyStart,
+               Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
 
     user_email = Authorize.get_jwt_identity()

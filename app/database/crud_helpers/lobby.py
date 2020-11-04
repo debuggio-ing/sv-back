@@ -11,9 +11,9 @@ def insert_lobby(lobby: LobbyReg, user_email: str) -> int:
     lobby_id = -1
     if user_id != -1:
         l = Lobby(name=lobby.name,
-              max_players=lobby.max_players,
-              creation_date=datetime.now(),
-              owner_id=user_id)
+                  max_players=lobby.max_players,
+                  creation_date=datetime.now(),
+                  owner_id=user_id)
         commit()
         lobby_id = l.id
 
@@ -87,6 +87,7 @@ def get_lobby_started(lobby_id: int) -> bool:
     return started
 
 
+# Set lobby_id lobby as started.
 @db_session
 def set_lobby_started(lobby_id: int):
     lobby = Lobby.get(id=lobby_id)
@@ -113,7 +114,7 @@ def get_all_lobbies_ids(lobby_from: Optional[int], lobby_to: Optional[int]):
     return lobbies_ids
 
 
-# Check if lobby id==lid exists 
+# Check if lobby id==lid exists
 @db_session
 def lobby_exists(lid):
     return Lobby.get(id=lid) is not None
@@ -122,7 +123,7 @@ def lobby_exists(lid):
 # Check if lobby has started.
 @db_session
 def is_lobby_started(lobby_id: int) -> bool:
-    lobby = Lobby.get(id=lobby_id)  
+    lobby = Lobby.get(id=lobby_id)
 
     started = False
     if lobby is not None and lobby.game is not None:

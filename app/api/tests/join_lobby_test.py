@@ -6,6 +6,7 @@ from app.database.crud import *
 
 client = TestClient(test_svapi)
 
+
 # Try to join a valid lobby
 def test_join_valid_lobby():
     user1 = UserReg(
@@ -69,33 +70,6 @@ def test_join_valid_lobby():
         'started': False,
         'is_owner': False}
 
-# Try to join twice with the same user.
-# def test_join_lobby_twice():
-#     user = UserReg(
-#         username='user1',
-#         email='1@gmail.com',
-#         password='testPassword')
-#     if user.email not in get_emails():
-#         register_user(user1)
-
-#     login = client.post(
-#         "api/login/",
-#         headers={
-#             "Content-Type": "application/json"},
-#         json={
-#             "email": "1@gmail.com",
-#             "password": "testPassword"})
-
-#     token = "Bearer " + login.json()["access_token"]
-#     create = client.post("/api/lobbies/new/", headers={"Authorization": token},
-#                          json={"name": "test_lobby", "max_players": 5})
-
-#     lobby_id = create.json()["id"]
-#     join = client.post("/api/lobbies/" + str(lobby_id) + "/join/",
-#                        headers={"Authorization": token})
-
-#     assert join.status_code == 409
-#     assert join.json() == {'detail': 'User already in lobby.'}
 
 # Try to join the lobby with no jwt available.
 def test_join_lobby_with_no_jwt():

@@ -13,14 +13,14 @@ tokens = []
 users = []
 for x in range(NUM_OF_PLAYERS):
     user = UserReg(username="user" + str(x), email=str(x)+'@gmail.com',
-        password='testPassword')
+                   password='testPassword')
     if user.email not in get_emails():
         register_user(user)
     users.append(user)
-    
+
     login = testc.post("api/login/",
-        headers={"Content-Type": "application/json"},
-        json={"email": user.email, "password": user.password})
+                       headers={"Content-Type": "application/json"},
+                       json={"email": user.email, "password": user.password})
 
     token = "Bearer " + login.json()["access_token"]
     tokens.append(token)
@@ -47,18 +47,19 @@ create2 = testc.post(
         "max_players": max_players})
 lobby2_id = create2.json()["id"]
 
-for i in range(1,len(tokens)-1):
+for i in range(1, len(tokens)-1):
     join1 = testc.post("/api/lobbies/" + str(lobby1_id) + "/join/",
-        headers={"Authorization": tokens[i]})
+                       headers={"Authorization": tokens[i]})
     join2 = testc.post("/api/lobbies/" + str(lobby2_id) + "/join/",
-        headers={"Authorization": tokens[i]})
+                       headers={"Authorization": tokens[i]})
 
 
 start1 = testc.post("/api/lobbies/" + str(lobby1_id) + "/start/",
-        headers={"Authorization": tokens[0]})
+                    headers={"Authorization": tokens[0]})
 
 start2 = testc.post("/api/lobbies/" + str(lobby2_id) + "/start/",
-        headers={"Authorization": tokens[0]})
+                    headers={"Authorization": tokens[0]})
+
 
 # Try to get all user games.
 def test_get_user_games():
@@ -73,6 +74,7 @@ def test_get_user_games():
     assert user_games_json["email"] == users[0].email
     assert user_games_json["games"] == [lobby1_id, lobby2_id]
 
+
 # Try to get user games but user was not inside any game.
 def test_get_user_games_empty():
     user_games = testc.get(
@@ -86,10 +88,11 @@ def test_get_user_games_empty():
     assert user_games_json["email"] == users[-1].email
     assert user_games_json["games"] == []
 
+
 # Try to get user games and user was inside only one game.
 def test_get_user_games_one_entry():
     join1 = testc.post("/api/lobbies/" + str(lobby1_id) + "/join/",
-        headers={"Authorization": tokens[-1]})
+                       headers={"Authorization": tokens[-1]})
 
     user_games = testc.get(
         "/api/users/games/",
