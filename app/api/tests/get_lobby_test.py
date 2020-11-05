@@ -71,8 +71,8 @@ def test_get_lobby():
         "name": join.json()["name"],
         "current_players": join.json()["current_players"],
         "max_players": join.json()["max_players"],
-        "started":join.json()["started"],
-        "is_owner":True}
+        "started": join.json()["started"],
+        "is_owner": True}
 
 
 # Try to get a lobby not being logged in

@@ -31,6 +31,7 @@ login1 = lobby.post(
 
 token1 = "Bearer " + login1.json()["access_token"]
 
+
 # Try to get all lobbies with no lobbies created.
 def test_get_empty_lobby_list():
     get_all = lobby.get(

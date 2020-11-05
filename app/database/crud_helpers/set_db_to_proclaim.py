@@ -16,7 +16,8 @@ def set_db_for_procl():
     user5 = User(email="nico@gmail.com", username="nico",
                  password="$5$rounds=535000$hN.xjQV17DkWk3zX$cDFQJeakbvfB6Fn.5mB/XnSS/xjrplJ./7rh.I33Ss.")
 
-    user_id = 1 # cant use get_user_id(user1.email) because is not stored on the db.
+    # cant use get_user_id(user1.email) because is not stored on the db.
+    user_id = 1
 
     lobby1 = Lobby(name="mortifagos 4ever", max_players=5, owner_id=user_id)
 

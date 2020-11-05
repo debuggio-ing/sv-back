@@ -76,8 +76,8 @@ class CurrentVote(db.Entity):
     id = PrimaryKey(int, auto=True)
     vote = Required(bool)
     voter_id = Required(int)  # redundancia por ahora
-    game = Optional(int)
-    player = Optional(int)
+    game = Required(int)
+    player = Required(int)
 
 
 # Last public vote result
@@ -85,8 +85,8 @@ class PublicVote(db.Entity):
     id = PrimaryKey(int, auto=True)
     vote = Required(bool)
     voter_id = Required(int)  # redundancia por ahora
-    game = Optional(int)
-    player = Optional(int)
+    game = Required(int)
+    player = Required(int)
 
 
 # Created when a game is started

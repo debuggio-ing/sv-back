@@ -65,6 +65,7 @@ create2 = lobby.post(
         "name": lobby_name,
         "max_players": max_players})
 
+
 # Try to get all lobbies.
 def test_get_lobby_list():
     get_all = lobby.get(
@@ -109,6 +110,7 @@ def test_lobby_from():
                                "max_players":create2.json()["max_players"],
                                "started":create2.json()["started"],
                                "is_owner":create2.json()["is_owner"]}]
+
 
 # Test lobby_to argument.
 def test_lobby_to():

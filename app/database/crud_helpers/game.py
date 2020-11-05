@@ -5,14 +5,15 @@ from app.database.crud_helpers.lobby import *
 from typing import List
 import random
 
+
 # Create game in the database.
 @db_session
 def insert_game(lobby_id: int) -> int:
     NUM_DEATH_EATERS = 2
     NUM_PHOENIX_CARDS = 6
     PROC_CARD_NUMBER = 17
-    #This number is hidden and therefore its random
-    ULTRA_RANDOM_NUMBER = random.randint(0,4)
+    # This number is hidden and therefore its random
+    ULTRA_RANDOM_NUMBER = random.randint(0, 4)
 
     lobby = Lobby.get(id=lobby_id)
 
@@ -30,12 +31,12 @@ def insert_game(lobby_id: int) -> int:
 
         player_ids = get_lobby_players_id(lobby.id)
 
-        #Set player order
+        # Set player order
         for i, pid in enumerate(player_ids):
             player = Player.get(id=pid)
             player.position = player_order[i]
 
-        #Set first player of the list
+        # Set first player of the list
         game.list_head = ULTRA_RANDOM_NUMBER
 
         # create proclamation cards.
@@ -53,7 +54,7 @@ def insert_game(lobby_id: int) -> int:
 
         # set first minister of magic.
         set_minister_of_magic(player_ids[ULTRA_RANDOM_NUMBER])
-        game.list_head = ((game.list_head+1)%MAX_PLAYERS)
+        game.list_head = ((game.list_head+1) % MAX_PLAYERS)
 
         commit()
         game_id = game.id
@@ -79,12 +80,16 @@ def get_game_public_info(gid: int, pid: int):
                       client_director=is_player_director(pid)
                       )
 
+
+# Returns true if pid is minister.
 @db_session
 def is_player_minister(pid: int) -> bool:
     player = Player.get(id=pid)
 
     return player.minister == True
 
+
+# Returns true if pid is director.
 @db_session
 def is_player_director(pid: int) -> bool:
     player = Player.get(id=pid)
@@ -92,11 +97,13 @@ def is_player_director(pid: int) -> bool:
     return player.director == True
 
 
+# Returns all game's ids
 @db_session
 def get_all_games_ids(game_from: int, game_to: int) -> List[int]:
     return list(select(g.id for g in Game))
 
 
+# Return a list of all players in gid game.
 @db_session
 def get_game_player_public_list(gid: int) -> List[PlayerPublic]:
     pid_list = list(select(
@@ -107,6 +114,7 @@ def get_game_player_public_list(gid: int) -> List[PlayerPublic]:
     return players
 
 
+# Returns the id of the game's minister.
 @db_session
 def get_game_minister_id(gid: int) -> int:
     minister = Player.get(lobby=gid, minister=True)
@@ -118,6 +126,7 @@ def get_game_minister_id(gid: int) -> int:
     return minister_id
 
 
+# Returns the id of the game's director.
 @db_session
 def get_game_director_id(gid: int) -> int:
     director = Player.get(lobby=gid, director=True)
@@ -129,6 +138,7 @@ def get_game_director_id(gid: int) -> int:
     return director_id
 
 
+# Returns the id of the game's previous minister.
 @db_session
 def get_game_prev_minister_id(gid: int) -> int:
     prev_minister = Player.get(lobby=gid, prev_minister=True)
@@ -250,7 +260,7 @@ def propose_goverment(gid: int, dir_id: int):
 def finish_legislative_session(game_id):
     game = Game.get(id=game_id)
     game.in_session = False
-    game.minister_proclaimed= False
+    game.minister_proclaimed = False
     set_next_minister_candidate(game_id)
 
     commit()

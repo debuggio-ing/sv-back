@@ -13,13 +13,15 @@ def get_selected_cards(game_id):
 def proclaim_card(proclamation: [(int, bool)], game_id: int):
     # check cards are valid before modifying the database
     for sel_card in proclamation:
-        card = list(ProcCard.select(lambda c: c.position == sel_card.card_pos and c.game.id == game_id))
+        card = list(ProcCard.select(lambda c: c.position ==
+                                    sel_card.card_pos and c.game.id == game_id))
         if len(card) is None or not card[0].selected:
             return False
 
     # update cards' status in database
     for sel_card in proclamation:
-        card = list(ProcCard.select(lambda c: c.position == sel_card.card_pos and c.game.id == game_id))[0]
+        card = list(ProcCard.select(lambda c: c.position ==
+                                    sel_card.card_pos and c.game.id == game_id))[0]
         card.selected = False
         if sel_card.to_proclaim:
             card.proclaimed = True
