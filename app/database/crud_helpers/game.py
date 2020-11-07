@@ -239,10 +239,10 @@ def goverment_proposal_needed(gid: int) -> bool:
 
 # Purpose a director specified by the user id dir_id
 @db_session
-def propose_goverment(gid: int, dir_id: int):
-    lobby = Lobby.get(id=gid)
+def propose_government(game_id: int, dir_id: int):
+    lobby = Lobby.get(id=game_id)
 
-    old_dir_id = get_game_director_id(gid=gid)
+    old_dir_id = get_game_director_id(gid=game_id)
     old_dir = Player.get(id=old_dir_id)
 
     if old_dir is not None:
