@@ -5,8 +5,11 @@ import random
 # Return all selected cards in a game identified by game_id
 @db_session
 def get_selected_cards_pos(game_id: int):
-    return list(select(card.pos for card in ProcCard if card.selected))
+    return list(select(card.position for card in ProcCard if card.selected and card.game.id==game_id))
 
+@db_session
+def get_selected_cards(game_id:int):
+    return list(select(card for card in ProcCard if card.selected and card.game.id==game_id))
 
 # Discard the card identified by card_pos and game_id
 @db_session
