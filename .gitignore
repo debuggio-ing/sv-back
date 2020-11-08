@@ -1,1 +1,5 @@
-app/__pycache__/*
+venv/
+__pycache__/
+*.sqlite
+.gitignore
+.pytest_cache
