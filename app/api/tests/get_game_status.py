@@ -69,7 +69,7 @@ def test_get_game_public():
                 "username": "nico",
                 "position": 5
             }
-        ],    "voting": True,
+        ], "voting": True,
         "in_session": False,
         "minister_proclaimed": False,
         "minister": 1,

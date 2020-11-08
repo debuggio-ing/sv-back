@@ -12,7 +12,7 @@ NUM_OF_PLAYERS = 6
 tokens = []
 users = []
 for x in range(NUM_OF_PLAYERS):
-    user = UserReg(username="user" + str(x), email=str(x)+'@gmail.com',
+    user = UserReg(username="user" + str(x), email=str(x) + '@gmail.com',
                    password='testPassword')
     if user.email not in get_emails():
         register_user(user)
@@ -47,7 +47,7 @@ create2 = testc.post(
         "max_players": max_players})
 lobby2_id = create2.json()["id"]
 
-for i in range(1, len(tokens)-1):
+for i in range(1, len(tokens) - 1):
     join1 = testc.post("/api/lobbies/" + str(lobby1_id) + "/join/",
                        headers={"Authorization": tokens[i]})
     join2 = testc.post("/api/lobbies/" + str(lobby2_id) + "/join/",

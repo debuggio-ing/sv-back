@@ -7,14 +7,22 @@ def set_db_for_procl():
     user1 = User(email="maw@gmail.com", username="maw",
                  # password = password
                  password="$5$rounds=535000$hN.xjQV17DkWk3zX$cDFQJeakbvfB6Fn.5mB/XnSS/xjrplJ./7rh.I33Ss.")
-    user2 = User(email="law@gmail.com", username="law",
-                 password="$5$rounds=535000$hN.xjQV17DkWk3zX$cDFQJeakbvfB6Fn.5mB/XnSS/xjrplJ./7rh.I33Ss.")
-    user3 = User(email="lau@gmail.com", username="lau",
-                 password="$5$rounds=535000$hN.xjQV17DkWk3zX$cDFQJeakbvfB6Fn.5mB/XnSS/xjrplJ./7rh.I33Ss.")
-    user4 = User(email="ulince@gmail.com", username="ulince",
-                 password="$5$rounds=535000$hN.xjQV17DkWk3zX$cDFQJeakbvfB6Fn.5mB/XnSS/xjrplJ./7rh.I33Ss.")
-    user5 = User(email="nico@gmail.com", username="nico",
-                 password="$5$rounds=535000$hN.xjQV17DkWk3zX$cDFQJeakbvfB6Fn.5mB/XnSS/xjrplJ./7rh.I33Ss.")
+    user2 = User(
+        email="law@gmail.com",
+        username="law",
+        password="$5$rounds=535000$hN.xjQV17DkWk3zX$cDFQJeakbvfB6Fn.5mB/XnSS/xjrplJ./7rh.I33Ss.")
+    user3 = User(
+        email="lau@gmail.com",
+        username="lau",
+        password="$5$rounds=535000$hN.xjQV17DkWk3zX$cDFQJeakbvfB6Fn.5mB/XnSS/xjrplJ./7rh.I33Ss.")
+    user4 = User(
+        email="ulince@gmail.com",
+        username="ulince",
+        password="$5$rounds=535000$hN.xjQV17DkWk3zX$cDFQJeakbvfB6Fn.5mB/XnSS/xjrplJ./7rh.I33Ss.")
+    user5 = User(
+        email="nico@gmail.com",
+        username="nico",
+        password="$5$rounds=535000$hN.xjQV17DkWk3zX$cDFQJeakbvfB6Fn.5mB/XnSS/xjrplJ./7rh.I33Ss.")
 
     # cant use get_user_id(user1.email) because is not stored on the db.
     user_id = 1

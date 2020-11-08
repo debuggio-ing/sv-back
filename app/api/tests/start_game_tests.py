@@ -11,7 +11,7 @@ NUM_OF_PLAYERS = 5
 
 tokens = []
 for x in range(NUM_OF_PLAYERS):
-    user = UserReg(username="user" + str(x), email=str(x)+'@gmail.com',
+    user = UserReg(username="user" + str(x), email=str(x) + '@gmail.com',
                    password='testPassword')
     if user.email not in get_emails():
         register_user(user)
@@ -64,17 +64,17 @@ def test_start_game():
     assert start.status_code == 200
     assert start_json['director'] == -1
     assert start_json['minister'] <= NUM_OF_PLAYERS
-    assert start_json['end'] == None
+    assert start_json['end'] is None
     assert len(player_list) == NUM_OF_PLAYERS
     assert num_phoenixes == 3
     assert num_death_eaters == 2
     assert num_voldemort == 1
     assert start_json['prev_director'] == -1
     assert start_json['prev_minister'] == -1
-    assert start_json['roleReveal'] == None
+    assert start_json['roleReveal'] is None
     assert start_json['score'] == {'bad': 0, 'good': 0}
     assert start_json['semaphore'] == 0
-    assert start_json['winners'] == None
+    assert start_json['winners'] is None
 
 
 # Some user that's not the owner of the game starts the game.

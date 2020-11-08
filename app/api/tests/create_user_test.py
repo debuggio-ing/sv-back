@@ -39,7 +39,7 @@ def test_create_user():
             "password": "messirve"})
 
     assert response.status_code == 200
-    assert response.json()["access_token"] != None
+    assert response.json()["access_token"] is not None
 
 
 # Intentamos registrar un mismo mail 2 veces

@@ -1,31 +1,43 @@
 from app.database.models import *
-from app.api.schemas import *
+import random
 
 
-# Return selected cards in a game
+# Return all selected cards in a game identified by game_id
 @db_session
-def get_selected_cards(game_id):
-    return list(ProcCard.select(lambda c: c.game.lobby.id == game_id and c.selected == True))
+def get_selected_cards_pos(game_id: int):
+    return list(select(card.pos for card in ProcCard if card.selected))
 
 
-# Proclaim card, return false if it couldn't be proclaimed
+# Discard the card identified by card_pos and game_id
 @db_session
-def proclaim_card(proclamation: [(int, bool)], game_id: int):
-    # check cards are valid before modifying the database
-    for sel_card in proclamation:
-        card = list(ProcCard.select(lambda c: c.position ==
-                                    sel_card.card_pos and c.game.id == game_id))
-        if len(card) is None or not card[0].selected:
-            return False
+def discard_card(card_pos: int, game_id: int):
+    card = ProcCard.get(position=card_pos, game=game_id)
+    card.selected = False
+    card.discarded = True
+    commit()
 
-    # update cards' status in database
-    for sel_card in proclamation:
-        card = list(ProcCard.select(lambda c: c.position ==
-                                    sel_card.card_pos and c.game.id == game_id))[0]
+
+# Proclaim the card identified by card_pos and game_id.
+# Discard the other selected card in the same game
+@db_session
+def proclaim_card(card_pos: int, game_id: int):
+    cards = select(c for c in ProcCard if c.game.id == game_id)
+    for card in cards:
         card.selected = False
-        if sel_card.to_proclaim:
+        if card.position == card_pos:
             card.proclaimed = True
         else:
-            card.discarded = True
+            card.discarded = False
     commit()
-    return True
+
+
+# Shuffle the cards in the deck of the game specified by game_id
+@db_session
+def shuffle_cards(game_id: int):
+    cards = select(c for c in ProcCard if c.game.id ==
+                   game_id and not c.proclaimed)
+    positions = list(range(0, len(cards)))
+    random.shuffle(positions)
+    for i in range(0, len(cards)):
+        cards[i].position = positions[i]
+        cards[i].selected = cards[i].discarded = False

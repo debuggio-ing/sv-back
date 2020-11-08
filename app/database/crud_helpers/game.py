@@ -54,7 +54,7 @@ def insert_game(lobby_id: int) -> int:
 
         # set first minister of magic.
         set_minister_of_magic(player_ids[ULTRA_RANDOM_NUMBER])
-        game.list_head = ((game.list_head+1) % MAX_PLAYERS)
+        game.list_head = ((game.list_head + 1) % MAX_PLAYERS)
 
         commit()
         game_id = game.id
@@ -83,18 +83,14 @@ def get_game_public_info(gid: int, pid: int):
 
 # Returns true if pid is minister.
 @db_session
-def is_player_minister(pid: int) -> bool:
-    player = Player.get(id=pid)
-
-    return player.minister == True
+def is_player_minister(player_id: int) -> bool:
+    return Player.get(id=player_id).minister
 
 
 # Returns true if pid is director.
 @db_session
-def is_player_director(pid: int) -> bool:
-    player = Player.get(id=pid)
-
-    return player.director == True
+def is_player_director(player_id: int) -> bool:
+    return Player.get(id=player_id).director
 
 
 # Returns all game's ids
@@ -257,10 +253,20 @@ def propose_government(game_id: int, dir_id: int):
 
 # Finish the current legislative session
 @db_session
-def finish_legislative_session(game_id):
+def finish_legislative_session(game_id: int):
     game = Game.get(id=game_id)
     game.in_session = False
     game.minister_proclaimed = False
     set_next_minister_candidate(game_id)
+    cards = list(select(c for c in ProcCard if c.game.id == game_id))
+    if len(cards.filter(lambda c: not(c.proclaimed and c.discarded))) <= 2:
+        shuffle_cards(game_id)
+    commit()
 
+
+# Updates the status of the game after the minister discards a card
+@db_session
+def finish_minister_proclamation(game_id: int):
+    game = Game.get(id=game_id)
+    game.minister_proclaimed = True
     commit()

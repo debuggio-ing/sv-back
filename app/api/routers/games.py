@@ -1,11 +1,16 @@
 from app.api.routers_helpers.game_helper import *
+from app.api.routers_helpers.auth_helper import *
+from fastapi import APIRouter
 
 r = games_router = APIRouter()
 
 
 # List games in database
 @r.get("/games/")
-def get_game_list(game_from: Optional[int] = 0, game_to: Optional[int] = None, auth: AuthJWT = Depends()):
+def get_game_list(
+        game_from: Optional[int] = 0,
+        game_to: Optional[int] = None,
+        auth: AuthJWT = Depends()):
     user_email = validate_user(auth=auth)
 
     game_id_list = get_all_games_ids(game_from, game_to)
@@ -63,55 +68,60 @@ def cast_spell(game_id: int, spell: CastSpell, authorize: AuthJWT = Depends()):
     return
 
 
-# Return to the director the cards selected by the minister
-@r.get("/games/{game_id}/dir/proc/")
+# Return to the minister/director the selected cards according to the game
+# status
+@r.get("/games/{game_id}/proc/", response_model=List[CardToProclaim])
 def get_director_proc(game_id: int, auth: AuthJWT = Depends()):
     user_email = validate_user(auth=auth)
 
     player_id = get_player(email=user_email, game_id=game_id)
-
-    is_dir_proc_time(game_id=game_id, player_id=player_id)
-
-    # get the cards selected by the minister
-    selected_cards = get_selected_cards(game_id)
     cards = []
-    for card in selected_cards:
-        cards.append(CardToProclaim(
-            card_pos=card.position, phoenix=card.phoenix))
-
+    if is_min_proc_time(
+            game_id=game_id,
+            player_id=player_id) or is_dir_proc_time(
+            game_id=game_id,
+            player_id=player_id):
+        selected_cards = get_selected_cards_pos(game_id)
+        for card in selected_cards:
+            cards.append(CardToProclaim(
+                card_pos=card.position, phoenix=card.phoenix))
+    else:
+        raise HTTPException(status_code=401, detail='User not allowed')
     return cards
 
 
-# Director chooses the cards to proclaim
-# At this point expelliarmus is not implemented
-# Returns True if game continues or False if game is over
-@r.post("/games/{game_id}/dir/proc/", response_model=bool)
+# This function can be called by the minister or the director of the game
+# If called by the minister, election represents the position of the card to be discarded
+# If called by the director, election represents the position of the card to be proclaimed
+# Returns True if game continues or False if game is over, always False if
+# called by minister
+@r.post("/games/{game_id}/proc/", response_model=bool)
 def proc_election(
         game_id: int,
-        election: LegislativeSession,
+        election: int,
         auth: AuthJWT = Depends()):
     email = validate_user(auth=auth)
 
     player_id = get_player(email=email, game_id=game_id)
 
-    # check if it's time for a director to choose
-    is_dir_proc_time(game_id=game_id, player_id=player_id)
+    # check if it's time for the minister or director to choose and if the
+    # player is allowed
+    if is_min_proc_time(game_id=game_id, player_id=player_id):
 
-    # check if the received proclamation is valid
-    proclamation_count = sum(
-        map(lambda c: c.to_proclaim, election.proclamation))
-    if proclamation_count != 1 or len(election.proclamation) != 2:
-        raise HTTPException(
-            status_code=401, detail='Invalid selection of cards')
+        # minister discard the selected card
+        minister_discards(election=election, game_id=game_id)
 
-    # proclaim card if it's not proclaimed
-    if not proclaim_card(election.proclamation, game_id):
-        raise HTTPException(
-            status_code=401, detail='Invalid selection of cards')
+        # update game status
+        finish_minister_proclamation(game_id=game_id)
 
-    # finish legislative session and release the director
-    finish_legislative_session(game_id)
-    discharge_director(player_id)
+    elif is_dir_proc_time(game_id=game_id, player_id=player_id):
+
+        # director proclaims the selected cards
+        director_proclaims(election=election, game_id=game_id)
+
+        # update game status and card deck
+        discharge_director(game_id=game_id)
+        finish_legislative_session(game_id)
 
     return is_game_over(game_id)
 

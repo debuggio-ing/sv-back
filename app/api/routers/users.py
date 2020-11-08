@@ -31,7 +31,7 @@ def get_user(Authorize: AuthJWT = Depends()):
     return
 
 
-# Return all lobies that user with jwt is in.
+# Return all lobbies that user with jwt is in.
 @r.get("/users/games/", response_model=UserGames)
 def get_user_active_games(Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()

@@ -33,7 +33,7 @@ def test_valid_login():
             "password": "testPassword"})
 
     assert response.status_code == 200
-    assert response.json()["access_token"] != None
+    assert response.json()["access_token"] is not None
 
 
 # Try to log in with invalid user.

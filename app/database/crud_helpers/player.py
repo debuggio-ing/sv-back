@@ -136,15 +136,22 @@ def is_director(player_id: int) -> bool:
 
 # Check if it's time for the director to choose a proclamation card
 @db_session
-def director_chooses_proc(game_id):
+def director_chooses_proc(game_id: int) -> bool:
     lobby = Lobby.get(id=game_id)
     game = lobby.game
-
     return game and game.in_session and game.minister_proclaimed
 
 
 # Discharge director
 @db_session
-def discharge_director(player_id):
+def discharge_director(player_id: int):
     Player.get(id=player_id).director = False
     commit()
+
+
+# Check if it's time for the minister to choose a proclamation card
+@db_session
+def minister_chooses_proc(game_id: int) -> bool:
+    lobby = Lobby.get(id=game_id)
+    game = lobby.game
+    return game and game.in_session and not game.minister_proclaimed

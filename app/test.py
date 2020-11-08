@@ -14,8 +14,10 @@ from fastapi.middleware.cors import CORSMiddleware
 
 # svapi is the API object
 test_svapi = FastAPI(
-    title="Secret-Voldemort", docs_url="/api/docs", openapi_url="/api", redoc_url="/api/redoc"
-)
+    title="Secret-Voldemort",
+    docs_url="/api/docs",
+    openapi_url="/api",
+    redoc_url="/api/redoc")
 
 
 bind_db(True)
