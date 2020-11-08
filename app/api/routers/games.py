@@ -121,7 +121,7 @@ def proc_election(
         director_proclaims(election=election, game_id=game_id)
 
         # update game status and card deck
-        discharge_director(game_id=game_id)
+        discharge_director(player_id=player_id)
         finish_legislative_session(game_id)
 
     return is_game_over(game_id)
