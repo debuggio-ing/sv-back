@@ -11,7 +11,7 @@ testc = TestClient(test_svapi)
 
 populate_test_db()
 
-#DEPRECADO, YA NO HACE LO MISMO QUE ANTES
+# DEPRECADO, YA NO HACE LO MISMO QUE ANTES
 """
 def test_get_game_list():
 

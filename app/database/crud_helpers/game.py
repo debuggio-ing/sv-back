@@ -103,12 +103,11 @@ def get_all_games_ids(game_from: int, game_to: int) -> List[int]:
 # Return a list of all players in gid game with the information of concern
 # to c_pid (callers_player_id).
 @db_session
-def get_game_player_public_list(gid: int, c_pid: int) -> List[PlayerPublic]:
-    pid_list = list(select(
-        p.id for p in Player if gid == p.lobby.id))
-
-    players = [get_player_public(pid, c_pid) for pid in pid_list]
-
+def get_game_player_public_list(
+        game_id: int,
+        c_pid: int) -> List[PlayerPublic]:
+    player_ids = list(select(p.id for p in Player if game_id == p.lobby.id))
+    players = [get_player_public(player_id, c_pid) for player_id in player_ids]
     return players
 
 

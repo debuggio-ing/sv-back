@@ -8,7 +8,7 @@ from app.api.schemas import *
 from app.database.models import *
 from app.database.crud import *
 from typing import Optional
-
+from app.api.routers_helpers.auth_helper import *
 
 # Lobbies endpoints' router
 r = lobbies_router = APIRouter()
@@ -19,18 +19,16 @@ r = lobbies_router = APIRouter()
 def get_lobby_list(
     lobby_from: Optional[int] = 0,
     lobby_to: Optional[int] = None,
-    Authorize: AuthJWT = Depends()
+    auth: AuthJWT = Depends()
 ):
-    Authorize.jwt_required()
+    user_email = validate_user(auth=auth)
 
-    user_email = Authorize.get_jwt_identity()
-
-    #Get all the lobbies who are still lobbies (not started)
+    # get all lobbies which haven't started
     lobby_id_list = get_all_lobbies_ids(lobby_from, lobby_to)
 
     lobbies = []
-    for lid in lobby_id_list:
-        lobby = get_lobby_public_info(lid, user_email)
+    for lobby_id in lobby_id_list:
+        lobby = get_lobby_public_info(lobby_id, user_email)
         lobbies.append(lobby)
 
     return lobbies

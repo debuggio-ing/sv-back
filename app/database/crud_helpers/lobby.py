@@ -19,13 +19,15 @@ def insert_lobby(lobby: LobbyReg, user_email: str) -> int:
 
     return lobby_id
 
+
+# Get lobby_id's data for the user's view
 @db_session
-def get_lobby_public_info(lid: int, user_email: str):
-    return LobbyPublic(id=lid, name=get_lobby_name(lid),
-                        current_players=get_lobby_player_list(lid),
-                        max_players=get_lobby_max_players(lid),
-                        started=get_lobby_started(lid),
-                        is_owner=get_lobby_is_owner(lid, user_email))
+def get_lobby_public_info(lobby_id: int, user_email: str):
+    return LobbyPublic(id=lobby_id, name=get_lobby_name(lobby_id),
+                       current_players=get_lobby_player_list(lobby_id),
+                       max_players=get_lobby_max_players(lobby_id),
+                       started=get_lobby_started(lobby_id),
+                       is_owner=get_lobby_is_owner(lobby_id, user_email))
 
 
 # Get lobby_id lobby's owner_id attribute.
