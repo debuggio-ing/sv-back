@@ -86,8 +86,8 @@ def get_active_games(user_email: str):
 # Return the required user information.
 @db_session
 def get_user_public(user_email: str):
-    return UserPublic(id = get_user_id(user_email),
-                      username = get_username(user_email=user_email),
+    return UserPublic(id=get_user_id(user_email),
+                      username=get_username(user_email=user_email),
                       email=user_email
                       )
 
@@ -98,6 +98,6 @@ def set_username(user_email: str, username: str):
     user = User.get(email=user_email)
 
     if user is not None:
-        user.username =  username
+        user.username = username
 
     commit()

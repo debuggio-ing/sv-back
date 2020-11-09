@@ -10,8 +10,8 @@ testc = TestClient(test_svapi)
 # Setup database
 user1 = UserReg(
     username='user1',
-    email='1@gmail.com',
-    password='testPassword')
+    email='a@gmail.com',
+    password='123456789')
 if user1.email not in get_emails():
     register_user(user1)
 
@@ -28,8 +28,8 @@ def test_modify_user_info():
     token = "Bearer " + login.json()["access_token"]
     username = "que buen nombre"
 
-    user = testc.post("/api/users/info/modify/", headers={"Authorization": token},
-        json={"username": username})
+    user = testc.post("/api/users/info/modify/?username=" + username,
+                      headers={"Authorization": token})
 
     user_json = user.json()
 
