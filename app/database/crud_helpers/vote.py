@@ -95,20 +95,28 @@ def update_public_vote(game_id: int):
 
 # Set voting results.
 @db_session
-def process_vote_result(gid: int):
-    lobby = Lobby.get(id=gid)
+def process_vote_result(game_id: int):
+    lobby = Lobby.get(id=game_id)
     game = lobby.game
     max_players = lobby.max_players
 
     result = len(
-        select(v for v in PublicVote if v.game == gid and v.vote == True))
-    if result < math.ceil((max_players+1)/2):
-        set_next_minister_candidate(gid)
-        game.semaphore = (game.semaphore+1) % 4
+        select(v for v in PublicVote if v.game == game_id and v.vote))
+    if result < math.ceil((max_players + 1) / 2):
+        set_next_minister_candidate(game_id)
+        game.semaphore = (game.semaphore + 1) % 4
         dir = Player.get(lobby=lobby, director=True)
         dir.director = False
     else:
         game.in_session = True
+        # select cards for legislative session
+        cards = list(
+            select(
+                c for c in ProcCard if c.game.id == game_id and not (
+                    c.proclaimed or c.discarded)).order_by(
+                lambda c: c.position).limit(3))
+        for c in cards:
+            c.selected = True
 
     game.voting = False
     commit()
@@ -130,7 +138,7 @@ def set_next_minister_candidate(gid: int):
         new_minister.minister = True
 
     # update list head
-    lobby.game.list_head = (lobby.game.list_head+1) % lobby.max_players
+    lobby.game.list_head = (lobby.game.list_head + 1) % lobby.max_players
     commit()
 
 

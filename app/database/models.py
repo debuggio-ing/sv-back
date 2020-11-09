@@ -111,3 +111,4 @@ class ProcCard(db.Entity):
     position = Required(int)
     phoenix = Required(bool)
     game = Required('Game')
+    composite_key(position, game)

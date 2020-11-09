@@ -7,6 +7,7 @@ from fastapi_jwt_auth import AuthJWT
 from app.api.schemas import *
 from app.database.models import *
 from app.database.crud import *
+from typing import Optional
 
 
 # Lobbies endpoints' router

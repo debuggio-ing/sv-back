@@ -22,7 +22,11 @@ def test_not_last_vote():
 
     token = "Bearer " + login.json()["access_token"]
     vote_response = testc.post(
-        "/api/games/1/vote/", headers={"Authorization": token}, json={"vote": "false"})
+        "/api/games/1/vote/",
+        headers={
+            "Authorization": token},
+        json={
+            "vote": "false"})
 
     assert vote_response.status_code == 200
 
@@ -49,7 +53,11 @@ def test_redo_vote():
 
     token = "Bearer " + login.json()["access_token"]
     response = testc.post(
-        "/api/games/1/vote/", headers={"Authorization": token}, json={"vote": "true"})
+        "/api/games/1/vote/",
+        headers={
+            "Authorization": token},
+        json={
+            "vote": "true"})
 
     assert response.status_code == 200
 
@@ -66,6 +74,10 @@ def test_last_vote():
 
     token = "Bearer " + login.json()["access_token"]
     response = testc.post(
-        "/api/games/1/vote/", headers={"Authorization": token}, json={"vote": "false"})
+        "/api/games/1/vote/",
+        headers={
+            "Authorization": token},
+        json={
+            "vote": "false"})
 
     assert response.status_code == 200
