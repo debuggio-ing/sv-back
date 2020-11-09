@@ -100,7 +100,8 @@ def get_all_games_ids(game_from: int, game_to: int) -> List[int]:
     return list(select(g.id for g in Game))
 
 
-# Return a list of all players in gid game with the information of concern to c_pid (callers_player_id).
+# Return a list of all players in gid game with the information of concern
+# to c_pid (callers_player_id).
 @db_session
 def get_game_player_public_list(gid: int, c_pid: int) -> List[PlayerPublic]:
     pid_list = list(select(

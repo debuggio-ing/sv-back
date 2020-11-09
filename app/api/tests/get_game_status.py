@@ -30,11 +30,17 @@ def test_get_game_public():
 
     assert ("player_list" in jgame and "score" in jgame)
     assert "role" in jgame["player_list"][0]
-    assert len(jgame["player_list"])>=5
-    assert jgame["score"]["good"]==0 and jgame["score"]["bad"]==0
-    assert any(jgame["minister"]==player["player_id"] for player in jgame["player_list"])
-    if any(None!=player["role"] for player in jgame["player_list"]):
-        print("User not phoenix") # Are roles random? If not this if will always be entered or always not entered
-        assert any("Order of the Phoenix"==player["role"] for player in jgame["player_list"])
-        assert any("voldemort"==player["role"] for player in jgame["player_list"])
-        assert any("Death Eater"==player["role"] for player in jgame["player_list"])
+    assert len(jgame["player_list"]) >= 5
+    assert jgame["score"]["good"] == 0 and jgame["score"]["bad"] == 0
+    assert any(jgame["minister"] == player["player_id"]
+               for player in jgame["player_list"])
+    if any(None is not player["role"] for player in jgame["player_list"]):
+        # Are roles random? If not this if will always be entered or always not
+        # entered
+        print("User not phoenix")
+        assert any("Order of the Phoenix" ==
+                   player["role"] for player in jgame["player_list"])
+        assert any("voldemort" == player["role"]
+                   for player in jgame["player_list"])
+        assert any("Death Eater" == player["role"]
+                   for player in jgame["player_list"])
