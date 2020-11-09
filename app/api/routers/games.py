@@ -73,22 +73,14 @@ def cast_spell(game_id: int, spell: CastSpell, authorize: AuthJWT = Depends()):
     #check user in game
     player_id = get_player(user_email=email, game_id=game_id)     
 
+    #check if player is minister
+    is_player_minister(player_id=player_id)
+    
     #check if game state is correct
     in_casting_phase(game_id=game_id)
 
-    #check if target is correct
-    is_target_correct(game_id=game_id, target=spell.target)
-
     #cast spell(send spell)
-    cast_spell(game_id=game_id, spell=spell.spell, target=spell.target)
-
-
-    #add dead/alive condition to the game logic
-    #change director proclaim,
-        # if proclamation negative => check if spell
-        #                          => dir_proclaimed = True
-
-    return
+    cast_spell(game_id=game_id, target=spell.target)
 
 
 # Return to the minister/director the selected cards according to the game

@@ -77,14 +77,14 @@ def get_game_public_info(gid: int, pid: int):
                       voting=get_game_voting(gid),
                       in_session=get_game_in_session(gid),
                       minister_proclaimed=get_game_minister_proclaimed(gid),
-                      client_minister=is_player_minister(pid),
+                      client_minister=get_is_player_minister(pid),
                       client_director=is_player_director(pid)
                       )
 
 
 # Returns true if pid is minister.
 @db_session
-def is_player_minister(player_id: int) -> bool:
+def get_is_player_minister(player_id: int) -> bool:
     return Player.get(id=player_id).minister
 
 
@@ -284,4 +284,36 @@ def finish_director_proclamation(game_id: int):
                 c.proclaimed and c.discarded),
             cards))) <= 2:
         shuffle_cards(game_id=game_id)
+    if len(
+        list(
+            filter(
+            lambda c: not(not c.proclaimed), cards))
+            ) <=2:
+        discharge_director(game_id=game_id)
+        finish_legislative_session(game_id=game_id)
+
+
     commit()
+
+# Check if game in legislative session
+def in_legislative_session(game_id) -> bool:
+    game = Lobby.get(id=game_id).game
+    return game.in_session
+
+
+# Check if director proclaimed
+def get_director_proclaimed(game_id) -> bool:
+    game = Lobby.get(id=game_id).game
+    return game.director_proclaimed
+
+
+# Check if last proclamation is negative
+def get_last_proc_negative(game_id) -> bool:
+    game = Lobby.get(id=game_id).game
+    return game.last_proc_negative
+
+
+# Get the number of players in the game
+def get_number_players(game_id: int):
+    lobby = Lobby.get(id=game_id)
+    return lobby.max_players

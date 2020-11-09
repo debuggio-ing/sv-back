@@ -164,9 +164,14 @@ def director_chooses_proc(game_id: int) -> bool:
 
 # Discharge director
 @db_session
-def discharge_director(player_id: int):
-    Player.get(id=player_id).director = False
+def discharge_director(game_id: int):
+    director = Player.get(lobby=game_id, director=True)
+
+    if director is not None:
+        director.director = False
+
     commit()
+
 
 
 # Check if it's time for the minister to choose a proclamation card

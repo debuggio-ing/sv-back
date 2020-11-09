@@ -1,6 +1,14 @@
 from app.database.crud import *
 from fastapi import HTTPException
 
+from app.database.models import *
+from app.api.schemas import *
+
+from app.database.crud_helpers.player import *
+from app.database.crud_helpers.lobby import *
+from app.database.crud_helpers.card import *
+from typing import List, Optional
+
 
 # Gets player from game and returns its id or raises and exception
 def get_player(email: str, game_id: int):
@@ -18,7 +26,7 @@ def is_game_over(game_id):
 
 # Checks if minister can proclaim a card
 def is_min_proc_time(game_id: int, player_id: int):
-    return minister_chooses_proc(game_id) and is_player_minister(player_id)
+    return minister_chooses_proc(game_id) and get_is_player_minister(player_id)
 
 
 # Checks if director or user can proclaim a card. It raises an exception on failure
@@ -69,3 +77,21 @@ def can_propose_gvt(game_id: int, player_id: int):
             status_code=409, detail='It\'s not time to select a government')
 
 
+# Checks
+# Raises
+def is_player_minister(player_id: int):
+    if not get_is_player_minister(player_id=player_id):
+        raise HTTPException(
+            status_code=409, detail='You are not the minister!')
+
+
+# Checks
+# Raises
+def in_casting_phase(game_id: int) -> bool:
+
+    if in_legislative_session(game_id) and get_director_proclaimed(game_id) and get_last_proc_negative(game_id):
+        raise HTTPException(
+            status_code=409, detail='It\'s not time to cast a spell')
+
+
+    
