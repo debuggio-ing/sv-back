@@ -8,7 +8,7 @@ from app.api.schemas import *
 from app.database.models import *
 from app.database.crud import *
 from typing import Optional
-
+from app.api.routers_helpers.auth_helper import *
 
 # Lobbies endpoints' router
 r = lobbies_router = APIRouter()
@@ -19,20 +19,16 @@ r = lobbies_router = APIRouter()
 def get_lobby_list(
     lobby_from: Optional[int] = 0,
     lobby_to: Optional[int] = None,
-    Authorize: AuthJWT = Depends()
+    auth: AuthJWT = Depends()
 ):
-    Authorize.jwt_required()
+    user_email = validate_user(auth=auth)
 
-    user_email = Authorize.get_jwt_identity()
+    # get all lobbies which haven't started
+    lobby_id_list = get_all_lobbies_ids(lobby_from=lobby_from, lobby_to=lobby_to)
 
-    required_lobbies = get_all_lobbies_ids(lobby_from, lobby_to)
     lobbies = []
-    for lid in required_lobbies:
-        lobby = LobbyPublic(id=lid, name=get_lobby_name(lid),
-                            current_players=get_lobby_player_list(lid),
-                            max_players=get_lobby_max_players(lid),
-                            started=get_lobby_started(lid),
-                            is_owner=get_lobby_is_owner(lid, user_email))
+    for lobby_id in lobby_id_list:
+        lobby = get_lobby_public_info(lobby_id=lobby_id, user_email=user_email)
         lobbies.append(lobby)
 
     return lobbies
@@ -46,11 +42,7 @@ def get_lobby(lobby_id: int, Authorize: AuthJWT = Depends()):
     user_email = Authorize.get_jwt_identity()
 
     if lobby_exists(lobby_id):
-        lobby = LobbyPublic(id=lobby_id, name=get_lobby_name(lobby_id),
-                            current_players=get_lobby_player_list(lobby_id),
-                            max_players=get_lobby_max_players(lobby_id),
-                            started=get_lobby_started(lobby_id),
-                            is_owner=get_lobby_is_owner(lobby_id, user_email))
+        lobby = get_lobby_public_info(lobby_id=lobby_id, user_email=user_email)
     else:
         raise HTTPException(
             status_code=404, detail='Lobby not found.')
@@ -75,8 +67,8 @@ def create_lobby(new_lobby: LobbyReg, Authorize: AuthJWT = Depends()):
         name=new_lobby.name,
         current_players=current_players,
         max_players=new_lobby.max_players,
-        started=get_lobby_started(lobby_id),
-        is_owner=get_lobby_is_owner(lobby_id, user_email))
+        started=get_lobby_started(lobby_id=lobby_id),
+        is_owner=get_lobby_is_owner(lobby_id=lobby_id, user_email=user_email))
 
     return lobby
 
@@ -91,16 +83,16 @@ def join_game(lobby_id: int, Authorize: AuthJWT = Depends()):
     user_email = Authorize.get_jwt_identity()
     insert_player(user_email=user_email, lobby_id=lobby_id)
 
-    current_players = get_lobby_player_list(lobby_id)
-    lobby_name = get_lobby_name(lobby_id)
-    lobby_max_players = get_lobby_max_players(lobby_id)
+    current_players = get_lobby_player_list(lobby_id=lobby_id)
+    lobby_name = get_lobby_name(lobby_id=lobby_id)
+    lobby_max_players = get_lobby_max_players(lobby_id=lobby_id)
     lobby = LobbyPublic(
         id=lobby_id,
         name=lobby_name,
         current_players=current_players,
         max_players=lobby_max_players,
-        started=get_lobby_started(lobby_id),
-        is_owner=get_lobby_is_owner(lobby_id, user_email))
+        started=get_lobby_started(lobby_id=lobby_id),
+        is_owner=get_lobby_is_owner(lobby_id=lobby_id, user_email=user_email))
 
     return lobby
 
@@ -123,12 +115,12 @@ def start_game(lobby_id: int,
         raise HTTPException(status_code=409,
                             detail="Game has already started.")
 
-    users_in_lobby = get_lobby_player_list(lobby_id)
+    users_in_lobby = get_lobby_player_list(lobby_id=lobby_id)
     if len(users_in_lobby) < 5:
         raise HTTPException(status_code=412,
                             detail="Not enough users in the lobby.")
-    set_lobby_started(lobby_id)
+    set_lobby_started(lobby_id=lobby_id)
 
-    game_id = insert_game(lobby_id)
+    game_id = insert_game(lobby_id=lobby_id)
 
     return StartConfirmation(game_id=game_id)
