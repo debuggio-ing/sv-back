@@ -11,15 +11,15 @@ r = games_router = APIRouter()
 def get_game_list(
         game_from: Optional[int] = 0,
         game_to: Optional[int] = None,
-        auth: AuthJWT = Depends()):
+        auth: AuthJWT = Depends(),
+        response_model=LobbyPublic):
     user_email = validate_user(auth=auth)
 
     game_id_list = get_all_games_ids(game_from, game_to)
     # generate game list
     games = []
     for gid in game_id_list:
-        pid = get_player_id(user_email, gid)
-        game = get_game_public_info(gid, pid)
+        game = get_lobby_public_info(gid, user_email)
         games.append(game)
 
     return games

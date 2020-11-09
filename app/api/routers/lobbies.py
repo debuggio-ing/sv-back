@@ -44,7 +44,7 @@ def get_lobby(lobby_id: int, Authorize: AuthJWT = Depends()):
     user_email = Authorize.get_jwt_identity()
 
     if lobby_exists(lobby_id):
-        lobby = get_lobby_public_info(lid, user_email)
+        lobby = get_lobby_public_info(lobby_id, user_email)
     else:
         raise HTTPException(
             status_code=404, detail='Lobby not found.')
