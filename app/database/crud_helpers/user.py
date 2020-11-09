@@ -30,8 +30,22 @@ def get_password_hash(uemail: str) -> str:
 
     return phash
 
+# Get username for solicited user.
+
+
+@db_session
+def get_username(user_email: str) -> str:
+    user = User.get(email=user_email)
+
+    uname = ""
+    if user is not None:
+        uname = user.username
+
+    return uname
 
 # Get all users from the database.
+
+
 @db_session
 def get_users_for_login():
     users = dict(select((u.email, u.password) for u in User))

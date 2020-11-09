@@ -3,7 +3,7 @@ from fastapi import APIRouter, HTTPException, Request, Depends, Response, status
 from pydantic import BaseModel, EmailStr
 from enum import Enum, IntEnum
 from fastapi_jwt_auth import AuthJWT
-
+from app.api.routers_helpers.auth_helper import *
 from app.api.schemas import *
 from app.database.models import *
 from app.database.crud import *
@@ -26,18 +26,18 @@ def create_user(new_user: UserReg) -> int:
 
 # Return user information.
 @r.get("/users/info/", response_model=UserPublic)
-def get_user(Authorize: AuthJWT = Depends()):
-    Authorize.jwt_required()
-    return
+def get_user(auth: AuthJWT = Depends()):
+    user_email = validate_user(auth=auth)
+    user_username = get_username(user_email=user_email)
+    user_id = get_user_id(user_email)
+
+    return UserPublic(id=user_id, username=user_username, email=user_email)
 
 
 # Return all lobbies that user with jwt is in.
 @r.get("/users/games/", response_model=UserGames)
-def get_user_active_games(Authorize: AuthJWT = Depends()):
-    Authorize.jwt_required()
-
-    user_email = Authorize.get_jwt_identity()
-
+def get_user_active_games(auth: AuthJWT = Depends()):
+    user_email = validate_user(auth=auth)
     games = get_active_games(user_email)
 
     return UserGames(email=user_email, games=games)
