@@ -2,6 +2,7 @@ from app.database.models import *
 from app.api.schemas import *
 from app.database.crud_helpers.player import *
 from app.database.crud_helpers.lobby import *
+from app.database.crud_helpers.card import *
 from typing import List
 import random
 
@@ -259,8 +260,13 @@ def finish_legislative_session(game_id: int):
     game.minister_proclaimed = False
     set_next_minister_candidate(game_id)
     cards = list(select(c for c in ProcCard if c.game.id == game_id))
-    if len(cards.filter(lambda c: not(c.proclaimed and c.discarded))) <= 2:
-        shuffle_cards(game_id)
+    if len(
+        list(
+            filter(
+            lambda c: not(
+                c.proclaimed and c.discarded),
+            cards))) <= 2:
+        shuffle_cards(game_id=game_id)
     commit()
 
 

@@ -1,5 +1,6 @@
 from app.api.routers_helpers.game_helper import *
 from app.api.routers_helpers.auth_helper import *
+from typing import Optional
 from fastapi import APIRouter
 
 r = games_router = APIRouter()
@@ -81,7 +82,7 @@ def get_director_proc(game_id: int, auth: AuthJWT = Depends()):
             player_id=player_id) or is_dir_proc_time(
             game_id=game_id,
             player_id=player_id):
-        selected_cards = get_selected_cards_pos(game_id)
+        selected_cards = get_selected_cards(game_id)
         for card in selected_cards:
             cards.append(CardToProclaim(
                 card_pos=card.position, phoenix=card.phoenix))
@@ -120,7 +121,7 @@ def proc_election(
         director_proclaims(election=election, game_id=game_id)
 
         # update game status and card deck
-        discharge_director(game_id=game_id)
+        discharge_director(player_id=player_id)
         finish_legislative_session(game_id)
 
     return is_game_over(game_id)
