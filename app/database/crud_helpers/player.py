@@ -46,25 +46,27 @@ def get_player_public(pid: int, c_pid: int) -> PlayerPublic:
         else:
             role = Role("Death Eater")
         return PlayerPublic(player_id=pid,
-                          alive=player.alive,
-                          voted=get_player_vote_status(pid),
-                          last_vote=get_player_last_vote(pid),
-                          username=player.user.username,
-                          position=player.position,
-                          role=role)
+                            alive=player.alive,
+                            voted=get_player_vote_status(pid),
+                            last_vote=get_player_last_vote(pid),
+                            username=player.user.username,
+                            position=player.position,
+                            role=role)
     else:
         return PlayerPublic(player_id=pid,
-                          alive=player.alive,
-                          voted=get_player_vote_status(pid),
-                          last_vote=get_player_last_vote(pid),
-                          username=player.user.username,
-                          position=player.position)
+                            alive=player.alive,
+                            voted=get_player_vote_status(pid),
+                            last_vote=get_player_last_vote(pid),
+                            username=player.user.username,
+                            position=player.position)
+
 
 # Can player a know the role of player b?
 def can_know_role_of(pid_a: int, pid_b: int) -> bool:
     player_a = Player.get(id=pid_a)
     player_b = Player.get(id=pid_b)
     return not player_a.role.phoenix
+
 
 # Return the required player id.
 @db_session
@@ -143,7 +145,7 @@ def get_player_id_role(player_id: int) -> (bool, bool):
         voldemort = player.role.voldemort
         phoenix = player.role.phoenix
 
-    return (voldemort, phoenix)
+    return voldemort, phoenix
 
 
 # Check if the player identified by player_id is the director
