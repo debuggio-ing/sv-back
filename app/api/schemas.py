@@ -103,6 +103,7 @@ class PlayerPublic(BaseModel):
     last_vote: bool  # last public vote
     position: int
     username: str
+    role: Optional[Role]
 
 
 # Cast spell input data

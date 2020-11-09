@@ -67,7 +67,7 @@ def insert_game(lobby_id: int) -> int:
 @db_session
 def get_game_public_info(gid: int, pid: int):
     return GamePublic(id=gid,
-                      player_list=get_game_player_public_list(gid),
+                      player_list=get_game_player_public_list(gid, pid),
                       minister=get_game_minister_id(gid),
                       prev_minister=get_game_prev_minister_id(gid),
                       director=get_game_director_id(gid),
@@ -100,13 +100,14 @@ def get_all_games_ids(game_from: int, game_to: int) -> List[int]:
     return list(select(g.id for g in Game))
 
 
-# Return a list of all players in gid game.
+# Return a list of all players in gid game with the information of concern
+# to c_pid (callers_player_id).
 @db_session
-def get_game_player_public_list(gid: int) -> List[PlayerPublic]:
+def get_game_player_public_list(gid: int, c_pid: int) -> List[PlayerPublic]:
     pid_list = list(select(
         p.id for p in Player if gid == p.lobby.id))
 
-    players = [get_player_public(pid) for pid in pid_list]
+    players = [get_player_public(pid, c_pid) for pid in pid_list]
 
     return players
 

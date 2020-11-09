@@ -26,65 +26,21 @@ def test_get_game_public():
 
     game = testc.get("/api/games/1/", headers={"Authorization": token})
 
-    # Esto es super mejorable
-    assert game.json() == {
-        "player_list": [
-            {
-                "player_id": 1,
-                "alive": True,
-                "last_vote": True,
-                "voted": True,
-                "username": "maw",
-                "position": 1
-            },
-            {
-                "player_id": 2,
-                "alive": True,
-                "last_vote": True,
-                "voted": False,
-                "username": "law",
-                "position": 2
-            },
-            {
-                "player_id": 3,
-                "alive": True,
-                "last_vote": True,
-                "voted": True,
-                "username": "lau",
-                "position": 3
-            },
-            {
-                "player_id": 4,
-                "alive": True,
-                "last_vote": True,
-                "voted": True,
-                "username": "ulince",
-                "position": 4
-            },
-            {
-                "player_id": 5,
-                "alive": True,
-                "last_vote": True,
-                "voted": False,
-                "username": "nico",
-                "position": 5
-            }
-        ], "voting": True,
-        "in_session": False,
-        "minister_proclaimed": False,
-        "minister": 1,
-        "prev_minister": 3,
-        "director": 2,
-        "prev_director": 4,
-        "semaphore": 0,
-        "score": {
-            "good": 0,
-            "bad": 0
-        },
-        "end": None,
-        "winners": None,
-        "roleReveal": None,
-        "client_minister": False,
-        "client_director": True
+    jgame = game.json()
 
-    }
+    assert ("player_list" in jgame and "score" in jgame)
+    assert "role" in jgame["player_list"][0]
+    assert len(jgame["player_list"]) >= 5
+    assert jgame["score"]["good"] == 0 and jgame["score"]["bad"] == 0
+    assert any(jgame["minister"] == player["player_id"]
+               for player in jgame["player_list"])
+    if any(None is not player["role"] for player in jgame["player_list"]):
+        # Are roles random? If not this if will always be entered or always not
+        # entered
+        print("User not phoenix")
+        assert any("Order of the Phoenix" ==
+                   player["role"] for player in jgame["player_list"])
+        assert any("voldemort" == player["role"]
+                   for player in jgame["player_list"])
+        assert any("Death Eater" == player["role"]
+                   for player in jgame["player_list"])

@@ -34,18 +34,38 @@ def get_player_last_vote(pid: int) -> bool:
     return pv.vote
 
 
-# Return the required player status.
+# Return the required pid status according to the caller pid.
 @db_session
-def get_player_public(pid: int) -> PlayerPublic:
+def get_player_public(pid: int, c_pid: int) -> PlayerPublic:
     player = Player.get(id=pid)
+    if can_know_role_of(c_pid, pid):
+        if player.role.phoenix:
+            role = Role("Order of the Phoenix")
+        elif player.role.voldemort:
+            role = Role("voldemort")
+        else:
+            role = Role("Death Eater")
+        return PlayerPublic(player_id=pid,
+                            alive=player.alive,
+                            voted=get_player_vote_status(pid),
+                            last_vote=get_player_last_vote(pid),
+                            username=player.user.username,
+                            position=player.position,
+                            role=role)
+    else:
+        return PlayerPublic(player_id=pid,
+                            alive=player.alive,
+                            voted=get_player_vote_status(pid),
+                            last_vote=get_player_last_vote(pid),
+                            username=player.user.username,
+                            position=player.position)
 
-    pp = PlayerPublic(player_id=pid,
-                      alive=player.alive,
-                      voted=get_player_vote_status(pid),
-                      last_vote=get_player_last_vote(pid),
-                      username=player.user.username,
-                      position=player.position)
-    return pp
+
+# Can player a know the role of player b?
+def can_know_role_of(pid_a: int, pid_b: int) -> bool:
+    player_a = Player.get(id=pid_a)
+    player_b = Player.get(id=pid_b)
+    return not player_a.role.phoenix
 
 
 # Return the required player id.
@@ -125,7 +145,7 @@ def get_player_id_role(player_id: int) -> (bool, bool):
         voldemort = player.role.voldemort
         phoenix = player.role.phoenix
 
-    return (voldemort, phoenix)
+    return voldemort, phoenix
 
 
 # Check if the player identified by player_id is the director
