@@ -25,14 +25,12 @@ def get_lobby_list(
 
     user_email = Authorize.get_jwt_identity()
 
-    required_lobbies = get_all_lobbies_ids(lobby_from, lobby_to)
+    #Get all the lobbies who are still lobbies (not started)
+    lobby_id_list = get_all_lobbies_ids(lobby_from, lobby_to)
+
     lobbies = []
-    for lid in required_lobbies:
-        lobby = LobbyPublic(id=lid, name=get_lobby_name(lid),
-                            current_players=get_lobby_player_list(lid),
-                            max_players=get_lobby_max_players(lid),
-                            started=get_lobby_started(lid),
-                            is_owner=get_lobby_is_owner(lid, user_email))
+    for lid in lobby_id_list:
+        lobby = get_lobby_public_info(lid, user_email)
         lobbies.append(lobby)
 
     return lobbies
@@ -46,11 +44,7 @@ def get_lobby(lobby_id: int, Authorize: AuthJWT = Depends()):
     user_email = Authorize.get_jwt_identity()
 
     if lobby_exists(lobby_id):
-        lobby = LobbyPublic(id=lobby_id, name=get_lobby_name(lobby_id),
-                            current_players=get_lobby_player_list(lobby_id),
-                            max_players=get_lobby_max_players(lobby_id),
-                            started=get_lobby_started(lobby_id),
-                            is_owner=get_lobby_is_owner(lobby_id, user_email))
+        lobby = get_lobby_public_info(lid, user_email)
     else:
         raise HTTPException(
             status_code=404, detail='Lobby not found.')
