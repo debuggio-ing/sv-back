@@ -50,6 +50,12 @@ class UserGames(BaseModel):
     games: List[int]
 
 
+# User's modification profile input data
+class UserProfile(BaseModel):
+    username: Optional[str]
+    password: Optional[str]
+
+
 # Recover account input data
 class RecoverAccount(BaseModel):
     email: EmailStr

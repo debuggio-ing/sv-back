@@ -33,10 +33,21 @@ def get_user(auth: AuthJWT = Depends()):
 
 # Return user information.
 @r.post("/users/info/modify/", response_model=UserPublic)
-def modify_user_info(username: str, auth: AuthJWT = Depends()):
+def modify_user_info(new_profile: UserProfile, auth: AuthJWT = Depends()):
     user_email = validate_user(auth=auth)
-
-    set_username(user_email=user_email, username=username)
+    if new_profile.username is not None and new_profile.password is not None:
+        # update both the username and password
+        set_username(user_email=user_email, username=new_profile.username)
+        set_password(user_email=user_email, password=new_profile.password)
+    elif new_profile.username is not None:
+        # update username
+        set_username(user_email=user_email, username=new_profile.username)
+    elif new_profile.password is not None:
+        # update password
+        set_password(user_email=user_email, password=new_profile.password)
+    else:
+        # illegal request
+        raise HTTPException(status_code=400, detail="Illegal request")
 
     return get_user_public(user_email=user_email)
 
