@@ -7,7 +7,7 @@ r = games_router = APIRouter()
 
 
 # List games in database
-@r.get("/games/", response_model=LobbyPublic)
+@r.get("/games/", response_model=List[LobbyPublic])
 def get_game_list(
         game_from: Optional[int] = 0,
         game_to: Optional[int] = None,
