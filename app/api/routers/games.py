@@ -67,22 +67,27 @@ def get_player_role(game_id: int, authorize: AuthJWT = Depends()):
 def cast_spell(game_id: int, spell: CastSpell, authorize: AuthJWT = Depends()):
     authorize.jwt_required()
 
+    email = validate_user(auth=auth)
+    
     #check gid correct
     #check user in game
-    #check if game state is correct
-    #check if target is correct
-    #cast spell
-        #set player to dead
-        #check if voldemort is dead, then end the game
-        #set next minister candidate
-        #set in_session a false
+    player_id = get_player(user_email=email, game_id=game_id)     
 
+    #check if game state is correct
+    in_casting_phase(game_id=game_id)
+
+    #check if target is correct
+    is_target_correct(game_id=game_id, target=spell.target)
+
+    #cast spell(send spell)
+    cast_spell(game_id=game_id, spell=spell.spell, target=spell.target)
 
 
     #add dead/alive condition to the game logic
-    #
-    #
-    #
+    #change director proclaim,
+        # if proclamation negative => check if spell
+        #                          => dir_proclaimed = True
+
     return
 
 
@@ -138,8 +143,7 @@ def proc_election(
         director_proclaims(election=election, game_id=game_id)
 
         # update game status and card deck
-        discharge_director(player_id=player_id)
-        finish_legislative_session(game_id)
+        finish_director_proclamation(game_id=game_id)
 
     return is_game_over(game_id)
 

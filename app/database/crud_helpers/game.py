@@ -256,10 +256,26 @@ def propose_government(game_id: int, dir_id: int):
 # Finish the current legislative session
 @db_session
 def finish_legislative_session(game_id: int):
-    game = Game.get(id=game_id)
+    game = Lobby.get(id=game_id).game
     game.in_session = False
     game.minister_proclaimed = False
+    game.director_proclaimed = False
+
     set_next_minister_candidate(game_id)
+    commit()
+
+
+# Updates the status of the game after the minister discards a card
+@db_session
+def finish_minister_proclamation(game_id: int):
+    game = Lobby.get(id=game_id).game
+    game.minister_proclaimed = True
+    commit()
+
+@db_session
+def finish_director_proclamation(game_id: int):
+    game = Lobby.get(id=game_id).game
+    game.director_proclaimed = True
     cards = list(select(c for c in ProcCard if c.game.id == game_id))
     if len(
         list(
@@ -268,12 +284,4 @@ def finish_legislative_session(game_id: int):
                 c.proclaimed and c.discarded),
             cards))) <= 2:
         shuffle_cards(game_id=game_id)
-    commit()
-
-
-# Updates the status of the game after the minister discards a card
-@db_session
-def finish_minister_proclamation(game_id: int):
-    game = Game.get(id=game_id)
-    game.minister_proclaimed = True
     commit()

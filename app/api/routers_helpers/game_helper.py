@@ -6,7 +6,7 @@ from fastapi import HTTPException
 def get_player(email: str, game_id: int):
     player_id = get_player_id(email, game_id)
     if player_id == -1:
-        raise HTTPException(status_code=401, detail='User not in game')
+        raise HTTPException(status_code=409, detail='User not in Lobby/Game')
     return player_id
 
 
@@ -67,3 +67,5 @@ def can_propose_gvt(game_id: int, player_id: int):
     if not goverment_proposal_needed(game_id):
         raise HTTPException(
             status_code=409, detail='It\'s not time to select a government')
+
+
