@@ -20,6 +20,16 @@ def insert_lobby(lobby: LobbyReg, user_email: str) -> int:
     return lobby_id
 
 
+# Get lobby_id's data for the user's view
+@db_session
+def get_lobby_public_info(lobby_id: int, user_email: str):
+    return LobbyPublic(id=lobby_id, name=get_lobby_name(lobby_id),
+                       current_players=get_lobby_player_list(lobby_id),
+                       max_players=get_lobby_max_players(lobby_id),
+                       started=get_lobby_started(lobby_id),
+                       is_owner=get_lobby_is_owner(lobby_id, user_email))
+
+
 # Get lobby_id lobby's owner_id attribute.
 @db_session
 def get_lobby_is_owner(lobby_id: int, user_email: str) -> int:
@@ -108,7 +118,7 @@ def get_all_lobbies_ids(lobby_from: Optional[int], lobby_to: Optional[int]):
         lobby_to = 0
 
     # Get all lobies with id within range.
-    lobbies_ids = list(select(l.id for l in Lobby if
+    lobbies_ids = list(select(l.id for l in Lobby if l.started == False and
                               l.id >= lobby_from and l.id <= lobby_to))
 
     return lobbies_ids

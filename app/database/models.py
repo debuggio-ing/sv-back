@@ -100,9 +100,11 @@ class Game(db.Entity):
     minister_proclaimed = Required(bool, default=False)  # minister chose cards
     voting = Required(bool, default=False)  # are players currently voting?
     num_votes = Required(int, default=0)
-
+    ended = Required(bool, default=False)
 
 # Created when a game is started
+
+
 class ProcCard(db.Entity):
     id = PrimaryKey(int, auto=True)
     discarded = Required(bool, default=False)
