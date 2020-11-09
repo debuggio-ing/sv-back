@@ -28,10 +28,18 @@ def create_user(new_user: UserReg) -> int:
 @r.get("/users/info/", response_model=UserPublic)
 def get_user(Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
-    return
+    
+    user_email =  Authorize.get_jwt_identity()
+    if user_email == None:
+        raise HTTPException(status_code=409, detail='Corrupted JWT')
+    
+    user_username = get_username(user_email)
+    id = get_user_id(user_email)
+
+    return UserPublic(id=id,username=user_username,email=user_email)
 
 
-# Return all lobies that user with jwt is in.
+# Return all lobbies that user with jwt is in.
 @r.get("/users/games/", response_model=UserGames)
 def get_user_active_games(Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()

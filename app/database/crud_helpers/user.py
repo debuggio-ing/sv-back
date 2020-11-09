@@ -30,6 +30,16 @@ def get_password_hash(uemail: str) -> str:
 
     return phash
 
+# Get username for solicited user.
+@db_session
+def get_username(uemail: str) -> str:
+    user = User.get(email=uemail)
+
+    uname = ""
+    if user is not None:
+        uname = user.username
+
+    return uname
 
 # Get all users from the database.
 @db_session
@@ -56,6 +66,16 @@ def get_emails():
     emails = list(select(u.email for u in User))
     return emails
 
+# Get user_email user id.
+@db_session
+def get_user_email(user_id: int) -> str:
+    user = User.get(id=user_id)
+
+    user_id = -1
+    if user is not None:
+        user_id = user.email
+
+    return user_id
 
 # Get all user_email user active games.
 @db_session
