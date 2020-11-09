@@ -66,6 +66,23 @@ def get_player_role(game_id: int, authorize: AuthJWT = Depends()):
 @r.post("/games/{game_id}/spell/")
 def cast_spell(game_id: int, spell: CastSpell, authorize: AuthJWT = Depends()):
     authorize.jwt_required()
+
+    #check gid correct
+    #check user in game
+    #check if game state is correct
+    #check if target is correct
+    #cast spell
+        #set player to dead
+        #check if voldemort is dead, then end the game
+        #set next minister candidate
+        #set in_session a false
+
+
+
+    #add dead/alive condition to the game logic
+    #
+    #
+    #
     return
 
 

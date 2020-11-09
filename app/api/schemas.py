@@ -108,7 +108,7 @@ class PlayerPublic(BaseModel):
 
 # Cast spell input data
 class CastSpell(BaseModel):
-    spell_target: Optional[int]  # player_id
+    spell_target: int  # if -1 then there's no target
     spell: Spell  # no es necesario realmente (explicado arriba)
 
 
