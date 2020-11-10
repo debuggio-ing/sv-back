@@ -99,7 +99,7 @@ def is_player_director(player_id: int) -> bool:
 # Returns all game's ids
 @db_session
 def get_all_games_ids(game_from: int, game_to: int) -> List[int]:
-    return list(select(g.id for g in Game))
+    return list(select(g.id for g in Game if not g.ended))
 
 
 # Return a list of all players in gid game with the information of concern
