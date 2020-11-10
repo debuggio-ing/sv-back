@@ -31,6 +31,18 @@ def get_password_hash(uemail: str) -> str:
     return phash
 
 
+# Get username for solicited user.
+@db_session
+def get_username(user_email: str) -> str:
+    user = User.get(email=user_email)
+
+    uname = ""
+    if user is not None:
+        uname = user.username
+
+    return uname
+
+
 # Get all users from the database.
 @db_session
 def get_users_for_login():
@@ -69,3 +81,23 @@ def get_active_games(user_email: str):
                    if user in g.lobby.player.user and g.lobby.active))
 
     return games
+
+
+# Return the required user information.
+@db_session
+def get_user_public(user_email: str):
+    return UserPublic(id=get_user_id(user_email),
+                      username=get_username(user_email=user_email),
+                      email=user_email
+                      )
+
+
+# Set username for solicited user.
+@db_session
+def set_username(user_email: str, username: str):
+    user = User.get(email=user_email)
+
+    if user is not None:
+        user.username = username
+
+    commit()
