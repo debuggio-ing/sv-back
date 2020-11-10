@@ -18,9 +18,10 @@ r = users_router = APIRouter()
 @r.post("/register/",
         status_code=status.HTTP_201_CREATED)
 def create_user(new_user: UserReg) -> int:
-    id = register_user(new_user)
+    id = register_user(user=new_user)
     if id == -1:
         raise HTTPException(status_code=409, detail="Email already in use")
+
     return id
 
 

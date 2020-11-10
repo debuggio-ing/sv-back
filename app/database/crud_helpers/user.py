@@ -1,6 +1,8 @@
 from app.database.models import *
+from app.database.crud_helpers.email_sender import *
 from app.api.schemas import *
 from app.api.hasher import *
+import random
 
 
 # Insert user into the database.
@@ -11,9 +13,13 @@ def register_user(user: UserReg) -> int:
     if guser is not None:
         return -1
 
+    code = random.randint(100000, 999999)
+
     u = User(email=user.email, username=user.username,
-             password=encrypt_password(user.password))
+             password=encrypt_password(user.password), verification_code=code)
     commit()
+
+    # send_email(user_email=user.email, code=code)
     return u.id
 
 
