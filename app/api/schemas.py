@@ -68,6 +68,12 @@ class UserPublic(BaseModel):
     email: EmailStr
 
 
+# Verify user confirmation.
+class UserVerify(BaseModel):
+    email: str
+    verified: bool
+
+
 # Confirmation if the game started
 class StartConfirmation(BaseModel):
     game_id: int

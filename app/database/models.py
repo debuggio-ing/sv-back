@@ -16,6 +16,7 @@ class User(db.Entity):
     email_verified = Required(bool, default=False, sql_default='1')
     last_login = Required(datetime, default=datetime.now)
     register_date = Required(datetime, default=datetime.now)
+    verification_code = Required(int, default=100000)
 
 
 # Created when the user uploads a profile image
