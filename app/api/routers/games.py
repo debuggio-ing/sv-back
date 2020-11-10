@@ -32,7 +32,7 @@ def get_game(game_id: int, auth: AuthJWT = Depends()):
     # get the id of the user in the game (player_id)
     player_id = get_player_id(user_email, game_id)
 
-    return get_game_public_info(gid=game_id, pid=player_id)
+    return get_game_public_info(game_id=game_id, player_id=player_id)
 
 
 # Player votes in the specified game
@@ -65,7 +65,21 @@ def get_player_role(game_id: int, authorize: AuthJWT = Depends()):
 @r.post("/games/{game_id}/spell/")
 def cast_spell(game_id: int, spell: CastSpell, authorize: AuthJWT = Depends()):
     authorize.jwt_required()
-    return
+
+    email = validate_user(auth=auth)
+
+    # check gid correct
+    # check user in game
+    player_id = get_player(user_email=email, game_id=game_id)
+
+    # check if player is minister
+    is_player_minister(player_id=player_id)
+
+    # check if game state is correct
+    in_casting_phase(game_id=game_id)
+
+    # cast spell(send spell)
+    cast_spell(game_id=game_id, target=spell.target)
 
 
 # Return to the minister/director the selected cards according to the game
@@ -120,8 +134,7 @@ def proc_election(
         director_proclaims(election=election, game_id=game_id)
 
         # update game status and card deck
-        discharge_director(player_id=player_id)
-        finish_legislative_session(game_id)
+        finish_director_proclamation(game_id=game_id)
 
     return is_game_over(game_id)
 

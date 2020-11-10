@@ -7,16 +7,16 @@ from app.api.routers.users import users_router
 from app.api.routers.auth import auth_router
 
 from app.database.models import *
-from app.database.crud import *
 
 from fastapi.middleware.cors import CORSMiddleware
-
+from app.database.crud import *
 
 # svapi is the API object
+
 svapi = FastAPI(
     title="Secret-Voldemort",
     docs_url="/api/docs",
-    openapi_url="/api",
+    openapi_url="/api", 
     redoc_url="/api/redoc")
 
 
