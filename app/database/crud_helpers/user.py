@@ -83,7 +83,7 @@ def get_active_games(user_email: str):
     return games
 
 
-# Return the required user information.
+# Return the required user's information.
 @db_session
 def get_user_public(user_email: str):
     return UserPublic(id=get_user_id(user_email),
@@ -92,7 +92,8 @@ def get_user_public(user_email: str):
                       )
 
 
-# Set username for solicited user.
+
+# Set username for the solicited user.
 @db_session
 def set_username(user_email: str, username: str):
     user = User.get(email=user_email)
@@ -101,3 +102,14 @@ def set_username(user_email: str, username: str):
         user.username = username
 
     commit()
+
+
+# Set password for the solicited user
+@db_session
+def set_password(user_email: str, password: str):
+    user = User.get(email=user_email)
+
+    if user is not None:
+        user.password = encrypt_password(password)
+    commit()
+
