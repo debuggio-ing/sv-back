@@ -140,7 +140,7 @@ def get_all_lobbies_ids(lobby_from: Optional[int], lobby_to: Optional[int],
                                                     l.user.email == user_email and
                                                     l.id >= lobby_from and
                                                     l.id <= lobby_to))
-    elif not started and finihsed:  
+    elif not started and finished:  
         if not user_games:
             lobbies_ids = list(select(l.id for l in Lobby if
                                     l.started == started and
