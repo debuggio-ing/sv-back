@@ -68,18 +68,18 @@ def cast_spell(game_id: int, spell: CastSpell, authorize: AuthJWT = Depends()):
     authorize.jwt_required()
 
     email = validate_user(auth=auth)
-    
-    #check gid correct
-    #check user in game
-    player_id = get_player(user_email=email, game_id=game_id)     
 
-    #check if player is minister
+    # check gid correct
+    # check user in game
+    player_id = get_player(user_email=email, game_id=game_id)
+
+    # check if player is minister
     is_player_minister(player_id=player_id)
-    
-    #check if game state is correct
+
+    # check if game state is correct
     in_casting_phase(game_id=game_id)
 
-    #cast spell(send spell)
+    # cast spell(send spell)
     cast_spell(game_id=game_id, target=spell.target)
 
 

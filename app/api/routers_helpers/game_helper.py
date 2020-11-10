@@ -89,9 +89,7 @@ def is_player_minister(player_id: int):
 # Raises
 def in_casting_phase(game_id: int) -> bool:
 
-    if in_legislative_session(game_id) and get_director_proclaimed(game_id) and get_last_proc_negative(game_id):
+    if in_legislative_session(game_id) and get_director_proclaimed(
+            game_id) and get_last_proc_negative(game_id):
         raise HTTPException(
             status_code=409, detail='It\'s not time to cast a spell')
-
-
-    

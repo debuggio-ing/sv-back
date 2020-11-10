@@ -54,6 +54,7 @@ def shuffle_cards(game_id: int):
         cards[i].position = positions[i]
         cards[i].selected = cards[i].discarded = False
 
+
 def get_number_neg_procs(game_id: int):
     cards = select(c for c in ProcCard if c.game.lobby.id ==
                    game_id and (c.proclaimed and not c.phoenix))

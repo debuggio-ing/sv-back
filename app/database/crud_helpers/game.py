@@ -65,21 +65,23 @@ def insert_game(lobby_id: int) -> int:
 
 # Return the required game status.
 @db_session
-def get_game_public_info(gid: int, pid: int):
-    return GamePublic(id=gid,
-                      player_list=get_game_player_public_list(gid, pid),
-                      minister=get_game_minister_id(gid),
-                      prev_minister=get_game_prev_minister_id(gid),
-                      director=get_game_director_id(gid),
-                      prev_director=get_game_prev_director_id(gid),
-                      semaphore=get_game_semaphore(gid),
-                      score=get_game_score(gid),
-                      voting=get_game_voting(gid),
-                      in_session=get_game_in_session(gid),
-                      minister_proclaimed=get_game_minister_proclaimed(gid),
-                      client_minister=get_is_player_minister(pid),
-                      client_director=is_player_director(pid)
-                      )
+def get_game_public_info(game_id: int, player_id: int):
+    return GamePublic(
+        id=game_id,
+        player_list=get_game_player_public_list(
+            game_id,
+            player_id),
+        minister=get_game_minister_id(game_id),
+        prev_minister=get_game_prev_minister_id(game_id),
+        director=get_game_director_id(game_id),
+        prev_director=get_game_prev_director_id(game_id),
+        semaphore=get_game_semaphore(game_id),
+        score=get_game_score(game_id),
+        voting=get_game_voting(game_id),
+        in_session=get_game_in_session(game_id),
+        minister_proclaimed=get_game_minister_proclaimed(game_id),
+        client_minister=get_is_player_minister(player_id),
+        client_director=is_player_director(player_id))
 
 
 # Returns true if pid is minister.
@@ -103,19 +105,21 @@ def get_all_games_ids(game_from: int, game_to: int) -> List[int]:
 # Return a list of all players in gid game with the information of concern
 # to c_pid (callers_player_id).
 @db_session
-def get_game_player_public_list(gid: int, c_pid: int) -> List[PlayerPublic]:
+def get_game_player_public_list(
+        game_id: int,
+        c_pid: int) -> List[PlayerPublic]:
     pid_list = list(select(
-        p.id for p in Player if gid == p.lobby.id))
+        p.id for p in Player if game_id == p.lobby.id))
 
-    players = [get_player_public(pid, c_pid) for pid in pid_list]
+    players = [get_player_public(player_id, c_pid) for player_id in pid_list]
 
     return players
 
 
 # Returns the id of the game's minister.
 @db_session
-def get_game_minister_id(gid: int) -> int:
-    minister = Player.get(lobby=gid, minister=True)
+def get_game_minister_id(game_id: int) -> int:
+    minister = Player.get(lobby=game_id, minister=True)
 
     minister_id = -1
     if minister is not None:
@@ -126,8 +130,8 @@ def get_game_minister_id(gid: int) -> int:
 
 # Returns the id of the game's director.
 @db_session
-def get_game_director_id(gid: int) -> int:
-    director = Player.get(lobby=gid, director=True)
+def get_game_director_id(game_id: int) -> int:
+    director = Player.get(lobby=game_id, director=True)
 
     director_id = -1
     if director is not None:
@@ -138,8 +142,8 @@ def get_game_director_id(gid: int) -> int:
 
 # Returns the id of the game's previous minister.
 @db_session
-def get_game_prev_minister_id(gid: int) -> int:
-    prev_minister = Player.get(lobby=gid, prev_minister=True)
+def get_game_prev_minister_id(game_id: int) -> int:
+    prev_minister = Player.get(lobby=game_id, prev_minister=True)
 
     prev_minister_id = -1
     if prev_minister is not None:
@@ -150,8 +154,8 @@ def get_game_prev_minister_id(gid: int) -> int:
 
 # Get previous director's player_id
 @db_session
-def get_game_prev_director_id(gid: int) -> int:
-    prev_director = Player.get(lobby=gid, prev_director=True)
+def get_game_prev_director_id(game_id: int) -> int:
+    prev_director = Player.get(lobby=game_id, prev_director=True)
 
     prev_director_id = -1
     if prev_director is not None:
@@ -162,8 +166,8 @@ def get_game_prev_director_id(gid: int) -> int:
 
 # Get game's semaphore
 @db_session
-def get_game_semaphore(gid: int) -> int:
-    lobby = Lobby.get(id=gid)
+def get_game_semaphore(game_id: int) -> int:
+    lobby = Lobby.get(id=game_id)
 
     sem = -1
     if lobby is not None and lobby.game is not None:
@@ -174,8 +178,8 @@ def get_game_semaphore(gid: int) -> int:
 
 # Check if the game is in election
 @db_session
-def get_game_voting(gid) -> bool:
-    game = Lobby.get(id=gid).game
+def get_game_voting(game_id) -> bool:
+    game = Lobby.get(id=ggame_id).game
 
     ans = False
     if game is not None:
@@ -186,8 +190,8 @@ def get_game_voting(gid) -> bool:
 
 # Check if game is in legislative session
 @db_session
-def get_game_in_session(gid) -> bool:
-    game = Lobby.get(id=gid).game
+def get_game_in_session(game_id) -> bool:
+    game = Lobby.get(id=game_id).game
 
     ans = False
     if game is not None:
@@ -198,8 +202,8 @@ def get_game_in_session(gid) -> bool:
 
 # Check if the minister has already proclaimed cards
 @db_session
-def get_game_minister_proclaimed(gid) -> bool:
-    game = Lobby.get(id=gid).game
+def get_game_minister_proclaimed(game_id) -> bool:
+    game = Lobby.get(id=game_id).game
 
     ans = False
     if game is not None:
@@ -210,8 +214,8 @@ def get_game_minister_proclaimed(gid) -> bool:
 
 # Get game's total proclaimed cards (phoenix = good, death eaters = bad)
 @db_session
-def get_game_score(gid: int) -> Score:
-    lobby = Lobby.get(id=gid)
+def get_game_score(game_id: int) -> Score:
+    lobby = Lobby.get(id=game_id)
 
     bad_score = 0
     good_score = 0
@@ -230,8 +234,8 @@ def get_game_score(gid: int) -> Score:
 
 # Check if it's time for a government proposal
 @db_session
-def goverment_proposal_needed(gid: int) -> bool:
-    game = Lobby.get(id=gid).game
+def goverment_proposal_needed(game_id: int) -> bool:
+    game = Lobby.get(id=game_id).game
     return not game.voting and not game.in_session
 
 
@@ -240,7 +244,7 @@ def goverment_proposal_needed(gid: int) -> bool:
 def propose_government(game_id: int, dir_id: int):
     lobby = Lobby.get(id=game_id)
 
-    old_dir_id = get_game_director_id(gid=game_id)
+    old_dir_id = get_game_director_id(game_id=game_id)
     old_dir = Player.get(id=old_dir_id)
 
     if old_dir is not None:
@@ -272,6 +276,7 @@ def finish_minister_proclamation(game_id: int):
     game.minister_proclaimed = True
     commit()
 
+
 @db_session
 def finish_director_proclamation(game_id: int):
     game = Lobby.get(id=game_id).game
@@ -288,14 +293,15 @@ def finish_director_proclamation(game_id: int):
         list(
             filter(
             lambda c: not(not c.proclaimed), cards))
-            ) <=2:
+    ) <= 2:
         discharge_director(game_id=game_id)
         finish_legislative_session(game_id=game_id)
-
 
     commit()
 
 # Check if game in legislative session
+
+
 def in_legislative_session(game_id) -> bool:
     game = Lobby.get(id=game_id).game
     return game.in_session
