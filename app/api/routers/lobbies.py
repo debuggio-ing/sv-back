@@ -22,6 +22,7 @@ def get_lobby_list(
     user_games: bool = False,
     started: bool = False,
     finished: bool = False,
+    all: bool = False,
     auth: AuthJWT = Depends()
 ):
     user_email = validate_user(auth=auth)
@@ -31,6 +32,7 @@ def get_lobby_list(
                                         user_games=user_games,
                                         started=started,
                                         finished=finished,
+                                        all=all,
                                         user_email=user_email)
 
     lobbies = []

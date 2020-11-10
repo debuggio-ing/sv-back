@@ -112,6 +112,7 @@ def get_all_lobbies_ids(lobby_from: Optional[int], lobby_to: Optional[int],
                         user_games: bool,
                         user_email: str,
                         started: bool,
+                        all: bool,
                         finished: bool):
     max_id = max(l.id for l in Lobby)
     if lobby_to is None and max_id is not None:
@@ -123,6 +124,10 @@ def get_all_lobbies_ids(lobby_from: Optional[int], lobby_to: Optional[int],
 
     # Get all lobies with id within range.
     lobbies_ids = []
+    if all:
+        return list(select(l.id for l in Lobby if l.id >= lobby_from and
+                                                  l.id <= lobby_to))
+
     if not started and not finished:  
         if not user_games:
             lobbies_ids = list(select(l.id for l in Lobby if
