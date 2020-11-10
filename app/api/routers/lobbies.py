@@ -19,12 +19,19 @@ r = lobbies_router = APIRouter()
 def get_lobby_list(
     lobby_from: Optional[int] = 0,
     lobby_to: Optional[int] = None,
+    user_games: bool = False,
+    started: bool = False,
+    finished: bool = False,
     auth: AuthJWT = Depends()
 ):
     user_email = validate_user(auth=auth)
 
     # get all lobbies which haven't started
-    lobby_id_list = get_all_lobbies_ids(lobby_from=lobby_from, lobby_to=lobby_to)
+    lobby_id_list = get_all_lobbies_ids(lobby_from=lobby_from, lobby_to=lobby_to,
+                                        user_games=user_games,
+                                        started=started,
+                                        finished=finished,
+                                        user_email=user_email)
 
     lobbies = []
     for lobby_id in lobby_id_list:
