@@ -4,6 +4,7 @@ from pydantic import BaseModel, EmailStr
 from enum import Enum, IntEnum
 from fastapi_jwt_auth import AuthJWT
 from app.api.routers_helpers.auth_helper import *
+from app.api.routers_helpers.user_helper import *
 from app.api.schemas import *
 from app.database.models import *
 from app.database.crud import *
