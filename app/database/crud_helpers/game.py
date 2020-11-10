@@ -179,7 +179,7 @@ def get_game_semaphore(game_id: int) -> int:
 # Check if the game is in election
 @db_session
 def get_game_voting(game_id) -> bool:
-    game = Lobby.get(id=ggame_id).game
+    game = Lobby.get(id=game_id).game
 
     ans = False
     if game is not None:

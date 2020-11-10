@@ -32,7 +32,7 @@ def get_game(game_id: int, auth: AuthJWT = Depends()):
     # get the id of the user in the game (player_id)
     player_id = get_player_id(user_email, game_id)
 
-    return get_game_public_info(gid=game_id, pid=player_id)
+    return get_game_public_info(game_id=game_id, player_id=player_id)
 
 
 # Player votes in the specified game
