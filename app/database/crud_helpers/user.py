@@ -92,11 +92,13 @@ def get_user_public(user_email: str):
                       )
 
 
-
 # Set username for the solicited user.
 @db_session
-def set_username(user_email: str, username: str):
+def change_username(user_email: str, username: str):
     user = User.get(email=user_email)
+    user2 = User.get(username=username)
+    if user2 is not None:
+        return -1
 
     if user is not None:
         user.username = username
@@ -112,4 +114,3 @@ def set_password(user_email: str, password: str):
     if user is not None:
         user.password = encrypt_password(password)
     commit()
-
