@@ -69,19 +69,21 @@ def get_game_public_info(game_id: int, player_id: int):
     return GamePublic(
         id=game_id,
         player_list=get_game_player_public_list(
-            game_id,
-            player_id),
-        minister=get_game_minister_id(game_id),
-        prev_minister=get_game_prev_minister_id(game_id),
-        director=get_game_director_id(game_id),
-        prev_director=get_game_prev_director_id(game_id),
-        semaphore=get_game_semaphore(game_id),
-        score=get_game_score(game_id),
-        voting=get_game_voting(game_id),
-        in_session=get_game_in_session(game_id),
-        minister_proclaimed=get_game_minister_proclaimed(game_id),
-        client_minister=get_is_player_minister(player_id),
-        client_director=is_player_director(player_id))
+            game_id=game_id,
+            c_player_id=player_id),
+        minister=get_game_minister_id(game_id=game_id),
+        prev_minister=get_game_prev_minister_id(game_id=game_id),
+        director=get_game_director_id(game_id=game_id),
+        prev_director=get_game_prev_director_id(game_id=game_id),
+        semaphore=get_game_semaphore(game_id=game_id),
+        score=get_game_score(game_id=game_id),
+        voting=get_game_voting(game_id=game_id),
+        in_session=get_game_in_session(game_id=game_id),
+        minister_proclaimed=get_game_minister_proclaimed(game_id=game_id),
+        director_proclaimed=get_director_proclaimed(game_id=game_id),
+        last_proc_negative=get_last_proc_negative(game_id=game_id),
+        client_minister=get_is_player_minister(player_id=player_id),
+        client_director=is_player_director(player_id=player_id))
 
 
 # Returns true if pid is minister.
@@ -107,11 +109,11 @@ def get_all_games_ids(game_from: int, game_to: int) -> List[int]:
 @db_session
 def get_game_player_public_list(
         game_id: int,
-        c_pid: int) -> List[PlayerPublic]:
+        c_player_id: int) -> List[PlayerPublic]:
     pid_list = list(select(
         p.id for p in Player if game_id == p.lobby.id))
 
-    players = [get_player_public(player_id, c_pid) for player_id in pid_list]
+    players = [get_player_public(player_id, c_player_id) for player_id in pid_list]
 
     return players
 

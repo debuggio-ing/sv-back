@@ -171,6 +171,8 @@ class GamePublic(BaseModel):
     voting: bool
     in_session: bool  # currently in legislative session
     minister_proclaimed: bool  # did the minister pass the proc cards?
+    director_proclaimed: bool  # did the director pass the proc cards?
+    last_proc_negative: bool
     minister: int
     prev_minister: int
     director: int
