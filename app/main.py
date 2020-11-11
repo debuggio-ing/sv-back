@@ -16,7 +16,7 @@ from app.database.crud import *
 svapi = FastAPI(
     title="Secret-Voldemort",
     docs_url="/api/docs",
-    openapi_url="/api", 
+    openapi_url="/api",
     redoc_url="/api/redoc")
 
 

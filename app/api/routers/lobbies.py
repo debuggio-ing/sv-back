@@ -25,13 +25,15 @@ def get_lobby_list(
     user_email = validate_user(auth=auth)
 
     # get all lobbies which haven't started
-    lobby_id_list = get_all_lobbies_ids(lobby_from=lobby_from, lobby_to=lobby_to,
-                                        available=filterForm.available,
-                                        user_games=filterForm.user_games,
-                                        started=filterForm.started,
-                                        finished=filterForm.finished,
-                                        all_games=filterForm.all_games,
-                                        user_email=user_email)
+    lobby_id_list = get_all_lobbies_ids(
+        lobby_from=lobby_from,
+        lobby_to=lobby_to,
+        available=filterForm.available,
+        user_games=filterForm.user_games,
+        started=filterForm.started,
+        finished=filterForm.finished,
+        all_games=filterForm.all_games,
+        user_email=user_email)
 
     lobbies = []
     for lobby_id in lobby_id_list:
@@ -100,6 +102,7 @@ def join_game(lobby_id: int, Authorize: AuthJWT = Depends()):
         current_players=current_players,
         max_players=lobby_max_players,
         started=get_lobby_started(lobby_id=lobby_id),
+        finished=get_lobby_finished(lobby_id=lobby_id),
         is_owner=get_lobby_is_owner(lobby_id=lobby_id, user_email=user_email))
 
     return lobby

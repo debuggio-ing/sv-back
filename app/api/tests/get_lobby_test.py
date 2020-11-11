@@ -72,6 +72,7 @@ def test_get_lobby():
         "current_players": join.json()["current_players"],
         "max_players": join.json()["max_players"],
         "started": join.json()["started"],
+        "finished": join.json()["finished"],
         "is_owner": True}
 
 

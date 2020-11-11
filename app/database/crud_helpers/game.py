@@ -113,7 +113,8 @@ def get_game_player_public_list(
     pid_list = list(select(
         p.id for p in Player if game_id == p.lobby.id))
 
-    players = [get_player_public(player_id, c_player_id) for player_id in pid_list]
+    players = [get_player_public(player_id, c_player_id)
+               for player_id in pid_list]
 
     return players
 
