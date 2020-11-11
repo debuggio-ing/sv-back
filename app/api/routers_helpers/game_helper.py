@@ -93,3 +93,13 @@ def in_casting_phase(game_id: int) -> bool:
             game_id) and get_last_proc_negative(game_id):
         raise HTTPException(
             status_code=409, detail='It\'s not time to cast a spell')
+
+def in_voting_phase(game_id: int):
+    if not currently_voting(game_id=game_id):
+        raise HTTPException(
+            status_code=403, detail='There isn\'t a vote ocurring')
+
+def is_player_dead(player_id: int):
+    if not get_player_alive(player_id=player_id):
+        raise HTTPException(
+            status_code=403, detail='You can\'t interact with the dead')

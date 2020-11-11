@@ -179,3 +179,8 @@ def minister_chooses_proc(game_id: int) -> bool:
     lobby = Lobby.get(id=game_id)
     game = lobby.game
     return game and game.in_session and not game.minister_proclaimed
+
+@db_session
+def get_player_alive(player_id: int) -> bool:
+    player = Player.get(id=player_id)
+    return player.alive

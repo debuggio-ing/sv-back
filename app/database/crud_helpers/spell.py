@@ -27,25 +27,30 @@ def cast_spell(game_id: int, target: Optional[int]):
     finish_legislative_session(game_id)
 
 
-#
+
+"""
+dead players cant:
+-chat
+-vote
+-be minister
+-be director
+-be target of spell
+
+"""
 # add dead/alive condition to the game logic
+@db_session
 def cast_avada_kedavra(game_id: int, target: Optional[int]):
 
-    # check if avada kedavra
+    tplayer = Player.get(id=target)
 
     # set player to dead
-
+    tplayer.alive = False
+    
     # check if voldemort is dead, then end the game
 
-    # set next minister candidate
 
-    # set in_session a false
-
-    # update game status and card deck
-
-    #
-
-
+    commit()
+    
 def cast_imperio(game_id: int, target: int):
     return
 
