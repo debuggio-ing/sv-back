@@ -75,6 +75,7 @@ def create_lobby(new_lobby: LobbyReg, Authorize: AuthJWT = Depends()):
         current_players=current_players,
         max_players=new_lobby.max_players,
         started=get_lobby_started(lobby_id=lobby_id),
+        finished=get_lobby_finished(lobby_id=lobby_id),
         is_owner=get_lobby_is_owner(lobby_id=lobby_id, user_email=user_email))
 
     return lobby

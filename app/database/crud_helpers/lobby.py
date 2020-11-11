@@ -27,6 +27,7 @@ def get_lobby_public_info(lobby_id: int, user_email: str):
                        current_players=get_lobby_player_list(lobby_id),
                        max_players=get_lobby_max_players(lobby_id),
                        started=get_lobby_started(lobby_id),
+                       finished=get_lobby_finished(lobby_id),
                        is_owner=get_lobby_is_owner(lobby_id, user_email))
 
 
@@ -90,11 +91,21 @@ def get_lobby_max_players(lobby_id: int):
 def get_lobby_started(lobby_id: int) -> bool:
     lobby = Lobby.get(id=lobby_id)
 
-    started = 0
+    started = False
     if lobby is not None:
         started = lobby.started
 
     return started
+
+@db_session
+def get_lobby_finished(lobby_id: int) -> bool:
+    lobby = Lobby.get(id=lobby_id).game
+
+    finished = False
+    if lobby is not None:
+        finished = lobby.finished
+
+    return finished
 
 
 # Set lobby_id lobby as started.
