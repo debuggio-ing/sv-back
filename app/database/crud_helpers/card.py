@@ -1,4 +1,5 @@
 from app.database.models import *
+from app.api.schemas import *
 import random
 
 
@@ -55,7 +56,26 @@ def shuffle_cards(game_id: int):
         cards[i].selected = cards[i].discarded = False
 
 
+@db_session
 def get_number_neg_procs(game_id: int):
     cards = select(c for c in ProcCard if c.game.lobby.id ==
                    game_id and (c.proclaimed and not c.phoenix))
     return len(cards)
+
+
+# Returns the next three proclamation cards in the deck
+@db_session
+def get_divination_cards(game_id: int):
+    cards = select(
+        c for c in ProcCard if c.game.lobby.id == game_id and not(
+            c.proclaimed or c.discarded)).order_by(
+        lambda c: c.position).limit(3)
+
+    proc_cards = []
+    for c in cards:
+        proc_cards.append(
+            CardToProclaim(
+                card_pos=c.position,
+                phoenix=c.phoenix))
+
+    return proc_cards

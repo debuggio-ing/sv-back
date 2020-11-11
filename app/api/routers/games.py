@@ -63,14 +63,12 @@ def get_player_role(game_id: int, authorize: AuthJWT = Depends()):
 
 # Cast spell in specified game
 @r.post("/games/{game_id}/spell/")
-def cast_spell(game_id: int, spell: CastSpell, authorize: AuthJWT = Depends()):
-    authorize.jwt_required()
-
+def post_cast_spell(game_id: int, spell: CastSpell, auth: AuthJWT = Depends()):
     email = validate_user(auth=auth)
 
     # check gid correct
     # check user in game
-    player_id = get_player(user_email=email, game_id=game_id)
+    player_id = get_player(email=email, game_id=game_id)
 
     # check if player is minister
     is_player_minister(player_id=player_id)
@@ -80,6 +78,25 @@ def cast_spell(game_id: int, spell: CastSpell, authorize: AuthJWT = Depends()):
 
     # cast spell(send spell)
     cast_spell(game_id=game_id, target=spell.target)
+
+
+# Cast spell in specified game
+@r.get("/games/{game_id}/spell/")
+def _cast_spell(game_id: int, auth: AuthJWT = Depends()):
+    email = validate_user(auth=auth)
+
+    # check gid correct
+    # check user in game
+    player_id = get_player(email=email, game_id=game_id)
+
+    # check if player is minister
+    is_player_minister(player_id=player_id)
+
+    # check if game state is correct
+    in_casting_phase(game_id=game_id)
+
+    # cast spell(send spell)
+    return get_spell(game_id=game_id)
 
 
 # Return to the minister/director the selected cards according to the game

@@ -63,11 +63,12 @@ def get_player_public(player_id: int, c_player_id: int) -> PlayerPublic:
 
 # Can player a know the role of player b?
 def can_know_role_of(player_id_a: int, player_id_b: int) -> bool:
-    if player_id_a==player_id_b:
+    if player_id_a == player_id_b:
         return True
     player_a = Player.get(id=player_id_a)
     player_b = Player.get(id=player_id_b)
-    # Aca más adelante iria la logica de si es voldemort puede saber el rol o no de los mortifagos
+    # Aca más adelante iria la logica de si es voldemort puede saber el rol o
+    # no de los mortifagos
     return not player_a.role.phoenix
 
 

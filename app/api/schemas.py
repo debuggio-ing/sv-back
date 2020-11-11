@@ -120,7 +120,7 @@ class PlayerPublic(BaseModel):
 
 # Cast spell input data
 class CastSpell(BaseModel):
-    target: Optional[int]
+    target: int
 
 
 # Proposed director input data

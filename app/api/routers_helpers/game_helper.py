@@ -88,8 +88,31 @@ def is_player_minister(player_id: int):
 # Checks
 # Raises
 def in_casting_phase(game_id: int) -> bool:
-
     if in_legislative_session(game_id) and get_director_proclaimed(
             game_id) and get_last_proc_negative(game_id):
         raise HTTPException(
             status_code=409, detail='It\'s not time to cast a spell')
+
+#
+#
+
+
+def cast_spell(game_id: int, target: Optional[int]):
+    negative_procs = get_number_neg_procs(game_id=game_id)
+    # number_players = get_number_players(game_id=game_id)
+
+    if negative_procs > 3:
+        cast_avada_kedavra(game_id=game_id, target=target)
+
+    discharge_director(player_id=player_id)
+    finish_legislative_session(game_id)
+
+
+def get_spell(game_id: int):
+    negative_procs = get_number_neg_procs(game_id=game_id)
+    number_players = get_number_players(game_id=game_id)
+    result = 1
+    if number_players in [5, 6] and negative_procs == 3:
+        result = get_divination_cards(game_id=game_id)
+
+    return result
