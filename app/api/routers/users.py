@@ -71,7 +71,7 @@ def recover_user(email: RecoverAccount):
 
 # Verify email.
 @r.post("/verify/", status_code=200)
-def verify_email(input_code: int, user_email: str) -> bool:
+def verify_email(user_email: str, input_code: int) -> bool:
     code = get_verification_code(user_email=user_email)
 
     if code != input_code:
