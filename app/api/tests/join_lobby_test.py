@@ -98,3 +98,35 @@ def test_join_lobby_with_no_jwt():
 
     assert join.status_code == 401
     assert join.json() == {'detail': 'Missing Authorization Header'}
+
+
+# Try to join the lobby with wrong id.
+def test_join_lobby_with_wrong_id():
+    user = UserReg(
+        username='user1',
+        email='1@gmail.com',
+        password='testPassword')
+    if user.email not in get_emails():
+        register_user(user1)
+
+    login = client.post(
+        "api/login/",
+        headers={
+            "Content-Type": "application/json"},
+        json={
+            "email": "1@gmail.com",
+            "password": "testPassword"})
+
+    token = "Bearer " + login.json()["access_token"]
+    create = client.post("/api/lobbies/new/", headers={"Authorization": token},
+                         json={"name": "test_lobby", "max_players": 5})
+
+    lobby_id = 50000
+    join = client.post(
+        "/api/lobbies/" +
+        str(lobby_id) +
+        "/join/",
+        headers={
+            "Authorization": token})
+
+    assert join.status_code == 404
