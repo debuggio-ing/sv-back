@@ -15,24 +15,22 @@ r = lobbies_router = APIRouter()
 
 
 # Return lobbies list.
-@r.get("/lobbies/", response_model=List[LobbyPublic])
+@r.post("/lobbies/", response_model=List[LobbyPublic])
 def get_lobby_list(
+    filterForm: LobbyFilter,
     lobby_from: Optional[int] = 0,
     lobby_to: Optional[int] = None,
-    user_games: bool = False,
-    started: bool = False,
-    finished: bool = False,
-    all: bool = False,
     auth: AuthJWT = Depends()
 ):
     user_email = validate_user(auth=auth)
 
     # get all lobbies which haven't started
     lobby_id_list = get_all_lobbies_ids(lobby_from=lobby_from, lobby_to=lobby_to,
-                                        user_games=user_games,
-                                        started=started,
-                                        finished=finished,
-                                        all=all,
+                                        available=filterForm.available,
+                                        user_games=filterForm.user_games,
+                                        started=filterForm.started,
+                                        finished=filterForm.finished,
+                                        all_games=filterForm.all_games,
                                         user_email=user_email)
 
     lobbies = []
