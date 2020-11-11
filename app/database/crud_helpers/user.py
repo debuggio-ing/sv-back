@@ -1,6 +1,8 @@
 from app.database.models import *
+from app.database.crud_helpers.email_sender import *
 from app.api.schemas import *
 from app.api.hasher import *
+import random
 
 
 # Insert user into the database.
@@ -11,9 +13,13 @@ def register_user(user: UserReg) -> int:
     if guser is not None:
         return -1
 
+    code = random.randint(100000, 999999)
+
     u = User(email=user.email, username=user.username,
-             password=encrypt_password(user.password))
+             password=encrypt_password(user.password), verification_code=code)
     commit()
+
+    # send_email(user_email=user.email, code=code)
     return u.id
 
 
@@ -114,3 +120,38 @@ def set_password(user_email: str, password: str):
     if user is not None:
         user.password = encrypt_password(password)
     commit()
+
+
+# Get verification code for solicited user.
+@db_session
+def get_verification_code(user_email: str):
+    user = User.get(email=user_email)
+
+    code = 0
+    if user is not None:
+        code = user.verification_code
+
+    return code
+
+
+# Set user as verified.
+@db_session
+def set_user_email_verified(user_email: str):
+    user = User.get(email=user_email)
+
+    if user is not None:
+        user.email_verified = True
+
+    commit()
+
+
+# Return whether user email is verified.
+@db_session
+def get_is_email_verified(user_email: str):
+    user = User.get(email=user_email)
+
+    is_verified = False
+    if user is not None:
+        is_verified = user.email_verified
+
+    return is_verified
