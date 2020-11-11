@@ -68,8 +68,14 @@ create2 = lobby.post(
 
 # Try to get all lobbies.
 def test_get_lobby_list():
-    get_all = lobby.get(
+    get_all = lobby.post(
         "/api/lobbies/",
+        json={
+            "available": "true",
+            "started": "false",
+            "finished": "false",
+            "user_games": "false",
+            "all_games": "true"},
         headers={
             "Authorization": token1})
 
@@ -79,18 +85,27 @@ def test_get_lobby_list():
                                "current_players":join.json()["current_players"],
                                "max_players":join.json()["max_players"],
                                "started":join.json()["started"],
+                               "finished":create2.json()["finished"],
                                "is_owner":True},
                               {"id": create2.json()["id"],
                                "name":create2.json()["name"],
                                "current_players":create2.json()["current_players"],
                                "max_players":create2.json()["max_players"],
                                "started":create2.json()["started"],
+                               "finished":create2.json()["finished"],
                                "is_owner":True}]
 
 
 # Try to get all lobbies not being logged in.
 def test_get_lobbies_not_logged_in():
-    get_all = lobby.get("/api/lobbies/")
+    get_all = lobby.post(
+        "/api/lobbies/",
+        json={
+            "available": "true",
+            "started": "false",
+            "finished": "false",
+            "user_games": "false",
+            "all_games": "true"})
 
     assert get_all.status_code == 401
     assert get_all.json() == {'detail': 'Missing Authorization Header'}
@@ -98,8 +113,14 @@ def test_get_lobbies_not_logged_in():
 
 # Test lobby_from argument.
 def test_lobby_from():
-    get_all = lobby.get(
+    get_all = lobby.post(
         "/api/lobbies/?lobby_from=2",
+        json={
+            "available": "true",
+            "started": "false",
+            "finished": "false",
+            "user_games": "false",
+            "all_games": "true"},
         headers={
             "Authorization": token1})
 
@@ -109,13 +130,20 @@ def test_lobby_from():
                                "current_players":create2.json()["current_players"],
                                "max_players":create2.json()["max_players"],
                                "started":create2.json()["started"],
+                               "finished":create2.json()["finished"],
                                "is_owner":create2.json()["is_owner"]}]
 
 
 # Test lobby_to argument.
 def test_lobby_to():
-    get_all = lobby.get(
+    get_all = lobby.post(
         "/api/lobbies/?lobby_to=1",
+        json={
+            "available": "true",
+            "started": "false",
+            "finished": "false",
+            "user_games": "false",
+            "all_games": "true"},
         headers={
             "Authorization": token1})
 
@@ -125,4 +153,5 @@ def test_lobby_to():
                                "current_players":join.json()["current_players"],
                                "max_players":join.json()["max_players"],
                                "started":join.json()["started"],
+                               "finished":create2.json()["finished"],
                                "is_owner":True}]

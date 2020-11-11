@@ -155,3 +155,4 @@ def get_is_email_verified(user_email: str):
         is_verified = user.email_verified
 
     return is_verified
+

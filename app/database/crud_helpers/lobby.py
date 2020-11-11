@@ -27,6 +27,7 @@ def get_lobby_public_info(lobby_id: int, user_email: str):
                        current_players=get_lobby_player_list(lobby_id),
                        max_players=get_lobby_max_players(lobby_id),
                        started=get_lobby_started(lobby_id),
+                       finished=get_lobby_finished(lobby_id),
                        is_owner=get_lobby_is_owner(lobby_id, user_email))
 
 
@@ -90,11 +91,22 @@ def get_lobby_max_players(lobby_id: int):
 def get_lobby_started(lobby_id: int) -> bool:
     lobby = Lobby.get(id=lobby_id)
 
-    started = 0
+    started = False
     if lobby is not None:
         started = lobby.started
 
     return started
+
+
+@db_session
+def get_lobby_finished(lobby_id: int) -> bool:
+    lobby = Lobby.get(id=lobby_id).game
+
+    finished = False
+    if lobby is not None:
+        finished = lobby.ended
+
+    return finished
 
 
 # Set lobby_id lobby as started.
@@ -108,7 +120,14 @@ def set_lobby_started(lobby_id: int):
 
 # Get all lobbies ids.
 @db_session
-def get_all_lobbies_ids(lobby_from: Optional[int], lobby_to: Optional[int]):
+def get_all_lobbies_ids(lobby_from: Optional[int], lobby_to: Optional[int],
+                        available: bool,
+                        user_games: bool,
+                        user_email: str,
+                        started: bool,
+                        all_games: bool,
+                        finished: bool):
+
     max_id = max(l.id for l in Lobby)
     if lobby_to is None and max_id is not None:
         # If there's an active lobby, set lobby_to = max_id.
@@ -117,9 +136,67 @@ def get_all_lobbies_ids(lobby_from: Optional[int], lobby_to: Optional[int]):
         # If there's no active lobby, set lobby_to = 0.
         lobby_to = 0
 
+    user = User.get(email=user_email)
+
     # Get all lobies with id within range.
-    lobbies_ids = list(select(l.id for l in Lobby if l.started == False and
-                              l.id >= lobby_from and l.id <= lobby_to))
+    lobbies_ids = []
+
+    if not available and not started and not finished:
+        return []
+
+    if available:
+        if user_games:
+            return list(select(l.id for l in Lobby if
+                               not l.started and
+                               user in l.player.user and
+                               l.id >= lobby_from and
+                               l.id <= lobby_to))
+        else:
+            return list(select(l.id for l in Lobby if
+                               not l.started and
+                               l.id >= lobby_from and
+                               l.id <= lobby_to))
+
+    if user_games:
+        if started:
+            if finished:
+                lobbies_ids = list(select(l.id for l in Lobby if
+                                          l.started and
+                                          l.game.ended and
+                                          user in l.player.user and
+                                          l.id >= lobby_from and
+                                          l.id <= lobby_to))
+            else:
+                lobbies_ids = list(select(l.id for l in Lobby if
+                                          l.started and
+                                          user in l.player.user and
+                                          l.id >= lobby_from and
+                                          l.id <= lobby_to))
+        else:
+            lobbies_ids = list(select(l.id for l in Lobby if
+                                      not l.started and
+                                      user in l.player.user and
+                                      l.id >= lobby_from and
+                                      l.id <= lobby_to))
+    else:
+        if started:
+            if finished:
+                lobbies_ids = list(select(l.id for l in Lobby if
+                                          l.started and
+                                          l.game.ended and
+                                          l.id >= lobby_from and
+                                          l.id <= lobby_to))
+            else:
+                lobbies_ids = list(select(l.id for l in Lobby if
+                                          l.started and
+                                          l.id >= lobby_from and
+                                          l.id <= lobby_to))
+        else:
+
+            lobbies_ids = list(select(l.id for l in Lobby if
+                                      not l.started and
+                                      l.id >= lobby_from and
+                                      l.id <= lobby_to))
 
     return lobbies_ids
 

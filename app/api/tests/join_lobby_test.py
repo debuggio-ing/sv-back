@@ -68,6 +68,7 @@ def test_join_valid_lobby():
         'max_players': max_players,
         'name': lobby_name,
         'started': False,
+        'finished': False,
         'is_owner': False}
 
 

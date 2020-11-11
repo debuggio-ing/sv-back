@@ -36,12 +36,15 @@ def test_create_lobby():
             "max_players": lobby_mp})
 
     assert response.status_code == 201
+
+    print(response.json())
     assert response.json() == {
         'id': response.json()['id'],
         'current_players': [user.username],
         'max_players': lobby_mp,
         'name': lobby_name,
         'started': False,
+        "finished": False,
         'is_owner': True}
 
 

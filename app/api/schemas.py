@@ -158,6 +158,16 @@ class LobbyReg(BaseModel):
 class LobbyStart(BaseModel):
     current_players: int  # redundant
 
+# Lobby's public output data
+
+
+class LobbyFilter(BaseModel):
+    available: bool
+    started: bool
+    finished: bool
+    user_games: bool
+    all_games: bool
+
 
 # Lobby's public output data
 class LobbyPublic(BaseModel):
@@ -166,6 +176,7 @@ class LobbyPublic(BaseModel):
     current_players: List[str]  # list of usernames
     max_players: int
     started: bool
+    finished: bool
     # is_owner is true if player who sends the request is lobby's owner.
     is_owner: bool
     # chat
