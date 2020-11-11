@@ -35,6 +35,7 @@ def get_lobby_list(
         all_games=filterForm.all_games,
         user_email=user_email)
 
+
     lobbies = []
     for lobby_id in lobby_id_list:
         lobby = get_lobby_public_info(lobby_id=lobby_id, user_email=user_email)
