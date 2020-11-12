@@ -62,8 +62,7 @@ def test_start_game():
             num_death_eaters += 1
 
     assert start.status_code == 200
-    assert start_json['director'] == -1
-    assert start_json['minister'] <= NUM_OF_PLAYERS
+    assert start_json['director'] == "-1"
     assert start_json['end'] is None
     assert len(player_list) == NUM_OF_PLAYERS
     assert num_phoenixes == 3

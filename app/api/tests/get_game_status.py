@@ -32,7 +32,7 @@ def test_get_game_public():
     assert "role" in jgame["player_list"][0]
     assert len(jgame["player_list"]) >= 5
     assert jgame["score"]["good"] == 0 and jgame["score"]["bad"] == 0
-    assert any(jgame["minister"] == player["player_id"]
+    assert any(jgame["minister"] == player["username"]
                for player in jgame["player_list"])
     if any(None is not player["role"] for player in jgame["player_list"]):
         # Are roles random? If not this if will always be entered or always not
