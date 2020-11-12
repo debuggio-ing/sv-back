@@ -49,7 +49,7 @@ def get_player_public(player_id: int, c_player_id: int) -> PlayerPublic:
                             alive=player.alive,
                             voted=get_player_vote_status(player_id),
                             last_vote=get_player_last_vote(player_id),
-                            username=player.user.username,
+                            nickname=player.user.nickname,
                             position=player.position,
                             role=role)
     else:
@@ -57,7 +57,7 @@ def get_player_public(player_id: int, c_player_id: int) -> PlayerPublic:
                             alive=player.alive,
                             voted=get_player_vote_status(player_id),
                             last_vote=get_player_last_vote(player_id),
-                            username=player.user.username,
+                            nickname=player.user.nickname,
                             position=player.position)
 
 

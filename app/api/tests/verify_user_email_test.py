@@ -9,7 +9,7 @@ testc = TestClient(test_svapi)
 
 # Setup database
 user1 = UserReg(
-    username='user1',
+    nickname='user1',
     email='lautarolecu@gmail.com',
     password='testPassword')
 if user1.email not in get_emails():

@@ -37,13 +37,13 @@ def get_user(auth: AuthJWT = Depends()):
 @r.post("/users/info/modify/", response_model=UserPublic)
 def modify_user_info(new_profile: UserProfile, auth: AuthJWT = Depends()):
     user_email = validate_user(auth=auth)
-    if new_profile.username is not None and new_profile.password is not None:
-        # update both the username and password
-        set_username(user_email=user_email, username=new_profile.username)
+    if new_profile.nickname is not None and new_profile.password is not None:
+        # update both the nickname and password
+        set_nickname(user_email=user_email, nickname=new_profile.nickname)
         set_password(user_email=user_email, password=new_profile.password)
-    elif new_profile.username is not None:
-        # update username
-        set_username(user_email=user_email, username=new_profile.username)
+    elif new_profile.nickname is not None:
+        # update nickname
+        set_nickname(user_email=user_email, nickname=new_profile.nickname)
     elif new_profile.password is not None:
         # update password
         set_password(user_email=user_email, password=new_profile.password)

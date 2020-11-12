@@ -19,7 +19,7 @@ def test_access_protected_endpoint_unlogged():
 def test_valid_login():
     if 'test@gmail.com' not in get_emails():
         user = UserReg(
-            username='test',
+            nickname='test',
             email='test@gmail.com',
             password='testPassword')
         register_user(user)
@@ -54,7 +54,7 @@ def test_invalid_login():
 def test_access_protected_endpoint_logged():
     if 'test@gmail.com' not in get_emails():
         user = UserReg(
-            username='test',
+            nickname='test',
             email='test@gmail.com',
             password='testPassword')
         register_user(user)
