@@ -9,17 +9,17 @@ set_sql_debug(True)
 # Creates users in the database
 @db_session
 def create_users():
-    u1 = User(mail='laumail', username='lau', password='123456', players=set())
-    u2 = User(mail='lawmail', username='law',
+    u1 = User(mail='laumail', nickname='lau', password='123456', players=set())
+    u2 = User(mail='lawmail', nickname='law',
               password='password', players=set())
-    u3 = User(mail='ulincemail', username='ulince',
+    u3 = User(mail='ulincemail', nickname='ulince',
               password='1234567', players=set())
-    u4 = User(mail='mawmail', username='maw', password='123467', players=set())
-    u5 = User(mail='nicomail', username='nico',
+    u4 = User(mail='mawmail', nickname='maw', password='123467', players=set())
+    u5 = User(mail='nicomail', nickname='nico',
               password='password', players=set())
-    u6 = User(mail='einsteinmail', username='einsten',
+    u6 = User(mail='einsteinmail', nickname='einsten',
               password='emc2', players=set())
-    u7 = User(mail='newtonmail', username='newton',
+    u7 = User(mail='newtonmail', nickname='newton',
               password='fma', players=set())
     commit()
 
@@ -28,11 +28,11 @@ def create_users():
 @db_session
 def create_img():
     i1 = Image(height=12, width=456, filename='notempty',
-               user=User.select(lambda u: u.username == 'lau').get())
+               user=User.select(lambda u: u.nickname == 'lau').get())
     i2 = Image(height=124, width=456, filename='notempty2',
-               user=User.select(lambda u: u.username == 'law').get())
+               user=User.select(lambda u: u.nickname == 'law').get())
     i3 = Image(height=124, width=456, filename='notempty3',
-               user=User.select(lambda u: u.username == 'newton').get())
+               user=User.select(lambda u: u.nickname == 'newton').get())
 
 
 # Generates lobbies with the users previously created
@@ -46,7 +46,7 @@ def create_lobbies():
 def join_lobby():
     p1 = Player(
         alive=True, order=0, minister=False, director=False, user=User.select(
-            lambda u: u.username == 'newton').get(), lobby=Lobby.select(
+            lambda u: u.nickname == 'newton').get(), lobby=Lobby.select(
             lambda l: l.id == 1).get())
 
 

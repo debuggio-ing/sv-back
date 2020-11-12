@@ -33,7 +33,7 @@ internamente (con jwt) se verifica que realmente seamos nosotros
 
 # Register user input data
 class UserReg(BaseModel):
-    username: str
+    nickname: str
     email: EmailStr
     password: str
 
@@ -52,7 +52,7 @@ class UserGames(BaseModel):
 
 # User's modification profile input data
 class UserProfile(BaseModel):
-    username: Optional[str]
+    nickname: Optional[str]
     password: Optional[str]
 
 
@@ -64,7 +64,7 @@ class RecoverAccount(BaseModel):
 # User's public output data
 class UserPublic(BaseModel):
     id: int
-    username: str
+    nickname: str
     email: EmailStr
 
 
@@ -114,7 +114,7 @@ class PlayerPublic(BaseModel):
     voted: bool  # if the player already voted this round
     last_vote: bool  # last public vote
     position: int
-    username: str
+    nickname: str
     role: Optional[Role]
 
 
@@ -158,7 +158,7 @@ class LobbyFilter(BaseModel):
 class LobbyPublic(BaseModel):
     id: int
     name: str
-    current_players: List[str]  # list of usernames
+    current_players: List[str]  # list of nicknames
     max_players: int
     started: bool
     finished: bool

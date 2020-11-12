@@ -11,7 +11,7 @@ NUM_OF_PLAYERS = 5
 
 tokens = []
 for x in range(NUM_OF_PLAYERS):
-    user = UserReg(username="user" + str(x), email=str(x) + '@gmail.com',
+    user = UserReg(nickname="user" + str(x), email=str(x) + '@gmail.com',
                    password='testPassword')
     if user.email not in get_emails():
         register_user(user)
@@ -101,7 +101,7 @@ def test_start_game_by_other_user():
 # start game with less than 5 players
 def test_start_game_with_not_enough_players():
     # Setup database
-    user1 = UserReg(username='user1', email='1@gmail.com',
+    user1 = UserReg(nickname='user1', email='1@gmail.com',
                     password='testPassword')
     if user1.email not in get_emails():
         register_user(user1)

@@ -71,9 +71,9 @@ def get_game_public_info(game_id: int, player_id: int):
         player_list=get_game_player_public_list(
             game_id=game_id,
             c_player_id=player_id),
-        minister=get_game_minister_username(game_id=game_id),
+        minister=get_game_minister_nickname(game_id=game_id),
         prev_minister=get_game_prev_minister_id(game_id=game_id),
-        director=get_game_director_username(game_id=game_id),
+        director=get_game_director_nickname(game_id=game_id),
         prev_director=get_game_prev_director_id(game_id=game_id),
         semaphore=get_game_semaphore(game_id=game_id),
         score=get_game_score(game_id=game_id),
@@ -118,28 +118,28 @@ def get_game_player_public_list(
 
     return players
 
-# Returns the username of the game's minister.
+# Returns the nickname of the game's minister.
 @db_session
-def get_game_minister_username(game_id: int) -> int:
+def get_game_minister_nickname(game_id: int) -> int:
     minister = Player.get(lobby=game_id, minister=True)
 
-    minister_username = -1
+    minister_nickname = -1
     if minister is not None:
-        minister_username = minister.user.username
+        minister_nickname = minister.user.nickname
 
-    return minister_username
+    return minister_nickname
 
 
-# Returns the username of the game's director.
+# Returns the nickname of the game's director.
 @db_session
-def get_game_director_username(game_id: int) -> int:
+def get_game_director_nickname(game_id: int) -> int:
     director = Player.get(lobby=game_id, director=True)
 
-    director_username = -1
+    director_nickname = -1
     if director is not None:
-        director_username = director.user.username
+        director_nickname = director.user.nickname
 
-    return director_username
+    return director_nickname
 
 
 # Returns the id of the game's minister.

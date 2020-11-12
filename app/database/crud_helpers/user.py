@@ -15,7 +15,7 @@ def register_user(user: UserReg) -> int:
 
     code = random.randint(100000, 999999)
 
-    u = User(email=user.email, username=user.username,
+    u = User(email=user.email, nickname=user.nickname,
              password=encrypt_password(user.password), verification_code=code)
     commit()
 
@@ -37,14 +37,14 @@ def get_password_hash(uemail: str) -> str:
     return phash
 
 
-# Get username for solicited user.
+# Get nickname for solicited user.
 @db_session
-def get_username(user_email: str) -> str:
+def get_nickname(user_email: str) -> str:
     user = User.get(email=user_email)
 
     uname = ""
     if user is not None:
-        uname = user.username
+        uname = user.nickname
 
     return uname
 
@@ -93,21 +93,18 @@ def get_active_games(user_email: str):
 @db_session
 def get_user_public(user_email: str):
     return UserPublic(id=get_user_id(user_email),
-                      username=get_username(user_email=user_email),
+                      nickname=get_nickname(user_email=user_email),
                       email=user_email
                       )
 
 
-# Set username for the solicited user.
+# Set nickname for the solicited user.
 @db_session
-def change_username(user_email: str, username: str):
+def change_nickname(user_email: str, nickname: str):
     user = User.get(email=user_email)
-    user2 = User.get(username=username)
-    if user2 is not None:
-        return -1
 
     if user is not None:
-        user.username = username
+        user.nickname = nickname
 
     commit()
 

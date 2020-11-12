@@ -10,7 +10,7 @@ lobby = TestClient(test_svapi)
 # Try to crate a lobby.
 def test_create_lobby():
     user = UserReg(
-        username='test',
+        nickname='test',
         email='test@gmail.com',
         password='testPassword')
     if 'test@gmail.com' not in get_emails():
@@ -40,7 +40,7 @@ def test_create_lobby():
     print(response.json())
     assert response.json() == {
         'id': response.json()['id'],
-        'current_players': [user.username],
+        'current_players': [user.nickname],
         'max_players': lobby_mp,
         'name': lobby_name,
         'started': False,

@@ -44,11 +44,11 @@ def get_lobby_is_owner(lobby_id: int, user_email: str) -> int:
     return is_owner
 
 
-# Get all players username who are in lobby_id lobby.
+# Get all players nickname who are in lobby_id lobby.
 @db_session
 def get_lobby_player_list(lobby_id: int):
     players = list(select(
-        p.user.username for p in Player if lobby_id == p.lobby.id))
+        p.user.nickname for p in Player if lobby_id == p.lobby.id))
 
     return players
 
