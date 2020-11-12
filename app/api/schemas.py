@@ -133,21 +133,6 @@ class CardToProclaim(BaseModel):
     card_pos: int
     phoenix: bool
 
-
-# Card input data
-class Card(BaseModel):
-    card_pos: int
-    to_proclaim: bool
-
-
-# Legislative session's input data
-#   * proclamation indicates the cards to proclaim
-#   * expelliarmus indicates an expelliarmus spell intent
-class LegislativeSession(BaseModel):
-    proclamation: List[Card]
-    expelliarmus: bool  # ignored unless it's usable
-
-
 # Create lobby input data
 class LobbyReg(BaseModel):
     name: str

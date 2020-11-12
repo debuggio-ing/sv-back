@@ -77,42 +77,43 @@ def can_propose_gvt(game_id: int, player_id: int):
             status_code=409, detail='It\'s not time to select a government')
 
 
-# Checks
-# Raises
+# Checks if the player is the minister in the game
+# Raises conflict exception con exception
 def is_player_minister(player_id: int):
     if not get_is_player_minister(player_id=player_id):
         raise HTTPException(
             status_code=409, detail='You are not the minister!')
 
 
-# Checks
-# Raises
+# Checks if it's time for casting spells in the game
+# Raises conflict exception on failure
 def in_casting_phase(game_id: int) -> bool:
     if in_legislative_session(game_id) and get_director_proclaimed(
             game_id) and get_last_proc_negative(game_id):
         raise HTTPException(
             status_code=409, detail='It\'s not time to cast a spell')
 
-#
-#
 
-
-def cast_spell(game_id: int, target: Optional[int]):
+# Execute the appropriate spell given the circumstances of the game
+def cast_spell(game_id: int, target: int):
     negative_procs = get_number_neg_procs(game_id=game_id)
     # number_players = get_number_players(game_id=game_id)
-
+    # this can be extended for the general amount of players
     if negative_procs > 3:
         cast_avada_kedavra(game_id=game_id, target=target)
 
-    discharge_director(player_id=player_id)
+    discharge_director(game_id=game_id)
     finish_legislative_session(game_id)
 
 
+# Gets information for the appropiate spell given the circumstances of the game
 def get_spell(game_id: int):
     negative_procs = get_number_neg_procs(game_id=game_id)
     number_players = get_number_players(game_id=game_id)
     result = 1
-    if number_players in [5, 6] and negative_procs == 3:
+    # this if should be extended for any other spell.
+    # Borrar en futuro: dejo que siempre obtenga info para un divination por ahora
+    if number_players in [5, 6] and negative_procs >= 3:
         result = get_divination_cards(game_id=game_id)
 
     return result

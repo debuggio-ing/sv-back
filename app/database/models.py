@@ -108,8 +108,6 @@ class Game(db.Entity):
 
 
 # Created when a game is started
-
-
 class ProcCard(db.Entity):
     id = PrimaryKey(int, auto=True)
     discarded = Required(bool, default=False)

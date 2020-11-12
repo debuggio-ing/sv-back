@@ -66,7 +66,6 @@ def get_player_role(game_id: int, authorize: AuthJWT = Depends()):
 def post_cast_spell(game_id: int, spell: CastSpell, auth: AuthJWT = Depends()):
     email = validate_user(auth=auth)
 
-    # check gid correct
     # check user in game
     player_id = get_player(email=email, game_id=game_id)
 
@@ -80,9 +79,9 @@ def post_cast_spell(game_id: int, spell: CastSpell, auth: AuthJWT = Depends()):
     cast_spell(game_id=game_id, target=spell.target)
 
 
-# Cast spell in specified game
+# Get information to cast spell in specified game
 @r.get("/games/{game_id}/spell/")
-def _cast_spell(game_id: int, auth: AuthJWT = Depends()):
+def get_cast_spell(game_id: int, auth: AuthJWT = Depends()):
     email = validate_user(auth=auth)
 
     # check gid correct

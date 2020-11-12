@@ -1,4 +1,3 @@
-from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from app.test import test_svapi
 from app.database.crud import *

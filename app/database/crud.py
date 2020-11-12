@@ -10,6 +10,7 @@ from app.database.crud_helpers.card import *
 from app.database.crud_helpers.spell import *
 from app.database.crud_helpers.populate_database import *
 from app.database.crud_helpers.set_db_to_proclaim import *
+from app.database.crud_helpers.spell_database import *
 
 
 def bind_db(test):
