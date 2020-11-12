@@ -319,7 +319,7 @@ def finish_director_proclamation(game_id: int):
     if len(
         list(
             filter(
-            lambda c: not(not c.proclaimed), cards))
+            lambda c: c.proclaimed and not c.phoenix, cards))
     ) <= 2:
         discharge_director(game_id=game_id)
         finish_legislative_session(game_id=game_id)
@@ -329,24 +329,28 @@ def finish_director_proclamation(game_id: int):
 # Check if game in legislative session
 
 
+@db_session
 def in_legislative_session(game_id) -> bool:
     game = Lobby.get(id=game_id).game
     return game.in_session
 
 
 # Check if director proclaimed
+@db_session
 def get_director_proclaimed(game_id) -> bool:
     game = Lobby.get(id=game_id).game
     return game.director_proclaimed
 
 
 # Check if last proclamation is negative
+@db_session
 def get_last_proc_negative(game_id) -> bool:
     game = Lobby.get(id=game_id).game
     return game.last_proc_negative
 
 
 # Get the number of players in the game
+@db_session
 def get_number_players(game_id: int):
     lobby = Lobby.get(id=game_id)
     return lobby.max_players

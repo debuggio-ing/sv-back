@@ -120,7 +120,7 @@ class PlayerPublic(BaseModel):
 
 # Cast spell input data
 class CastSpell(BaseModel):
-    target: Optional[int]
+    target: int
 
 
 # Proposed director input data
@@ -134,20 +134,6 @@ class CardToProclaim(BaseModel):
     phoenix: bool
 
 
-# Card input data
-class Card(BaseModel):
-    card_pos: int
-    to_proclaim: bool
-
-
-# Legislative session's input data
-#   * proclamation indicates the cards to proclaim
-#   * expelliarmus indicates an expelliarmus spell intent
-class LegislativeSession(BaseModel):
-    proclamation: List[Card]
-    expelliarmus: bool  # ignored unless it's usable
-
-
 # Create lobby input data
 class LobbyReg(BaseModel):
     name: str
@@ -158,9 +144,8 @@ class LobbyReg(BaseModel):
 class LobbyStart(BaseModel):
     current_players: int  # redundant
 
+
 # Lobby's public output data
-
-
 class LobbyFilter(BaseModel):
     available: bool
     started: bool
