@@ -133,6 +133,7 @@ class CardToProclaim(BaseModel):
     card_pos: int
     phoenix: bool
 
+
 # Create lobby input data
 class LobbyReg(BaseModel):
     name: str
@@ -143,9 +144,8 @@ class LobbyReg(BaseModel):
 class LobbyStart(BaseModel):
     current_players: int  # redundant
 
+
 # Lobby's public output data
-
-
 class LobbyFilter(BaseModel):
     available: bool
     started: bool

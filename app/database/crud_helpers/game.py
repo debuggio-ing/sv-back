@@ -295,7 +295,7 @@ def finish_director_proclamation(game_id: int):
     if len(
         list(
             filter(
-            lambda c: not(not c.proclaimed), cards))
+            lambda c: c.proclaimed and not c.phoenix, cards))
     ) <= 2:
         discharge_director(game_id=game_id)
         finish_legislative_session(game_id=game_id)

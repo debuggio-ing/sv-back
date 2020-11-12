@@ -3,7 +3,7 @@ from fastapi.testclient import TestClient
 from app.test import test_svapi
 from app.database.crud import *
 
-testc= TestClient(test_svapi)
+testc = TestClient(test_svapi)
 
 
 spell_database("Divination")
@@ -14,12 +14,15 @@ def test_get_divination():
     login = testc.post(
         "api/login/",
         headers={"Content-Type": "application/json"},
-        json={"email": "maw@gmail.com","password": "password"})
+        json={"email": "maw@gmail.com", "password": "password"})
 
     token = "Bearer " + login.json()["access_token"]
 
-    response = testc.get("/api/games/1/spell/", headers={"Authorization":token})
+    response = testc.get(
+        "/api/games/1/spell/",
+        headers={
+            "Authorization": token})
 
     assert response.status_code == 200
-    assert response.json() == [{"card_pos": 0, "phoenix": True}, {"card_pos": 6, "phoenix": False}, {"card_pos": 12, "phoenix": True}]
-
+    assert response.json() == [{"card_pos": 0, "phoenix": True}, {
+        "card_pos": 6, "phoenix": False}, {"card_pos": 12, "phoenix": True}]

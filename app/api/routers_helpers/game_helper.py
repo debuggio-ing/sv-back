@@ -88,10 +88,13 @@ def is_player_minister(player_id: int):
 # Checks if it's time for casting spells in the game
 # Raises conflict exception on failure
 def in_casting_phase(game_id: int) -> bool:
-    if in_legislative_session(game_id) and get_director_proclaimed(
-            game_id) and get_last_proc_negative(game_id):
-        raise HTTPException(
-            status_code=409, detail='It\'s not time to cast a spell')
+    if not(
+        in_legislative_session(
+            game_id=game_id) and get_director_proclaimed(
+            game_id=game_id) and get_last_proc_negative(
+                game_id=game_id)):
+        raise HTTPException(status_code=409,
+                            detail='It\'s not time to cast a spell')
 
 
 # Execute the appropriate spell given the circumstances of the game
@@ -100,7 +103,9 @@ def cast_spell(game_id: int, target: int):
     # number_players = get_number_players(game_id=game_id)
     # this can be extended for the general amount of players
     if negative_procs > 3:
-        cast_avada_kedavra(game_id=game_id, target=target)
+        pass
+        # commented for testing and because the feature is not implemented
+        #cast_avada_kedavra(game_id=game_id, target=target)
 
     discharge_director(game_id=game_id)
     finish_legislative_session(game_id)
@@ -112,7 +117,8 @@ def get_spell(game_id: int):
     number_players = get_number_players(game_id=game_id)
     result = 1
     # this if should be extended for any other spell.
-    # Borrar en futuro: dejo que siempre obtenga info para un divination por ahora
+    # Borrar en futuro: dejo que siempre obtenga info para un divination por
+    # ahora
     if number_players in [5, 6] and negative_procs >= 3:
         result = get_divination_cards(game_id=game_id)
 

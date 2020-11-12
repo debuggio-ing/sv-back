@@ -111,7 +111,7 @@ def get_director_proc(game_id: int, auth: AuthJWT = Depends()):
             player_id=player_id) or is_dir_proc_time(
             game_id=game_id,
             player_id=player_id):
-        selected_cards = get_selected_cards(game_id)
+        selected_cards = get_selected_cards(game_id=game_id)
         for card in selected_cards:
             cards.append(CardToProclaim(
                 card_pos=card.position, phoenix=card.phoenix))
