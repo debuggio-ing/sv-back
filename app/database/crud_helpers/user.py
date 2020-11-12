@@ -102,9 +102,6 @@ def get_user_public(user_email: str):
 @db_session
 def change_nickname(user_email: str, nickname: str):
     user = User.get(email=user_email)
-    user2 = User.get(nickname=nickname)
-    if user2 is not None:
-        return -1
 
     if user is not None:
         user.nickname = nickname
