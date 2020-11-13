@@ -61,24 +61,6 @@ def get_player_role(game_id: int, authorize: AuthJWT = Depends()):
     authorize.jwt_required()
     return
 
-# Return divination cards
-@r.get("/games/{game_id}/spell/", response_model=List[CardToProclaim])
-def get_player_div_cards(game_id: int, authorize: AuthJWT = Depends()):
-    authorize.jwt_required()
-
-    email = validate_user(auth=auth)
-
-    # check gid correct
-    # check user in game
-    player_id = get_player(user_email=email, game_id=game_id)
-
-    # check if player is minister
-    is_player_minister(player_id=player_id)
-
-    # check if game state is correct
-    in_casting_phase(game_id=game_id)
-
-    return cards
 
 
 # Cast spell in specified game
@@ -94,6 +76,10 @@ def post_cast_spell(game_id: int, spell: CastSpell, auth: AuthJWT = Depends()):
 
     # check if game state is correct
     in_casting_phase(game_id=game_id)
+
+    #check if target is dead
+    if spell.target is not -1:
+        is_player_dead(player_id=spell.target)
 
     # cast spell(send spell)
     cast_spell(game_id=game_id, target=spell.target)
@@ -114,8 +100,6 @@ def get_cast_spell(game_id: int, auth: AuthJWT = Depends()):
     # check if game state is correct
     in_casting_phase(game_id=game_id)
 
-    #check if target is dead
-    is_player_dead(player_id=spell.target)
 
     # cast spell(send spell)
     return get_spell(game_id=game_id)

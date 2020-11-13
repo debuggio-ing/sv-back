@@ -127,20 +127,35 @@ def process_vote_result(game_id: int):
 def set_next_minister_candidate(gid: int):
     lobby = Lobby.get(id=gid)
 
+
+    # set new minister
+    new_minister = Player.get(lobby=lobby, position=lobby.game.list_head)
+    if new_minister is not None and new_minister.alive:
+        new_minister.minister = True
+    else:
+        lobby.game.list_head = (lobby.game.list_head + 1) % lobby.max_players
+        set_next_minister_candidate(gid)
+
+    # update list head
+    lobby.game.list_head = (lobby.game.list_head + 1) % lobby.max_players
+
+
+    discharge_former_minister(game_id=gid)
+
+    commit()
+    
+
+
+@db_session
+def discharge_former_minister(game_id: int):
+
+    lobby = Lobby.get(id=game_id)
     # discharge former minister
     ex_minister = Player.get(lobby=lobby, minister=True)
     if ex_minister is not None:
         ex_minister.minister = False
 
-    # set new minister
-    new_minister = Player.get(lobby=lobby, position=lobby.game.list_head)
-    if new_minister is not None:
-        new_minister.minister = True
-
-    # update list head
-    lobby.game.list_head = (lobby.game.list_head + 1) % lobby.max_players
     commit()
-
 
 # Deletes every entry in the current vote
 @db_session

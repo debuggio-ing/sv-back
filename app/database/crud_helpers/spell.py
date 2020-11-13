@@ -37,7 +37,8 @@ def cast_avada_kedavra(game_id: int, target: Optional[int]):
     tplayer.alive = False
     
     # check if voldemort is dead, then end the game
-
+    if tplayer.role.voldemort:
+        tplayer.game.ended = True
 
     commit()
     
