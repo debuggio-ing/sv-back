@@ -127,7 +127,7 @@ def process_vote_result(game_id: int):
 def set_next_minister_candidate(gid: int):
     lobby = Lobby.get(id=gid)
 
-
+    discharge_former_minister(game_id=gid)
     # set new minister
     new_minister = Player.get(lobby=lobby, position=lobby.game.list_head)
     if new_minister is not None and new_minister.alive:
@@ -139,11 +139,8 @@ def set_next_minister_candidate(gid: int):
     # update list head
     lobby.game.list_head = (lobby.game.list_head + 1) % lobby.max_players
 
-
-    discharge_former_minister(game_id=gid)
-
     commit()
-    
+
 
 
 @db_session
