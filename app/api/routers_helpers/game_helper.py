@@ -123,3 +123,14 @@ def get_spell(game_id: int):
         result = get_divination_cards(game_id=game_id)
 
     return result
+
+def in_voting_phase(game_id: int):
+    if not currently_voting(game_id=game_id):
+        raise HTTPException(
+            status_code=403, detail='There isn\'t a vote ocurring')
+
+def is_player_dead(player_id: int):
+    if not get_player_alive(player_id=player_id):
+        raise HTTPException(
+            status_code=403, detail='You can\'t interact with the dead')
+

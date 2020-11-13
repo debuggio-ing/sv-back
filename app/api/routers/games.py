@@ -42,9 +42,10 @@ def player_vote(game_id: int, vote: PlayerVote, auth: AuthJWT = Depends()):
     player_id = get_player(email=email, game_id=game_id)
 
     # check if there's a vote occurring in the game
-    if not currently_voting(game_id):
-        raise HTTPException(
-            status_code=403, detail='There isn\'t a vote ocurring')
+    in_voting_phase(game_id)
+
+    #check if player is dead
+    is_player_dead(player_id=player_id)
 
     # cast vote
     if is_last_vote(player_id, game_id):
@@ -59,6 +60,25 @@ def player_vote(game_id: int, vote: PlayerVote, auth: AuthJWT = Depends()):
 def get_player_role(game_id: int, authorize: AuthJWT = Depends()):
     authorize.jwt_required()
     return
+
+# Return divination cards
+@r.get("/games/{game_id}/spell/", response_model=List[CardToProclaim])
+def get_player_div_cards(game_id: int, authorize: AuthJWT = Depends()):
+    authorize.jwt_required()
+
+    email = validate_user(auth=auth)
+
+    # check gid correct
+    # check user in game
+    player_id = get_player(user_email=email, game_id=game_id)
+
+    # check if player is minister
+    is_player_minister(player_id=player_id)
+
+    # check if game state is correct
+    in_casting_phase(game_id=game_id)
+
+    return cards
 
 
 # Cast spell in specified game
@@ -93,6 +113,9 @@ def get_cast_spell(game_id: int, auth: AuthJWT = Depends()):
 
     # check if game state is correct
     in_casting_phase(game_id=game_id)
+
+    #check if target is dead
+    is_player_dead(player_id=spell.target)
 
     # cast spell(send spell)
     return get_spell(game_id=game_id)
@@ -166,5 +189,9 @@ def director_candidate(
     player_id = get_player(email=email, game_id=game_id)
 
     can_propose_gvt(game_id=game_id, player_id=player_id)
+
+    #is candidate alive
+    is_player_dead(player_id=candidate_id)
+
 
     propose_government(game_id=game_id, dir_id=candidate_id)
