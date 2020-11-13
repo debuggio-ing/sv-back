@@ -79,10 +79,16 @@ def post_cast_spell(game_id: int, spell: CastSpell, auth: AuthJWT = Depends()):
 
     #check if target is dead
     if spell.target is not -1:
+        #
+        # IMPORTANTE !!!!!!!!!!!!!!!!
+        # Checkear que el TARGET sea del GAME
+
+
+        #
         is_player_dead(player_id=spell.target)
 
     # cast spell(send spell)
-    cast_spell(game_id=game_id, target=spell.target)
+    return cast_spell(game_id=game_id, target=spell.target)
 
 
 # Get information to cast spell in specified game

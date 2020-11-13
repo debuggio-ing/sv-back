@@ -25,4 +25,4 @@ def test_get_divination():
 
     assert response.status_code == 200
     assert response.json() == [{"card_pos": 0, "phoenix": True}, {
-        "card_pos": 6, "phoenix": False}, {"card_pos": 12, "phoenix": True}]
+        "card_pos": 1, "phoenix": False}, {"card_pos": 4, "phoenix": False}]

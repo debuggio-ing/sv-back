@@ -103,12 +103,11 @@ def cast_spell(game_id: int, target: int):
     # number_players = get_number_players(game_id=game_id)
     # this can be extended for the general amount of players
     if negative_procs > 3:
-        pass
-        # commented for testing and because the feature is not implemented
-        #cast_avada_kedavra(game_id=game_id, target=target)
+        cast_avada_kedavra(game_id=game_id, target=target)
 
     discharge_director(game_id=game_id)
     finish_legislative_session(game_id)
+    return 1
 
 
 # Gets information for the appropiate spell given the circumstances of the game
@@ -116,10 +115,9 @@ def get_spell(game_id: int):
     negative_procs = get_number_neg_procs(game_id=game_id)
     number_players = get_number_players(game_id=game_id)
     result = 1
+
     # this if should be extended for any other spell.
-    # Borrar en futuro: dejo que siempre obtenga info para un divination por
-    # ahora
-    if number_players in [5, 6] and negative_procs >= 3:
+    if number_players in [5, 6] and negative_procs == 3:
         result = get_divination_cards(game_id=game_id)
 
     return result
