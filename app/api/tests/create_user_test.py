@@ -24,7 +24,7 @@ def test_create_user():
         headers={
             "Content-Type": "application/json"},
         json={
-            "username": "miguel{}".format(rstr),
+            "nickname": "miguel{}".format(rstr),
             "email": "{}@gmail.com".format(rstr),
             "password": "messirve"})
     assert register.status_code == 201
@@ -50,7 +50,7 @@ def test_duplicate_user():
         headers={
             "Content-Type": "application/json"},
         json={
-            "username": "miguel",
+            "nickname": "miguel",
             "email": "miguelmasa@gmail.com",
             "password": "messirve"})
 
@@ -59,7 +59,7 @@ def test_duplicate_user():
         headers={
             "Content-Type": "application/json"},
         json={
-            "username": "miguel",
+            "nickname": "miguel",
             "email": "miguelmasa@gmail.com",
             "password": "messirve"})
 

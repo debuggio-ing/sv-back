@@ -64,27 +64,27 @@ def spell_database(spell: str):
     users = [
         User(
             email="maw@gmail.com",
-            username="maw",
+            nickname="maw",
             password="$5$rounds=535000$hN.xjQV17DkWk3zX$cDFQJeakbvfB6Fn.5mB/XnSS/xjrplJ./7rh.I33Ss.",
             verification_code=111111),
         User(
             email="law@gmail.com",
-            username="law",
+            nickname="law",
             password="$5$rounds=535000$hN.xjQV17DkWk3zX$cDFQJeakbvfB6Fn.5mB/XnSS/xjrplJ./7rh.I33Ss.",
             verification_code=111111),
         User(
             email="lau@gmail.com",
-            username="lau",
+            nickname="lau",
             password="$5$rounds=535000$hN.xjQV17DkWk3zX$cDFQJeakbvfB6Fn.5mB/XnSS/xjrplJ./7rh.I33Ss.",
             verification_code=111111),
         User(
             email="ulince@gmail.com",
-            username="ulince",
+            nickname="ulince",
             password="$5$rounds=535000$hN.xjQV17DkWk3zX$cDFQJeakbvfB6Fn.5mB/XnSS/xjrplJ./7rh.I33Ss.",
             verification_code=111111),
         User(
             email="nico@gmail.com",
-            username="nico",
+            nickname="nico",
             password="$5$rounds=535000$hN.xjQV17DkWk3zX$cDFQJeakbvfB6Fn.5mB/XnSS/xjrplJ./7rh.I33Ss.",
             verification_code=111111)]
     commit()

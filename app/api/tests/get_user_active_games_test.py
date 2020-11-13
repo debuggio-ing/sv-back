@@ -12,7 +12,7 @@ NUM_OF_PLAYERS = 6
 tokens = []
 users = []
 for x in range(NUM_OF_PLAYERS):
-    user = UserReg(username="user" + str(x), email=str(x) + '@gmail.com',
+    user = UserReg(nickname="user" + str(x), email=str(x) + '@gmail.com',
                    password='testPassword')
     if user.email not in get_emails():
         register_user(user)
