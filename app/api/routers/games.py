@@ -83,14 +83,30 @@ def get_player_div_cards(game_id: int, authorize: AuthJWT = Depends()):
 
 # Cast spell in specified game
 @r.post("/games/{game_id}/spell/")
-def cast_spell(game_id: int, spell: CastSpell, authorize: AuthJWT = Depends()):
-    authorize.jwt_required()
+def post_cast_spell(game_id: int, spell: CastSpell, auth: AuthJWT = Depends()):
+    email = validate_user(auth=auth)
 
+    # check user in game
+    player_id = get_player(email=email, game_id=game_id)
+
+    # check if player is minister
+    is_player_minister(player_id=player_id)
+
+    # check if game state is correct
+    in_casting_phase(game_id=game_id)
+
+    # cast spell(send spell)
+    cast_spell(game_id=game_id, target=spell.target)
+
+
+# Get information to cast spell in specified game
+@r.get("/games/{game_id}/spell/")
+def get_cast_spell(game_id: int, auth: AuthJWT = Depends()):
     email = validate_user(auth=auth)
 
     # check gid correct
     # check user in game
-    player_id = get_player(user_email=email, game_id=game_id)
+    player_id = get_player(email=email, game_id=game_id)
 
     # check if player is minister
     is_player_minister(player_id=player_id)
@@ -102,7 +118,7 @@ def cast_spell(game_id: int, spell: CastSpell, authorize: AuthJWT = Depends()):
     is_player_dead(player_id=spell.target)
 
     # cast spell(send spell)
-    cast_spell(game_id=game_id, target=spell.target)
+    return get_spell(game_id=game_id)
 
 
 # Return to the minister/director the selected cards according to the game
@@ -118,7 +134,7 @@ def get_director_proc(game_id: int, auth: AuthJWT = Depends()):
             player_id=player_id) or is_dir_proc_time(
             game_id=game_id,
             player_id=player_id):
-        selected_cards = get_selected_cards(game_id)
+        selected_cards = get_selected_cards(game_id=game_id)
         for card in selected_cards:
             cards.append(CardToProclaim(
                 card_pos=card.position, phoenix=card.phoenix))

@@ -28,6 +28,6 @@ def test_get_user_info():
 
     assert user.json() == {
         "id": 2,
-        "username": "law",
+        "nickname": "law",
                     "email": "law@gmail.com",
     }

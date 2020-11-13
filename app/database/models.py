@@ -9,7 +9,7 @@ db = Database()
 class User(db.Entity):
     id = PrimaryKey(int, auto=True)
     email = Required(str, unique=True)
-    username = Required(str, unique=True)
+    nickname = Required(str, unique=True)
     password = Required(str)
     image = Optional('Image')
     players = Set('Player')
@@ -108,8 +108,6 @@ class Game(db.Entity):
 
 
 # Created when a game is started
-
-
 class ProcCard(db.Entity):
     id = PrimaryKey(int, auto=True)
     discarded = Required(bool, default=False)

@@ -35,23 +35,23 @@ def test_get_game_list():
     assert len(game1['player_list']) == 5
     assert game1['player_list'][0] == {"player_id": 1, "alive": True,
                                        "last_vote": True, "voted": True,
-                                       "username": "maw", "position": 1,
+                                       "nickname": "maw", "position": 1,
                                        "role": "voldemort"}
     assert game1['player_list'][1] == {"player_id": 2, "alive": True,
                                        "last_vote": True, "voted": False,
-                                       "username": "law", "position": 2,
+                                       "nickname": "law", "position": 2,
                                        "role": 'Death Eater'}
     assert game1['player_list'][2] == {"player_id": 3, "alive": True,
                                        "last_vote": True, "voted": True,
-                                       "username": "lau", "position": 3,
+                                       "nickname": "lau", "position": 3,
                                        "role": 'Order of the Phoenix'}
     assert game1['player_list'][3] == {"player_id": 4, "alive": True,
                                        "last_vote": True, "voted": True,
-                                       "username": "ulince", "position": 4,
+                                       "nickname": "ulince", "position": 4,
                                        "role": 'Order of the Phoenix'}
     assert game1['player_list'][4] == {"player_id": 5, "alive": True,
                                        "last_vote": True, "voted": False,
-                                       "username": "nico", "position": 5,
+                                       "nickname": "nico", "position": 5,
                                        "role": 'Order of the Phoenix'}
     assert game1['voting']
     assert game1['in_session'] == False
@@ -71,23 +71,23 @@ def test_get_game_list():
     assert len(game2['player_list']) == 5
     assert game2['player_list'][0] == {"player_id": 6, "alive": True,
                                        "last_vote": True, "voted": True,
-                                       "username": "maw", "position": 1,
+                                       "nickname": "maw", "position": 1,
                                        "role": 'voldemort'}
     assert game2['player_list'][1] == {"player_id": 7, "alive": True,
                                        "last_vote": True, "voted": False,
-                                       "username": "law", "position": 2,
+                                       "nickname": "law", "position": 2,
                                        "role": 'Death Eater'}
     assert game2['player_list'][2] == {"player_id": 8, "alive": True,
                                        "last_vote": True, "voted": True,
-                                       "username": "lau", "position": 3,
+                                       "nickname": "lau", "position": 3,
                                        "role": 'Order of the Phoenix'}
     assert game2['player_list'][3] == {"player_id": 9, "alive": True,
                                        "last_vote": True, "voted": True,
-                                       "username": "ulince", "position": 4,
+                                       "nickname": "ulince", "position": 4,
                                        "role": 'Order of the Phoenix'}
     assert game2['player_list'][4] == {"player_id": 10, "alive": True,
                                        "last_vote": True, "voted": False,
-                                       "username": "nico", "position": 5,
+                                       "nickname": "nico", "position": 5,
                                        "role": 'Order of the Phoenix'}
     assert game2['voting'] == False
     assert game2['in_session'] == False

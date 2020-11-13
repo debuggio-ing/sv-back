@@ -11,7 +11,7 @@ NUM_OF_PLAYERS = 5
 
 tokens = []
 for x in range(NUM_OF_PLAYERS):
-    user = UserReg(username="user" + str(x), email=str(x) + '@gmail.com',
+    user = UserReg(nickname="user" + str(x), email=str(x) + '@gmail.com',
                    password='testPassword')
     if user.email not in get_emails():
         register_user(user)
@@ -62,8 +62,7 @@ def test_start_game():
             num_death_eaters += 1
 
     assert start.status_code == 200
-    assert start_json['director'] == -1
-    assert start_json['minister'] <= NUM_OF_PLAYERS
+    assert start_json['director'] == "-1"
     assert start_json['end'] is None
     assert len(player_list) == NUM_OF_PLAYERS
     assert num_phoenixes == 3
@@ -102,7 +101,7 @@ def test_start_game_by_other_user():
 # start game with less than 5 players
 def test_start_game_with_not_enough_players():
     # Setup database
-    user1 = UserReg(username='user1', email='1@gmail.com',
+    user1 = UserReg(nickname='user1', email='1@gmail.com',
                     password='testPassword')
     if user1.email not in get_emails():
         register_user(user1)

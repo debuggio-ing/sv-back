@@ -9,15 +9,15 @@ testc = TestClient(test_svapi)
 
 # Setup database
 user1 = UserReg(
-    username='user1',
+    nickname='user1',
     email='a@gmail.com',
     password='123456789')
 if user1.email not in get_emails():
     register_user(user1)
 
-username1 = "que buen nombre"
+nickname1 = "que buen nombre"
 password1 = "margaretthatcheris110%SEXY"
-username2 = "snowden"
+nickname2 = "snowden"
 password2 = "nosociallife"
 
 
@@ -35,17 +35,17 @@ def test_modify_profile():
         headers={
             "Authorization": token},
         json={
-            "username": username1,
+            "nickname": nickname1,
             "password": password1})
 
     user_json = user.json()
 
     assert user.status_code == 200
-    assert user_json['username'] == username1
+    assert user_json['nickname'] == nickname1
 
 
 # Test if the new password works
-def test_password_username_change():
+def test_password_nickname_change():
     login = testc.post(
         "/api/login/",
         headers={"Content-Type": "application/json"},
@@ -54,8 +54,8 @@ def test_password_username_change():
     assert login.status_code == 200
 
 
-# Modify the user's username
-def test_modify_username():
+# Modify the user's nickname
+def test_modify_nickname():
     login = testc.post(
         "api/login/",
         headers={"Content-Type": "application/json"},
@@ -67,16 +67,16 @@ def test_modify_username():
         headers={
             "Authorization": token},
         json={
-            "username": username2})
+            "nickname": nickname2})
 
     user_json = user.json()
 
     assert user.status_code == 200
-    assert user_json['username'] == username2
+    assert user_json['nickname'] == nickname2
 
 
 # Modify the user's password
-def test_modify_username():
+def test_modify_nickname():
     login = testc.post(
         "api/login/",
         headers={"Content-Type": "application/json"},

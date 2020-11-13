@@ -35,7 +35,6 @@ def get_lobby_list(
         all_games=filterForm.all_games,
         user_email=user_email)
 
-
     lobbies = []
     for lobby_id in lobby_id_list:
         lobby = get_lobby_public_info(lobby_id=lobby_id, user_email=user_email)
@@ -90,6 +89,9 @@ def create_lobby(new_lobby: LobbyReg, Authorize: AuthJWT = Depends()):
 def join_game(lobby_id: int, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
 
+    if not lobby_exists(lobby_id):
+        raise HTTPException(status_code=404,
+                            detail="The game id is incorrect.")
     # Get information from jwt_token.
     user_email = Authorize.get_jwt_identity()
     insert_player(user_email=user_email, lobby_id=lobby_id)

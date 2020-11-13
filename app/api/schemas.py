@@ -33,7 +33,7 @@ internamente (con jwt) se verifica que realmente seamos nosotros
 
 # Register user input data
 class UserReg(BaseModel):
-    username: str
+    nickname: str
     email: EmailStr
     password: str
 
@@ -52,7 +52,7 @@ class UserGames(BaseModel):
 
 # User's modification profile input data
 class UserProfile(BaseModel):
-    username: Optional[str]
+    nickname: Optional[str]
     password: Optional[str]
 
 
@@ -64,7 +64,7 @@ class RecoverAccount(BaseModel):
 # User's public output data
 class UserPublic(BaseModel):
     id: int
-    username: str
+    nickname: str
     email: EmailStr
 
 
@@ -114,13 +114,13 @@ class PlayerPublic(BaseModel):
     voted: bool  # if the player already voted this round
     last_vote: bool  # last public vote
     position: int
-    username: str
+    nickname: str
     role: Optional[Role]
 
 
 # Cast spell input data
 class CastSpell(BaseModel):
-    target: Optional[int]
+    target: int
 
 
 # Proposed director input data
@@ -134,20 +134,6 @@ class CardToProclaim(BaseModel):
     phoenix: bool
 
 
-# Card input data
-class Card(BaseModel):
-    card_pos: int
-    to_proclaim: bool
-
-
-# Legislative session's input data
-#   * proclamation indicates the cards to proclaim
-#   * expelliarmus indicates an expelliarmus spell intent
-class LegislativeSession(BaseModel):
-    proclamation: List[Card]
-    expelliarmus: bool  # ignored unless it's usable
-
-
 # Create lobby input data
 class LobbyReg(BaseModel):
     name: str
@@ -158,9 +144,8 @@ class LobbyReg(BaseModel):
 class LobbyStart(BaseModel):
     current_players: int  # redundant
 
+
 # Lobby's public output data
-
-
 class LobbyFilter(BaseModel):
     available: bool
     started: bool
@@ -173,7 +158,7 @@ class LobbyFilter(BaseModel):
 class LobbyPublic(BaseModel):
     id: int
     name: str
-    current_players: List[str]  # list of usernames
+    current_players: List[str]  # list of nicknames
     max_players: int
     started: bool
     finished: bool
@@ -196,9 +181,9 @@ class GamePublic(BaseModel):
     minister_proclaimed: bool  # did the minister pass the proc cards?
     director_proclaimed: bool  # did the director pass the proc cards?
     last_proc_negative: bool
-    minister: int
+    minister: str
     prev_minister: int
-    director: int
+    director: str
     prev_director: int
     semaphore: int
     score: Score

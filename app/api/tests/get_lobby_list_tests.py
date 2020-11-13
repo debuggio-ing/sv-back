@@ -8,14 +8,14 @@ lobby = TestClient(test_svapi)
 
 # Setup database
 user1 = UserReg(
-    username='user1',
+    nickname='user1',
     email='1@gmail.com',
     password='testPassword')
 if user1.email not in get_emails():
     register_user(user1)
 
 user2 = UserReg(
-    username='user2',
+    nickname='user2',
     email='2@gmail.com',
     password='testPassword')
 if user2.email not in get_emails():
