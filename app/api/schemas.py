@@ -181,9 +181,9 @@ class GamePublic(BaseModel):
     minister_proclaimed: bool  # did the minister pass the proc cards?
     director_proclaimed: bool  # did the director pass the proc cards?
     last_proc_negative: bool
-    minister: str
+    minister: int
     prev_minister: int
-    director: str
+    director: int
     prev_director: int
     semaphore: int
     score: Score

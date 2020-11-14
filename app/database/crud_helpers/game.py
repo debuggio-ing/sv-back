@@ -71,9 +71,9 @@ def get_game_public_info(game_id: int, player_id: int):
         player_list=get_game_player_public_list(
             game_id=game_id,
             c_player_id=player_id),
-        minister=get_game_minister_nickname(game_id=game_id),
+        minister=get_game_minister_id(game_id=game_id),
         prev_minister=get_game_prev_minister_id(game_id=game_id),
-        director=get_game_director_nickname(game_id=game_id),
+        director=get_game_director_id(game_id=game_id),
         prev_director=get_game_prev_director_id(game_id=game_id),
         semaphore=get_game_semaphore(game_id=game_id),
         score=get_game_score(game_id=game_id),
