@@ -16,24 +16,29 @@ from typing import List, Optional
 #
 
 
-#
-# add dead/alive condition to the game logic
-def cast_avada_kedavra(game_id: int, target: Optional[int]):
-    pass
+"""
+dead players cant:
+-chat
+-vote
+-be minister
+-be director
+-be target of spell
 
-    # check if avada kedavra
+"""
+# add dead/alive condition to the game logic
+@db_session
+def cast_avada_kedavra(game_id: int, target: int):
+
+    tplayer = Player.get(id=target)
 
     # set player to dead
+    tplayer.alive = False
 
     # check if voldemort is dead, then end the game
+    if tplayer.role.voldemort:
+        tplayer.game.ended = True
 
-    # set next minister candidate
-
-    # set in_session a false
-
-    # update game status and card deck
-
-    #
+    commit()
 
 
 def cast_imperio(game_id: int, target: int):

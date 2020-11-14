@@ -38,7 +38,7 @@ def test_choose_candidate():
     start_json = game_state.json()
     player_list = start_json['player_list']
 
-    assert start_json['director'] == player_list[4]['nickname']
+    assert start_json['director'] == player_list[4]['player_id']
 
 
 """
