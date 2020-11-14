@@ -26,6 +26,7 @@ def test_get_kadavra():
     assert response.status_code == 200
     assert response.json() == 1
 
+
 def test_post_kadavra():
     login = testc.post(
         "api/login/",
@@ -48,7 +49,6 @@ def test_post_kadavra():
     start_json = game_state.json()
     player_list = start_json['player_list']
 
-    assert  False == player_list[1]['alive']
+    assert False == player_list[1]['alive']
 
-
-    #DEBERIA TESTEAR QUE LOS MUERTOS NO PUEDEN SER NADA
+    # DEBERIA TESTEAR QUE LOS MUERTOS NO PUEDEN SER NADA

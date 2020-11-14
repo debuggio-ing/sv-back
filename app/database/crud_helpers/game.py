@@ -119,6 +119,8 @@ def get_game_player_public_list(
     return players
 
 # Returns the nickname of the game's minister.
+
+
 @db_session
 def get_game_minister_nickname(game_id: int) -> int:
     minister = Player.get(lobby=game_id, minister=True)
@@ -176,7 +178,6 @@ def get_game_prev_minister_id(game_id: int) -> int:
         prev_minister_id = prev_minister.id
 
     return prev_minister_id
-
 
 
 # Get previous director's player_id

@@ -9,8 +9,8 @@ def create_cards(game):
         # the position of the next cards are 0,6,12
         c = ProcCard(
             game=game,
-            proclaimed=(i in [13,14,15]),
-            discarded= (i in [2, 3]),
+            proclaimed=(i in [13, 14, 15]),
+            discarded=(i in [2, 3]),
             selected=False,
             position=i,
             phoenix=(
@@ -19,14 +19,15 @@ def create_cards(game):
                     12]))
     commit()
 
+
 @db_session
 def create_cards_avada_kedavra(game):
     for i in range(17):
         # the position of the next cards are 0,6,12
         c = ProcCard(
             game=game,
-            proclaimed= (i in [13,14,15,16]),
-            discarded= (i in [2, 3, 4]),
+            proclaimed=(i in [13, 14, 15, 16]),
+            discarded=(i in [2, 3, 4]),
             selected=False,
             position=i,
             phoenix=(
@@ -36,6 +37,8 @@ def create_cards_avada_kedavra(game):
     commit()
 
 # This functions creates players in a game given the users and the lobby
+
+
 @db_session
 def create_players(users, lobby):
     role_vol = GRole(voldemort=True, phoenix=False)
@@ -115,12 +118,12 @@ def spell_database(spell: str):
         create_cards(game=game)
     elif spell == "Avada Kedavra":
         game = Game(
-        lobby=lobby,
-        in_session=True,
-        minister_proclaimed=True,
-        director_proclaimed=True,
-        last_proc_negative=True)
+            lobby=lobby,
+            in_session=True,
+            minister_proclaimed=True,
+            director_proclaimed=True,
+            last_proc_negative=True)
 
         create_cards_avada_kedavra(game=game)
-    
+
     commit()

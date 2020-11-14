@@ -44,7 +44,7 @@ def player_vote(game_id: int, vote: PlayerVote, auth: AuthJWT = Depends()):
     # check if there's a vote occurring in the game
     in_voting_phase(game_id)
 
-    #check if player is dead
+    # check if player is dead
     is_player_dead(player_id=player_id)
 
     # cast vote
@@ -62,7 +62,6 @@ def get_player_role(game_id: int, authorize: AuthJWT = Depends()):
     return
 
 
-
 # Cast spell in specified game
 @r.post("/games/{game_id}/spell/")
 def post_cast_spell(game_id: int, spell: CastSpell, auth: AuthJWT = Depends()):
@@ -77,14 +76,9 @@ def post_cast_spell(game_id: int, spell: CastSpell, auth: AuthJWT = Depends()):
     # check if game state is correct
     in_casting_phase(game_id=game_id)
 
-    #check if target is dead
+    # check if target is dead
     if spell.target is not -1:
-        #
-        # IMPORTANTE !!!!!!!!!!!!!!!!
-        # Checkear que el TARGET sea del GAME
-
-
-        #
+        is_player_in_game(player_id=player_id, game_id=game_id)
         is_player_dead(player_id=spell.target)
 
     # cast spell(send spell)
@@ -105,7 +99,6 @@ def get_cast_spell(game_id: int, auth: AuthJWT = Depends()):
 
     # check if game state is correct
     in_casting_phase(game_id=game_id)
-
 
     # cast spell(send spell)
     return get_spell(game_id=game_id)
@@ -180,8 +173,10 @@ def director_candidate(
 
     can_propose_gvt(game_id=game_id, player_id=player_id)
 
-    #is candidate alive
-    is_player_dead(player_id=candidate_id)
+    # is candidate in game
+    is_player_in_game(player_id=candidate_id, game_id=game_id)
 
+    # is candidate alive
+    is_player_dead(player_id=candidate_id)
 
     propose_government(game_id=game_id, dir_id=candidate_id)
