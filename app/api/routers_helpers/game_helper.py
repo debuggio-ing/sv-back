@@ -103,6 +103,7 @@ def cast_spell(game_id: int, target: int):
     # number_players = get_number_players(game_id=game_id)
     # this can be extended for the general amount of players
     if negative_procs > 3:
+
         cast_avada_kedavra(game_id=game_id, target=target)
 
     discharge_director(game_id=game_id)
@@ -136,9 +137,9 @@ def is_player_dead(player_id: int):
 
 # is candidate in game
 
-
 def is_player_in_game(player_id: int, game_id: int):
     if not get_player_in_game(player_id=player_id, game_id=game_id):
         raise HTTPException(
             status_code=401,
             detail='Player isn\'nt in the game')
+

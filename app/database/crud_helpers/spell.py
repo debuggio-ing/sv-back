@@ -26,8 +26,6 @@ dead players cant:
 
 """
 # add dead/alive condition to the game logic
-
-
 @db_session
 def cast_avada_kedavra(game_id: int, target: int):
 
