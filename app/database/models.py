@@ -22,9 +22,7 @@ class User(db.Entity):
 # Created when the user uploads a profile image
 class Image(db.Entity):
     id = PrimaryKey(int, auto=True)
-    height = Required(int)
-    width = Required(int)
-    filename = Required(str)
+    image = Required(bytes)
     user = Required('User')
 
 

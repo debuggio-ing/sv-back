@@ -100,23 +100,46 @@ def get_user_public(user_email: str):
 
 # Set nickname for the solicited user.
 @db_session
-def change_nickname(user_email: str, nickname: str):
+def set_nickname(user_email: str, nickname: str):
+    if nickname is not None:
+        user = User.get(email=user_email)
+        if user is not None:
+            user.nickname = nickname
+
+        commit()
+
+
+# Set picture for the solicited user
+@db_session
+def set_picture(user_email: str, image: bytes):
+    if image is not None:
+        user = User.get(email=user_email)
+        if user.image is None:
+            user.image = Image(image=image, user=user)
+        else:
+            user.image.image = image
+        commit()
+
+
+# Return the image bytes for the solicited user
+@db_session
+def get_picture(user_email: str):
     user = User.get(email=user_email)
-
-    if user is not None:
-        user.nickname = nickname
-
-    commit()
+    image = None
+    if user.image is not None:
+        image = user.image.image
+    return image
 
 
 # Set password for the solicited user
 @db_session
 def set_password(user_email: str, password: str):
-    user = User.get(email=user_email)
+    if password is not None:
+        user = User.get(email=user_email)
 
-    if user is not None:
-        user.password = encrypt_password(password)
-    commit()
+        if user is not None:
+            user.password = encrypt_password(password)
+        commit()
 
 
 # Get verification code for solicited user.
