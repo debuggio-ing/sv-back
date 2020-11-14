@@ -142,4 +142,3 @@ def is_player_in_game(player_id: int, game_id: int):
         raise HTTPException(
             status_code=401,
             detail='Player isn\'nt in the game')
-
