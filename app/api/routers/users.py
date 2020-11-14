@@ -1,5 +1,5 @@
 from typing import Optional, List
-from fastapi import APIRouter, HTTPException, File, Request, Depends, Response, status
+from fastapi import APIRouter, UploadFile, HTTPException, File, Request, Depends, Response, status
 from pydantic import BaseModel, EmailStr
 from enum import Enum, IntEnum
 from fastapi_jwt_auth import AuthJWT
@@ -34,10 +34,12 @@ def get_user(auth: AuthJWT = Depends()):
 
 # Receives an img from the user
 @r.post("/users/picture/")
-def create_upload_file(file: bytes = File(...), auth: AuthJWT = Depends()):
+def create_upload_file(file: UploadFile = File(...), auth: AuthJWT = Depends()):
+    contents = file.file.read()
     user_email = validate_user(auth=auth)
     # AGREGAR CHEQUEOS PARA VALIDAR IMAGEN
-    set_picture(user_email=user_email, image=file)
+    set_picture(user_email=user_email, image=contents)
+    return 1
 
 
 # Returns the profile picture of a user
