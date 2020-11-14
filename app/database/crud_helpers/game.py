@@ -118,7 +118,7 @@ def get_game_player_public_list(
 
     return players
 
-  
+
 # Returns the nickname of the game's minister.
 @db_session
 def get_game_minister_nickname(game_id: int) -> int:
