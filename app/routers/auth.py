@@ -6,7 +6,6 @@ from fastapi_jwt_auth import AuthJWT
 from pydantic import BaseSettings
 from fastapi import HTTPException
 
-from app.api.hasher import *
 from app.database.binder import *
 
 # Authentication endpoints' router

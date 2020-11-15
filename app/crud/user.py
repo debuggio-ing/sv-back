@@ -1,9 +1,8 @@
 import random
 
-from app.api.hasher import *
-from app.crud.email_sender import *
+from app.validators.hasher import *
 from app.database.models import *
-from app.api.schemas import *
+from app.schemas.schemas import *
 
 
 # Insert user into the database.

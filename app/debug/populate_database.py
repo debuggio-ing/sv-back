@@ -1,5 +1,4 @@
 from app.database.binder import *
-from app.api.schemas import *
 
 import random
 

@@ -1,5 +1,5 @@
 from app.database.models import *
-from app.api.schemas import *
+from app.schemas.schemas import *
 
 import math
 
