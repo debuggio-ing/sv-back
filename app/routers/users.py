@@ -1,7 +1,8 @@
 from fastapi import APIRouter, UploadFile, File, Response, status
 
-from app.api.routers_helpers.auth_helper import *
 from app.database.binder import *
+from app.validators.auth_validator import *
+from app.validators.game_validator import *
 
 # Users endpoints' router
 r = users_router = APIRouter()

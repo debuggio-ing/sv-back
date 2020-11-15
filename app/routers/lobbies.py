@@ -1,7 +1,8 @@
 from fastapi import APIRouter, status
 
-from app.api.routers_helpers.auth_helper import *
 from app.database.binder import *
+from app.validators.auth_validator import *
+from app.validators.game_validator import *
 
 from typing import Optional
 

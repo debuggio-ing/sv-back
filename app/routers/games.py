@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-from app.api.routers_helpers.auth_helper import *
-from app.api.routers_helpers.game_helper import *
+from app.validators.auth_validator import *
+from app.validators.game_validator import *
 
 r = games_router = APIRouter()
 
