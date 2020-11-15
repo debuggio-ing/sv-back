@@ -1,13 +1,7 @@
-from typing import Optional, List
-from fastapi import APIRouter, UploadFile, HTTPException, File, Request, Depends, Response, status
-from pydantic import BaseModel, EmailStr
-from enum import Enum, IntEnum
-from fastapi_jwt_auth import AuthJWT
-from app.api.routers_helpers.auth_helper import *
-from app.api.schemas import *
-from app.database.models import *
-from app.database.crud import *
+from fastapi import APIRouter, UploadFile, File, Response, status
 
+from app.api.routers_helpers.auth_helper import *
+from app.database.crud import *
 
 # Users endpoints' router
 r = users_router = APIRouter()
@@ -34,7 +28,9 @@ def get_user(auth: AuthJWT = Depends()):
 
 # Receives an img from the user
 @r.post("/users/picture/")
-def create_upload_file(file: UploadFile = File(...), auth: AuthJWT = Depends()):
+def create_upload_file(
+        file: UploadFile = File(...),
+        auth: AuthJWT = Depends()):
     contents = file.file.read()
     user_email = validate_user(auth=auth)
     # AGREGAR CHEQUEOS PARA VALIDAR IMAGEN

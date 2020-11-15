@@ -1,8 +1,7 @@
-from fastapi import FastAPI
 from fastapi.testclient import TestClient
-from app.test import test_svapi
-from app.database.crud import *
 
+from app.database.crud import *
+from app.test import test_svapi
 
 # It's necessary to remove database before running the tests.
 testc = TestClient(test_svapi)

@@ -1,10 +1,6 @@
-from app.database.models import *
-from app.api.schemas import *
-from app.database.crud_helpers.player import *
-from app.database.crud_helpers.lobby import *
 from app.database.crud_helpers.card import *
-from typing import List
-import random
+from app.database.crud_helpers.lobby import *
+from app.database.crud_helpers.player import *
 
 
 # Create game in the database.
@@ -177,7 +173,6 @@ def get_game_prev_minister_id(game_id: int) -> int:
         prev_minister_id = prev_minister.id
 
     return prev_minister_id
-
 
 
 # Get previous director's player_id

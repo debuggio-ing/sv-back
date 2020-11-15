@@ -1,11 +1,7 @@
-from fastapi import FastAPI
 from fastapi.testclient import TestClient
-from app.test import test_svapi
-from app.database.crud import *
-from io import BytesIO
-from PIL import Image
-import os
 
+from app.database.crud import *
+from app.test import test_svapi
 
 # It's necessary to remove database before running the tests.
 testc = TestClient(test_svapi)
@@ -116,7 +112,10 @@ def test_modify_picture():
     # with open(fpath, "wb") as f:
     #     response = client.post("/", files={"file": ("filename", f, "image/jpeg")})
 
-    empty_picture = testc.get("/api/users/picture/", headers={"Authorization": token})
+    empty_picture = testc.get(
+        "/api/users/picture/",
+        headers={
+            "Authorization": token})
     assert empty_picture.status_code == 200
     assert empty_picture.content == b''
     for i in [1, 2]:
@@ -125,9 +124,17 @@ def test_modify_picture():
             # comments are for testing manually, it opens the picture
             # image = Image.open(BytesIO(raw_image)).convert("RGBA")
             # image.show()
-            response = testc.post("/api/users/picture/", headers={"Authorization": token}, files={"file": raw_image})
+            response = testc.post(
+                "/api/users/picture/",
+                headers={
+                    "Authorization": token},
+                files={
+                    "file": raw_image})
             assert response.status_code == 200
 
-            image = testc.get("/api/users/picture/", headers={"Authorization": token})
+            image = testc.get(
+                "/api/users/picture/",
+                headers={
+                    "Authorization": token})
             assert image.status_code == 200
             assert image.content == raw_image

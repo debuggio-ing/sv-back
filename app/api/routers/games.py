@@ -1,7 +1,7 @@
-from app.api.routers_helpers.game_helper import *
-from app.api.routers_helpers.auth_helper import *
-from typing import Optional
 from fastapi import APIRouter
+
+from app.api.routers_helpers.auth_helper import *
+from app.api.routers_helpers.game_helper import *
 
 r = games_router = APIRouter()
 
@@ -76,9 +76,8 @@ def post_cast_spell(game_id: int, spell: CastSpell, auth: AuthJWT = Depends()):
     # check if game state is correct
     in_casting_phase(game_id=game_id)
 
-
     # check if target is dead
-    if spell.target is not -1:
+    if spell.target != -1:
         is_player_in_game(player_id=player_id, game_id=game_id)
         is_player_dead(player_id=spell.target)
 

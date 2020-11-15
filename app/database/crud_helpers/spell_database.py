@@ -36,7 +36,7 @@ def create_cards_avada_kedavra(game):
                     12]))
     commit()
 
-    
+
 # This functions creates players in a game given the users and the lobby
 @db_session
 def create_players(users, lobby):
@@ -126,4 +126,3 @@ def spell_database(spell: str):
         create_cards_avada_kedavra(game=game)
 
     commit()
-

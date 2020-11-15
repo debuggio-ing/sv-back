@@ -1,11 +1,9 @@
-from fastapi import FastAPI
-from fastapi.testclient import TestClient
-from app.test import test_svapi
-from app.database.crud import *
-
 import random
 import string
 
+from fastapi.testclient import TestClient
+
+from app.test import test_svapi
 
 client = TestClient(test_svapi)
 

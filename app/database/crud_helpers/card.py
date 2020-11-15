@@ -1,6 +1,7 @@
-from app.database.models import *
-from app.api.schemas import *
 import random
+
+from app.api.schemas import *
+from app.database.models import *
 
 
 # Return all selected cards in a game identified by game_id

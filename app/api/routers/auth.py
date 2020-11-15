@@ -1,14 +1,13 @@
-from fastapi import APIRouter, HTTPException, Request, Depends, Response
-from pydantic import BaseModel, Field, BaseSettings
-from fastapi_jwt_auth import AuthJWT
 from datetime import timedelta
 from typing import Literal
 
-from app.api.schemas import *
-from app.database.models import *
-from app.database.crud import *
-from app.api.hasher import *
+from fastapi import APIRouter, Depends
+from fastapi_jwt_auth import AuthJWT
+from pydantic import BaseSettings
+from fastapi import HTTPException
 
+from app.api.hasher import *
+from app.database.crud import *
 
 # Authentication endpoints' router
 r = auth_router = APIRouter()

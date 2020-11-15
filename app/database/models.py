@@ -1,5 +1,5 @@
 from datetime import datetime
-from sys import maxsize
+
 from pony.orm import *
 
 db = Database()

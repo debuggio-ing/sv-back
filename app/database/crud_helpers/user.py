@@ -1,8 +1,9 @@
-from app.database.models import *
-from app.database.crud_helpers.email_sender import *
-from app.api.schemas import *
-from app.api.hasher import *
 import random
+
+from app.api.hasher import *
+from app.database.crud_helpers.email_sender import *
+from app.database.models import *
+from app.api.schemas import *
 
 
 # Insert user into the database.

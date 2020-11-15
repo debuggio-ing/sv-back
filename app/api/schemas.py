@@ -1,7 +1,7 @@
+from enum import Enum
 from typing import Optional, List
-from pydantic import BaseModel, EmailStr
-from enum import Enum, IntEnum
 
+from pydantic import BaseModel, EmailStr
 
 '''
 Las clases estan divididas según los siguientes criterios (priorizados):
@@ -26,9 +26,6 @@ internamente (con jwt) se verifica que realmente seamos nosotros
  (el ministro) los que pedimos la información, y responde devolviendo
  una instancia de MinisterProc
 '''
-
-# Pensar en el caso de como ocultar la información de los votos hasta que
-# se termine
 
 
 # Register user input data

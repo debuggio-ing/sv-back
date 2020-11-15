@@ -1,6 +1,5 @@
 import smtplib
 import ssl
-from email.message import EmailMessage
 
 
 # Send email to verify email.

@@ -1,13 +1,8 @@
-from app.database.crud import *
 from fastapi import HTTPException
 
-from app.database.models import *
-from app.api.schemas import *
-
-from app.database.crud_helpers.player import *
-from app.database.crud_helpers.lobby import *
+from app.database.crud import *
 from app.database.crud_helpers.card import *
-from typing import List, Optional
+from app.database.crud_helpers.player import *
 
 
 # Gets player from game and returns its id or raises and exception
@@ -136,6 +131,7 @@ def is_player_dead(player_id: int):
             status_code=403, detail='You can\'t interact with the dead')
 
 # is candidate in game
+
 
 def is_player_in_game(player_id: int, game_id: int):
     if not get_player_in_game(player_id=player_id, game_id=game_id):

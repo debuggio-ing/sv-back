@@ -1,14 +1,10 @@
-from typing import Optional, List
-from fastapi import APIRouter, HTTPException, Request, Depends, Response, status
-from pydantic import BaseModel, EmailStr
-from enum import Enum, IntEnum
-from fastapi_jwt_auth import AuthJWT
+from fastapi import APIRouter, status
 
-from app.api.schemas import *
-from app.database.models import *
-from app.database.crud import *
-from typing import Optional
 from app.api.routers_helpers.auth_helper import *
+from app.database.crud import *
+
+from typing import Optional
+
 
 # Lobbies endpoints' router
 r = lobbies_router = APIRouter()
