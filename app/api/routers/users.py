@@ -1,10 +1,9 @@
 from typing import Optional, List
-from fastapi import APIRouter, HTTPException, Request, Depends, Response, status
+from fastapi import APIRouter, UploadFile, HTTPException, File, Request, Depends, Response, status
 from pydantic import BaseModel, EmailStr
 from enum import Enum, IntEnum
 from fastapi_jwt_auth import AuthJWT
 from app.api.routers_helpers.auth_helper import *
-from app.api.routers_helpers.user_helper import *
 from app.api.schemas import *
 from app.database.models import *
 from app.database.crud import *
@@ -33,24 +32,32 @@ def get_user(auth: AuthJWT = Depends()):
     return get_user_public(user_email=user_email)
 
 
+# Receives an img from the user
+@r.post("/users/picture/")
+def create_upload_file(file: UploadFile = File(...), auth: AuthJWT = Depends()):
+    contents = file.file.read()
+    user_email = validate_user(auth=auth)
+    # AGREGAR CHEQUEOS PARA VALIDAR IMAGEN
+    set_picture(user_email=user_email, image=contents)
+    return 1
+
+
+# Returns the profile picture of a user
+@r.get("/users/picture/")
+def get_profile_picture(auth: AuthJWT = Depends()):
+    user_email = validate_user(auth=auth)
+    picture = get_picture(user_email=user_email)
+    return Response(content=picture)
+
+
 # Return user information.
 @r.post("/users/info/modify/", response_model=UserPublic)
 def modify_user_info(new_profile: UserProfile, auth: AuthJWT = Depends()):
     user_email = validate_user(auth=auth)
-    if new_profile.nickname is not None and new_profile.password is not None:
-        # update both the nickname and password
-        set_nickname(user_email=user_email, nickname=new_profile.nickname)
-        set_password(user_email=user_email, password=new_profile.password)
-    elif new_profile.nickname is not None:
-        # update nickname
-        set_nickname(user_email=user_email, nickname=new_profile.nickname)
-    elif new_profile.password is not None:
-        # update password
-        set_password(user_email=user_email, password=new_profile.password)
-    else:
-        # illegal request
-        raise HTTPException(status_code=400, detail="Illegal request")
-
+    # Needs to check the values inserted are appropriate
+    # AGREGAR EN FUTURO
+    set_nickname(user_email=user_email, nickname=new_profile.nickname)
+    set_password(user_email=user_email, password=new_profile.password)
     return get_user_public(user_email=user_email)
 
 
