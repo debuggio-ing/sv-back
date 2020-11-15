@@ -119,7 +119,7 @@ def test_modify_picture():
     assert empty_picture.status_code == 200
     assert empty_picture.content == b''
     for i in [1, 2]:
-        with open("app/api/tests/test_pic{}.jpg".format(i), "rb") as image:
+        with open("app/debug/test_pic{}.jpg".format(i), "rb") as image:
             raw_image = image.read()
             # comments are for testing manually, it opens the picture
             # image = Image.open(BytesIO(raw_image)).convert("RGBA")
