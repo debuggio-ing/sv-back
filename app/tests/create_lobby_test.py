@@ -1,10 +1,12 @@
 from fastapi.testclient import TestClient
 from app.test import test_svapi
-from app.database.crud import *
+
 from fastapi.testclient import TestClient
 
-from app.database.crud import *
-from app.test import test_svapi
+from app.debug.populate_database import *
+from app.debug.set_db_to_proclaim import *
+from app.debug.spell_database import *
+
 
 lobby = TestClient(test_svapi)
 

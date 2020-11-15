@@ -1,6 +1,5 @@
-from app.database.models import *
+from app.database.crud import *
 from app.api.schemas import *
-from app.database.crud_helpers.user import *
 
 import random
 

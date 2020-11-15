@@ -1,4 +1,4 @@
-from app.database.models import *
+from app.database.crud import *
 
 
 @db_session

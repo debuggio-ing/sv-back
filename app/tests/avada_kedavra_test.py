@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 
-from app.database.crud import *
+from app.debug.spell_database import *
 from app.test import test_svapi
 
 testc = TestClient(test_svapi)
