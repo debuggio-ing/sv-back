@@ -2,7 +2,8 @@ import random
 
 from app.validators.hasher import *
 from app.database.models import *
-from app.schemas.schemas import *
+from app.schemas.user_schema import *
+from app.schemas.lobby_schema import *
 
 
 # Insert user into the database.

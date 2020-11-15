@@ -1,6 +1,6 @@
 import random
 
-from app.schemas.schemas import *
+from app.schemas.game_schema import *
 from app.database.models import *
 
 
