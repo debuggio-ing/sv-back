@@ -1,6 +1,6 @@
-from app.database.crud_helpers.card import *
-from app.database.crud_helpers.lobby import *
-from app.database.crud_helpers.player import *
+from app.crud.card import *
+from app.crud.lobby import *
+from app.crud.player import *
 
 
 # Create game in the database.

@@ -1,4 +1,4 @@
-from app.database.crud_helpers.user import *
+from app.crud.user import *
 
 
 # Create lobby in the database.

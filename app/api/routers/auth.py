@@ -7,7 +7,7 @@ from pydantic import BaseSettings
 from fastapi import HTTPException
 
 from app.api.hasher import *
-from app.database.crud import *
+from app.database.binder import *
 
 # Authentication endpoints' router
 r = auth_router = APIRouter()

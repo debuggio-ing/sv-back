@@ -1,7 +1,7 @@
 import random
 
 from app.api.hasher import *
-from app.database.crud_helpers.email_sender import *
+from app.crud.email_sender import *
 from app.database.models import *
 from app.api.schemas import *
 

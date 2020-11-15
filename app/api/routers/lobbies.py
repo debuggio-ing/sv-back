@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status
 
 from app.api.routers_helpers.auth_helper import *
-from app.database.crud import *
+from app.database.binder import *
 
 from typing import Optional
 

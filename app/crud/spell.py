@@ -1,8 +1,7 @@
-from app.database.crud_helpers.card import *
+from app.crud.card import *
+
 
 # add dead/alive condition to the game logic
-
-
 @db_session
 def cast_avada_kedavra(game_id: int, target: int):
     tplayer = Player.get(id=target)

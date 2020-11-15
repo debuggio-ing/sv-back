@@ -5,7 +5,7 @@ from app.api.routers.auth import auth_router
 from app.api.routers.games import games_router
 from app.api.routers.lobbies import lobbies_router
 from app.api.routers.users import users_router
-from app.database.crud import *
+from app.database.binder import *
 
 
 # svapi is the API object

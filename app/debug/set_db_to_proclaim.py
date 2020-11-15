@@ -1,4 +1,4 @@
-from app.database.crud import *
+from app.database.binder import *
 
 
 @db_session

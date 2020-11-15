@@ -1,8 +1,8 @@
 from fastapi import HTTPException
 
-from app.database.crud import *
-from app.database.crud_helpers.card import *
-from app.database.crud_helpers.player import *
+from app.database.binder import *
+from app.crud.card import *
+from app.crud.player import *
 
 
 # Gets player from game and returns its id or raises and exception

@@ -1,4 +1,4 @@
-import app.database.crud as crud
+import app.database.binder as crud
 import passlib.context as crypt
 
 

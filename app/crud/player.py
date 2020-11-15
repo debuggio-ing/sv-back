@@ -1,4 +1,4 @@
-from app.database.crud_helpers.vote import *
+from app.crud.vote import *
 
 
 # Create player in the database.

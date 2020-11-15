@@ -1,4 +1,4 @@
-from app.database.crud import *
+from app.database.binder import *
 
 
 # This function can be extended with a parameter to select how many
