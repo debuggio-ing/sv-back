@@ -6,9 +6,12 @@ from app.crud.vote import *
 def insert_player(user_email: str, lobby_id: int) -> int:
     lobby = Lobby.get(id=lobby_id)
     user = User.get(email=user_email)
-
+    existing_player = Player.get(lobby=lobby_id, user=user)
     player_id = -1
-    if lobby is not None and user not in lobby.player.user:
+    if existing_player:
+        return existing_player.id
+    if lobby is not None and not existing_player and len(
+            list(select(p for p in lobby.player))) < lobby.max_players and not lobby.started:
         p = Player(user=user, lobby=lobby)
         commit()
         player_id = p.id

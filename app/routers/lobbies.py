@@ -91,7 +91,9 @@ def join_game(lobby_id: int, Authorize: AuthJWT = Depends()):
                             detail="The game id is incorrect.")
     # Get information from jwt_token.
     user_email = Authorize.get_jwt_identity()
-    insert_player(user_email=user_email, lobby_id=lobby_id)
+    if insert_player(user_email=user_email, lobby_id=lobby_id) == -1:
+        raise HTTPException(status_code=409,
+                            detail="The game id is full.")
 
     current_players = get_lobby_player_list(lobby_id=lobby_id)
     lobby_name = get_lobby_name(lobby_id=lobby_id)
