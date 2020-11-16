@@ -23,11 +23,12 @@ def is_last_vote(player_id: int, game_id: int):
 
     current_votes = lobby.game.num_votes
     already_vote = CurrentVote.get(voter_id=player_id)
+    dead_players = lobby.game.dead_players
 
     if already_vote is None:
         current_votes += 1
 
-    return current_votes == max_players
+    return current_votes == (max_players - dead_players)
 
 
 # DO NOT USE: fix database for demo.
