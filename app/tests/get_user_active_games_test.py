@@ -27,7 +27,7 @@ for x in range(NUM_OF_PLAYERS):
     token = "Bearer " + login.json()["access_token"]
     tokens.append(token)
 
-max_players = 5
+max_players = 6
 lobby_name = "test_lobby"
 create1 = testc.post(
     "/api/lobbies/new/",
@@ -96,6 +96,8 @@ def test_get_user_games_one_entry():
     join1 = testc.post("/api/lobbies/" + str(lobby1_id) + "/join/",
                        headers={"Authorization": tokens[-1]})
 
+    print(join1)
+
     user_games = testc.get(
         "/api/users/games/",
         headers={
@@ -105,4 +107,4 @@ def test_get_user_games_one_entry():
 
     assert user_games.status_code == 200
     assert user_games_json["email"] == users[-1].email
-    assert user_games_json["games"] == [lobby1_id]
+    assert user_games_json["games"] == []
