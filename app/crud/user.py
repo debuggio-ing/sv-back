@@ -1,7 +1,9 @@
 import random
 
 from app.validators.hasher import *
-from app.database.models import *
+from app.models.user_models import *
+from app.models.game_models import *
+from app.models.lobby_models import *
 from app.schemas.user_schema import *
 from app.schemas.lobby_schema import *
 

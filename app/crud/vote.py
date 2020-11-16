@@ -1,4 +1,6 @@
-from app.database.models import *
+from app.models.user_models import *
+from app.models.game_models import *
+from app.models.lobby_models import *
 from app.schemas.game_schema import *
 
 import math
