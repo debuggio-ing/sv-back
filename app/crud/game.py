@@ -9,7 +9,7 @@ def insert_game(lobby_id: int) -> int:
     NUM_DEATH_EATERS = 2
     NUM_PHOENIX_CARDS = 6
     PROC_CARD_NUMBER = 17
-    # This number is hidden and therefore its random
+
     ULTRA_RANDOM_NUMBER = random.randint(0, 4)
 
     lobby = Lobby.get(id=lobby_id)
@@ -19,7 +19,7 @@ def insert_game(lobby_id: int) -> int:
     player_order = [i for i in range(MAX_PLAYERS)]
     random.shuffle(player_order)
 
-    cards = list((i, i < NUM_PHOENIX_CARDS) for i in range(PROC_CARD_NUMBER))
+    cards = list(i < NUM_PHOENIX_CARDS for i in range(PROC_CARD_NUMBER))
     random.shuffle(cards)
 
     game_id = -1
@@ -37,8 +37,8 @@ def insert_game(lobby_id: int) -> int:
         game.list_head = ULTRA_RANDOM_NUMBER
 
         # create proclamation cards.
-        for card in cards:
-            ProcCard(position=card[0], phoenix=card[1], game=game)
+        for i in range(PROC_CARD_NUMBER):
+            ProcCard(position=i, phoenix=cards[i], game=game)
 
         # choose who will be and death eaters.
         death_eaters = random.sample(range(len(player_ids)), NUM_DEATH_EATERS)

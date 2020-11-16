@@ -5,7 +5,7 @@ from app.models.base import *
 class User(db.Entity):
     id = PrimaryKey(int, auto=True)
     email = Required(str, unique=True)
-    nickname = Required(str, unique=True)
+    nickname = Required(str)
     password = Required(str)
     image = Optional('Image')
     players = Set('Player')
