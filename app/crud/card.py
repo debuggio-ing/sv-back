@@ -35,7 +35,8 @@ def discard_card(card_pos: int, game_id: int):
 # Discard the other selected card in the same game
 @db_session
 def proclaim_card(card_pos: int, game_id: int):
-    cards = select(c for c in ProcCard if c.game.lobby.id == game_id)
+    cards = select(c for c in ProcCard if c.game.lobby.id ==
+                   game_id and c.selected)
     game = Lobby.get(id=game_id).game
     for card in cards:
         card.selected = False
@@ -43,7 +44,7 @@ def proclaim_card(card_pos: int, game_id: int):
             card.proclaimed = True
             game.last_proc_negative = (not card.phoenix)
         else:
-            card.discarded = False
+            card.discarded = True
     commit()
 
 
