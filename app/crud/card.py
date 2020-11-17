@@ -51,8 +51,8 @@ def proclaim_card(card_pos: int, game_id: int):
 # Shuffle the cards in the deck of the game specified by game_id
 @db_session
 def shuffle_cards(game_id: int):
-    cards = select(c for c in ProcCard if c.game.lobby.id ==
-                   game_id and not c.proclaimed)
+    cards = list(select(c for c in ProcCard if c.game.lobby.id ==
+                   game_id and not c.proclaimed))
     positions = list(range(0, len(cards)))
     random.shuffle(positions)
     for i in range(0, len(cards)):
