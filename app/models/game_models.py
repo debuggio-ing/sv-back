@@ -16,6 +16,7 @@ class Game(db.Entity):
     voting = Required(bool, default=False)  # are players currently voting?
     num_votes = Required(int, default=0)
     ended = Required(bool, default=False)
+    dead_players = Required(int, default=0)
 
 
 # Current voting information

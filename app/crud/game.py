@@ -304,19 +304,20 @@ def finish_minister_proclamation(game_id: int):
 def finish_director_proclamation(game_id: int):
     game = Lobby.get(id=game_id).game
     game.director_proclaimed = True
-    cards = list(select(c for c in ProcCard if c.game.id == game_id))
+    cards = list(select(c for c in ProcCard if c.game.lobby.id == game_id))
+
     if len(
         list(
             filter(
-            lambda c: not(
-                c.proclaimed and c.discarded),
-            cards))) <= 2:
+            lambda c: c.proclaimed,
+            cards))) == 5:
+        print("SHUFFLE")
         shuffle_cards(game_id=game_id)
     if len(
         list(
             filter(
             lambda c: c.proclaimed and not c.phoenix, cards))
-    ) <= 2:
+    ) <= 2 or not game.last_proc_negative:
         discharge_director(game_id=game_id)
         finish_legislative_session(game_id=game_id)
 
