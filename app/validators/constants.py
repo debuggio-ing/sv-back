@@ -49,3 +49,10 @@ SPELLS_PLAYERS = {5: {0: Spells.none,
 NUM_DEATH_EATERS = {5: 2, 6: 2, 7: 3, 8: 3, 9: 4, 10: 4}
 NUM_PHOENIX_CARDS = 6
 PROC_CARD_NUMBER = 17
+VOLDEMORT_PERMISSIONS = {
+    5: True,
+    6: True,
+    7: False,
+    8: False,
+    9: False,
+    10: False}
