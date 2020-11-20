@@ -55,13 +55,6 @@ def player_vote(game_id: int, vote: PlayerVote, auth: AuthJWT = Depends()):
     return 1
 
 
-# Return player's role in the specified game
-@r.get("/games/{game_id}/role/", response_model=PlayerRole)
-def get_player_role(game_id: int, authorize: AuthJWT = Depends()):
-    authorize.jwt_required()
-    return
-
-
 # Cast spell in specified game
 @r.post("/games/{game_id}/spell/")
 def post_cast_spell(game_id: int, spell: CastSpell, auth: AuthJWT = Depends()):
@@ -107,7 +100,7 @@ def get_cast_spell(game_id: int, auth: AuthJWT = Depends()):
 # Return to the minister/director the selected cards according to the game
 # status
 @r.get("/games/{game_id}/proc/", response_model=List[CardToProclaim])
-def get_director_proc(game_id: int, auth: AuthJWT = Depends()):
+def get_proclamations(game_id: int, auth: AuthJWT = Depends()):
     user_email = validate_user(auth=auth)
 
     player_id = get_player(email=user_email, game_id=game_id)
@@ -132,7 +125,7 @@ def get_director_proc(game_id: int, auth: AuthJWT = Depends()):
 # Returns True if game continues or False if game is over, always False if
 # called by minister
 @r.post("/games/{game_id}/proc/", response_model=bool)
-def proc_election(
+def post_proclamations(
         game_id: int,
         election: int,
         auth: AuthJWT = Depends()):
