@@ -27,6 +27,7 @@ class UserGames(BaseModel):
 class UserProfile(BaseModel):
     nickname: Optional[str]
     password: Optional[str]
+    oldpassword: Optional[str]
 
 
 # Recover account input data
