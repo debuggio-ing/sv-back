@@ -134,7 +134,7 @@ def get_game_info(game_id: int, user: User):
 # match in the middle of an election
 def post_vote(game_id: int, vote: bool, user: User):
     response = test_client.post(
-        "api/games/{}/vote/",
+        "api/games/{}/vote/".format(game_id),
         headers={
             "Content-Type": "application/json",
             "Authorization": user.token},
