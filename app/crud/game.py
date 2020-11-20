@@ -1,22 +1,20 @@
 from app.crud.card import *
 from app.crud.lobby import *
 from app.crud.player import *
+from app.validators.constants import *
 
 
 # Create game in the database.
 @db_session
 def insert_game(lobby_id: int) -> int:
-    NUM_DEATH_EATERS = 2
-    NUM_PHOENIX_CARDS = 6
-    PROC_CARD_NUMBER = 17
-
-    ULTRA_RANDOM_NUMBER = random.randint(0, 4)
+    # (players, death_eaters)
 
     lobby = Lobby.get(id=lobby_id)
 
-    MAX_PLAYERS = lobby.max_players
+    max_players = lobby.max_players
+    ultra_random_number = random.randint(0, 4)
 
-    player_order = [i for i in range(MAX_PLAYERS)]
+    player_order = [i for i in range(max_players)]
     random.shuffle(player_order)
 
     cards = list(i < NUM_PHOENIX_CARDS for i in range(PROC_CARD_NUMBER))
@@ -34,14 +32,17 @@ def insert_game(lobby_id: int) -> int:
             player.position = player_order[i]
 
         # Set first player of the list
-        game.list_head = ULTRA_RANDOM_NUMBER
+        game.list_head = ultra_random_number
 
         # create proclamation cards.
         for i in range(PROC_CARD_NUMBER):
             ProcCard(position=i, phoenix=cards[i], game=game)
 
         # choose who will be and death eaters.
-        death_eaters = random.sample(range(len(player_ids)), NUM_DEATH_EATERS)
+        death_eaters = random.sample(
+            range(
+                len(player_ids)),
+            NUM_DEATH_EATERS[max_players])
 
         # set roles.
         set_phoenixes([player_ids[i]
@@ -50,8 +51,8 @@ def insert_game(lobby_id: int) -> int:
         set_voldemort(player_ids[death_eaters[0]])
 
         # set first minister of magic.
-        set_minister_of_magic(player_ids[ULTRA_RANDOM_NUMBER])
-        game.list_head = ((game.list_head + 1) % MAX_PLAYERS)
+        set_minister_of_magic(player_ids[ultra_random_number])
+        game.list_head = ((game.list_head + 1) % max_players)
 
         commit()
         game_id = game.id

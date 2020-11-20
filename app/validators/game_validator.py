@@ -3,9 +3,11 @@ from fastapi import HTTPException
 from app.database.binder import *
 from app.crud.card import *
 from app.crud.player import *
-
+from app.validators.constants import *
 
 # Gets player from game and returns its id or raises and exception
+
+
 def get_player(email: str, game_id: int):
     player_id = get_player_id(email, game_id)
     if player_id == -1:
@@ -111,10 +113,18 @@ def get_spell(game_id: int):
     negative_procs = get_number_neg_procs(game_id=game_id)
     number_players = get_number_players(game_id=game_id)
     result = 1
-
     # this if should be extended for any other spell.
-    if number_players in [5, 6] and negative_procs == 3:
+    spell = SPELLS_PLAYERS[number_players][negative_procs]
+    if spell == Spells.divination:
         result = get_divination_cards(game_id=game_id)
+    elif spell == Spells.avada_kedavra:
+        result = 1
+    elif spell == Spells.crucio:
+        result = 1
+    elif spell == Spells.imperio:
+        result = 1
+    else:
+        result = 1
 
     return result
 
@@ -129,8 +139,6 @@ def is_player_dead(player_id: int):
     if not get_player_alive(player_id=player_id):
         raise HTTPException(
             status_code=403, detail='You can\'t interact with the dead')
-
-# is candidate in game
 
 
 def is_player_in_game(player_id: int, game_id: int):

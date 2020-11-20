@@ -39,7 +39,7 @@ def get_player_last_vote(player_id: int) -> bool:
 @db_session
 def get_player_public(player_id: int, c_player_id: int) -> PlayerPublic:
     player = Player.get(id=player_id)
-    if can_know_role_of(c_player_id, player_id):
+    if can_know_roles(c_player_id, player_id):
         if player.role.phoenix:
             role = Role("Order of the Phoenix")
         elif player.role.voldemort:
@@ -63,14 +63,24 @@ def get_player_public(player_id: int, c_player_id: int) -> PlayerPublic:
 
 
 # Can player a know the role of player b?
-def can_know_role_of(player_id_a: int, player_id_b: int) -> bool:
+def can_know_roles(player_id_a: int, player_id_b: int) -> bool:
     if player_id_a == player_id_b:
         return True
     player_a = Player.get(id=player_id_a)
-    player_b = Player.get(id=player_id_b)
-    # Aca más adelante iria la logica de si es voldemort puede saber el rol o
-    # no de los mortifagos
-    return not player_a.role.phoenix
+
+    VOLDEMORT_PERMISSIONS = {
+        5: True,
+        6: True,
+        7: False,
+        8: False,
+        9: False,
+        10: False}
+    result = False
+    if player_a.role.voldemort:
+        result = VOLDEMORT_PERMISSIONS[player_a.lobby.max_players]
+    elif not player_a.role.phoenix:
+        result = True
+    return result
 
 
 # Return the required player id.
