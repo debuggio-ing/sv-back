@@ -70,6 +70,12 @@ class Score(BaseModel):
     bad: int
 
 
+# Message
+class MessageSchema(BaseModel):
+    sender: str
+    message: str
+
+
 # Game's public output data
 class GamePublic(BaseModel):
     player_list: List[PlayerPublic]  # players order
@@ -90,3 +96,4 @@ class GamePublic(BaseModel):
     roleReveal: Optional[List[Role]]
     client_minister: bool
     client_director: bool
+    messages: List[MessageSchema]

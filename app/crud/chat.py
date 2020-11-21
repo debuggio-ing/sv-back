@@ -1,5 +1,6 @@
 from app.models.game_models import *
 from app.models.lobby_models import *
+from app.schemas.game_schema import *
 
 
 # add a message to the database
@@ -12,27 +13,19 @@ def insert_message(player_id: int, message: str):
     commit()
 
 
-# return all game_id messages.
+# return all messages from game/lobby.
 @db_session
-def get_game_messages(game_id: int):
-    lobby = Lobby.get(id=game_id)
+def get_messages(id: int):
+    lobby = Lobby.get(id=id)
 
-    messages = list(select(m for m in Message if m.game.lobby.id == game_id))
-
-    print(messages)
-
-    return messages
-
-
-# return all lobby_id messages.
-@db_session
-def get_lobby_messages(lobby_id: int):
-    lobby = Lobby.get(id=lobby_id)
-
-    messages = list(
+    msgs = list(
         select(
-            m.message for m in Message if m.sender.lobby.id == lobby_id))
+            m for m in Message if m.sender.lobby.id == id).order_by(
+            lambda msg: desc(
+                msg.id)).limit(6))
 
-    print(messages)
+    messages = list(map(lambda x: MessageSchema(
+        sender=x.sender.user.nickname, message=x.message), msgs))
+    messages.reverse()
 
     return messages
