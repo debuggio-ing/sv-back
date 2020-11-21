@@ -1,6 +1,7 @@
 from app.crud.card import *
 from app.crud.lobby import *
 from app.crud.player import *
+from app.crud.chat import *
 from app.validators.constants import *
 
 
@@ -80,7 +81,8 @@ def get_game_public_info(game_id: int, player_id: int):
         director_proclaimed=get_director_proclaimed(game_id=game_id),
         last_proc_negative=get_last_proc_negative(game_id=game_id),
         client_minister=get_is_player_minister(player_id=player_id),
-        client_director=is_player_director(player_id=player_id))
+        client_director=is_player_director(player_id=player_id),
+        messages=get_game_messages(game_id=game_id))
 
 
 # Returns true if pid is minister.
