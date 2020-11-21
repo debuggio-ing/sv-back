@@ -20,9 +20,8 @@ def get_selected_cards(game_id: int):
         select(
             card for card in ProcCard if card.selected and card.game.lobby.id == game_id))
 
+
 # Discard the card identified by card_pos and game_id
-
-
 @db_session
 def discard_card(card_pos: int, game_id: int):
     card = ProcCard.get(position=card_pos, game=game_id, discarded=False, proclaimed=False, selected=True)

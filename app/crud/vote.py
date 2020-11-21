@@ -115,7 +115,7 @@ def process_vote_result(game_id: int):
         # select cards for legislative session
         cards = list(
             select(
-                c for c in ProcCard if c.game.id == game_id and not (
+                c for c in ProcCard if c.game.lobby.id == game_id and not (
                     c.proclaimed or c.discarded)).order_by(
                 lambda c: c.position).limit(3))
         for c in cards:
