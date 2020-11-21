@@ -54,9 +54,10 @@ def modify_user_info(new_profile: UserProfile, auth: AuthJWT = Depends()):
     user_email = validate_user(auth=auth)
     # Needs to check the values inserted are appropriate
     set_nickname(user_email=user_email, nickname=new_profile.nickname)
-    if new_profile.password != '' and check_password(user_email, new_profile.oldpassword):
+    if new_profile.password is not None and check_password(
+            user_email, new_profile.oldpassword):
         set_password(user_email=user_email, password=new_profile.password)
-    else:
+    elif new_profile.password is not None:
         raise HTTPException(status_code=401, detail='Bad password')
     return get_user_public(user_email=user_email)
 
