@@ -1,21 +1,20 @@
-from fastapi import Depends, FastAPI, HTTPException
-from pony.orm import *
+from fastapi import FastAPI
+from app.routers.games import games_router
+from app.routers.lobbies import lobbies_router
+from app.routers.users import users_router
+from app.routers.auth import auth_router
 
-from app.api.routers.games import games_router
-from app.api.routers.lobbies import lobbies_router
-from app.api.routers.users import users_router
-from app.api.routers.auth import auth_router
-
-from app.database.models import *
-from app.database.crud import *
+from app.database.binder import *
 
 from fastapi.middleware.cors import CORSMiddleware
 
 
 # svapi is the API object
 test_svapi = FastAPI(
-    title="Secret-Voldemort", docs_url="/api/docs", openapi_url="/api", redoc_url="/api/redoc"
-)
+    title="Secret-Voldemort",
+    docs_url="/api/docs",
+    openapi_url="/api",
+    redoc_url="/api/redoc")
 
 
 bind_db(True)
