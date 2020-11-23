@@ -207,6 +207,7 @@ def send_message(game_id: int, user: User, message: str):
     response = test_client.post(
         "api/games/" +
         str(game_id) +
-        "/chat/send/?msg=" + message, headers={
-            "Authorization": user.token})
+        "/chat/send/",
+        headers={"Authorization": user.token},
+        json={"msg": message})
     return response

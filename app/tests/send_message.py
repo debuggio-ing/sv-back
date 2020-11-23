@@ -1,8 +1,6 @@
 from fastapi.testclient import TestClient
 
-from app.debug.populate_database import *
-from app.debug.set_db_to_proclaim import *
-from app.debug.spell_database import *
+from app.debug.test_suite import *
 from app.test import test_svapi
 
 testc = TestClient(test_svapi)
@@ -10,62 +8,40 @@ testc = TestClient(test_svapi)
 
 NUM_OF_PLAYERS = 5
 
-tokens = []
+
+users = []
 for x in range(NUM_OF_PLAYERS):
-    user = UserReg(nickname="user" + str(x), email=str(x) + '@gmail.com',
-                   password="123456789")
-    if user.email not in get_emails():
-        register_user(user)
+    user = User(nickname="user" + str(x), email=str(x) + '@gmail.com',
+                password="123456789")
+    register_user(user=user)
+    login(user=user)
 
-    login = testc.post("api/login/",
-                       headers={"Content-Type": "application/json"},
-                       json={"email": user.email, "password": user.password})
+    users.append(user)
 
-    token = "Bearer " + login.json()["access_token"]
-    tokens.append(token)
 
-create_lobby = testc.post("/api/lobbies/new/",
-                          headers={"Authorization": tokens[0]},
-                          json={"name": "lobby_test", "max_players": 5})
-lobby_id = create_lobby.json()["id"]
-for x in range(1, len(tokens)):
-    join = testc.post(
-        "/api/lobbies/" + str(lobby_id) + "/join/",
-        headers={"Authorization": tokens[x]})
-start = testc.post(
-    "api/lobbies/" +
-    str(lobby_id) +
-    "/start/",
-    headers={
-        "Authorization": tokens[0]})
+new_lobby = create_new_lobby(name="lobby_test", max_players=5, user=users[0])
 
+lobby_id = new_lobby.json()["id"]
+for x in range(1, len(users)):
+    join_lobby(lobby_id=lobby_id, user=users[x])
 
 # Send a message to a valid game.
 def test_send_message():
     message = "holaa"
 
-    send_msg = testc.post(
-        "api/games/" +
-        str(lobby_id) +
-        "/chat/send/?msg=" + message,
-        headers={
-            "Authorization": tokens[0],
-            "msg": message})
+    send_msg = send_message(game_id=lobby_id, user=users[0], message=message)
 
     result = send_msg.json()
-    assert result['message_sent'] == "holaa"
+
     assert send_msg.status_code == 200
+    assert result['msg'] == message
 
 
 # Send a message to a INvalid game.
 def test_send_message_invalid_game():
     message = "holaa"
 
-    send_msg = testc.post(
-        "api/games/789/chat/send/?msg=" + message,
-        headers={
-            "Authorization": tokens[0],
-            "msg": message})
+    send_msg = send_message(game_id=789, user=users[0], message=message)
 
     result = send_msg.json()
     assert send_msg.status_code == 409
@@ -78,7 +54,8 @@ def test_send_message_no_user():
     send_msg = testc.post(
         "api/games/" +
         str(lobby_id) +
-        "/chat/send/?msg=" + message)
+        "/chat/send/?msg=" + message,
+        json={"msg": message})
 
     result = send_msg.json()
     assert send_msg.status_code == 401
