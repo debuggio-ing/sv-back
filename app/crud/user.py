@@ -1,11 +1,12 @@
 import random
-
 from app.validators.hasher import *
 from app.models.user_models import *
 from app.models.game_models import *
 from app.models.lobby_models import *
 from app.schemas.user_schema import *
 from app.schemas.lobby_schema import *
+from app.validators.constants import settings
+from app.crud.email_sender import *
 
 
 # Insert user into the database.
@@ -22,7 +23,11 @@ def register_user(user: UserReg) -> int:
              password=encrypt_password(user.password), verification_code=code)
     commit()
 
-    # send_email(user_email=user.email, code=code)
+    if settings.demo:
+        send_email(user_email=user.email, code=code)
+    else:
+        print("Debugging mode")
+
     return u.id
 
 
