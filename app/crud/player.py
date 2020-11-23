@@ -1,4 +1,5 @@
 from app.crud.vote import *
+from app.validators.constants import *
 
 
 # Create player in the database.
@@ -68,6 +69,7 @@ def can_know_roles(player_id_a: int, player_id_b: int) -> bool:
         return True
     player_a = Player.get(id=player_id_a)
 
+<<<<<<< HEAD
     VOLDEMORT_PERMISSIONS = {
         5: True,
         6: True,
@@ -75,6 +77,8 @@ def can_know_roles(player_id_a: int, player_id_b: int) -> bool:
         8: False,
         9: False,
         10: False}
+=======
+>>>>>>> origin/develop
     result = False
     if player_a.role.voldemort:
         result = VOLDEMORT_PERMISSIONS[player_a.lobby.max_players]

@@ -95,6 +95,13 @@ def update_public_vote(game_id: int):
 
     commit()
 
+@db_session
+def unleash_caos(game_id: int):
+    card = select(
+        c for c in ProcCard if c.game.lobby.id == game_id and not(
+            c.proclaimed or c.discarded)).order_by(
+        lambda c: c.position).limit(1)[0]
+    card.proclaimed = True
 
 # Set voting results.
 @db_session
@@ -107,6 +114,8 @@ def process_vote_result(game_id: int):
         select(v for v in PublicVote if v.game == game_id and v.vote))
     if result < math.ceil((max_players + 1) / 2):
         set_next_minister_candidate(game_id)
+        if(game.semaphore == 3):
+            unleash_caos(game_id)
         game.semaphore = (game.semaphore + 1) % 4
         dir = Player.get(lobby=lobby, director=True)
         dir.director = False
@@ -115,7 +124,7 @@ def process_vote_result(game_id: int):
         # select cards for legislative session
         cards = list(
             select(
-                c for c in ProcCard if c.game.id == game_id and not (
+                c for c in ProcCard if c.game.lobby.id == game_id and not (
                     c.proclaimed or c.discarded)).order_by(
                 lambda c: c.position).limit(3))
         for c in cards:

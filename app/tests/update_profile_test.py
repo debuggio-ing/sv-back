@@ -2,7 +2,6 @@ from fastapi.testclient import TestClient
 
 from app.debug.populate_database import *
 from app.debug.set_db_to_proclaim import *
-from app.debug.spell_database import *
 from app.test import test_svapi
 
 # It's necessary to remove database before running the tests.
@@ -16,51 +15,15 @@ user1 = UserReg(
 if user1.email not in get_emails():
     register_user(user1)
 
-nickname1 = "que buen nombre"
-password1 = "margaretthatcheris110%SEXY"
 nickname2 = "snowden"
 password2 = "nosociallife"
-
-
-# Modify the user's profile
-def test_modify_profile():
-    login = testc.post(
-        "api/login/",
-        headers={"Content-Type": "application/json"},
-        json={"email": user1.email, "password": user1.password})
-
-    token = "Bearer " + login.json()["access_token"]
-
-    user = testc.post(
-        "/api/users/info/modify/",
-        headers={
-            "Authorization": token},
-        json={
-            "nickname": nickname1,
-            "password": password1})
-
-    user_json = user.json()
-
-    assert user.status_code == 200
-    assert user_json['nickname'] == nickname1
-
-
-# Test if the new password works
-def test_password_nickname_change():
-    login = testc.post(
-        "/api/login/",
-        headers={"Content-Type": "application/json"},
-        json={"email": user1.email, "password": password1}
-    )
-    assert login.status_code == 200
-
 
 # Modify the user's nickname
 def test_modify_nickname():
     login = testc.post(
         "api/login/",
         headers={"Content-Type": "application/json"},
-        json={"email": user1.email, "password": password1})
+        json={"email": user1.email, "password": user1.password})
 
     token = "Bearer " + login.json()["access_token"]
     user = testc.post(
@@ -77,11 +40,11 @@ def test_modify_nickname():
 
 
 # Modify the user's password
-def test_modify_nickname():
+def test_modify_password():
     login = testc.post(
         "api/login/",
         headers={"Content-Type": "application/json"},
-        json={"email": user1.email, "password": password1})
+        json={"email": user1.email, "password": user1.password})
 
     token = "Bearer " + login.json()["access_token"]
     user = testc.post(
@@ -89,6 +52,7 @@ def test_modify_nickname():
         headers={
             "Authorization": token},
         json={
+            "oldpassword": user1.password,
             "password": password2})
 
     assert user.status_code == 200

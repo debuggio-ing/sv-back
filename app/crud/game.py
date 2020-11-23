@@ -1,7 +1,10 @@
 from app.crud.card import *
 from app.crud.lobby import *
 from app.crud.player import *
+<<<<<<< HEAD
 from app.crud.chat import *
+=======
+>>>>>>> origin/develop
 from app.validators.constants import *
 
 
@@ -312,9 +315,8 @@ def finish_director_proclamation(game_id: int):
     if len(
         list(
             filter(
-            lambda c: c.proclaimed,
-            cards))) == 5:
-        print("SHUFFLE")
+            lambda c: not (c.proclaimed or c.discarded),
+            cards))) <= 2:
         shuffle_cards(game_id=game_id)
     if len(
         list(
