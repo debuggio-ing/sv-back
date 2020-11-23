@@ -70,7 +70,12 @@ class Score(BaseModel):
     bad: int
 
 
-# Message
+# Message input data
+class MessageIn(BaseModel):
+    msg:str
+
+
+# Message output data
 class MessageSchema(BaseModel):
     sender: str
     message: str

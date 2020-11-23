@@ -178,7 +178,7 @@ def director_candidate(
 
 # Nominate director in specified game
 @r.post("/games/{game_id}/chat/send/")
-def send_message(game_id: int, msg: str, auth: AuthJWT = Depends()):
+def send_message(game_id: int, msg: MessageIn, auth: AuthJWT = Depends()):
     email = validate_user(auth=auth)
 
     player_id = get_player(email=email, game_id=game_id)
@@ -189,5 +189,5 @@ def send_message(game_id: int, msg: str, auth: AuthJWT = Depends()):
     # is player alive
     is_player_dead(player_id=player_id)
 
-    insert_message(player_id=player_id, message=msg)
+    insert_message(player_id=player_id, message=msg.msg)
     return {"message_sent": msg}
