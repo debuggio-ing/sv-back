@@ -1,8 +1,5 @@
 import enum
-<<<<<<< HEAD
 
-
-=======
 from functools import lru_cache
 from pydantic import BaseSettings
 
@@ -17,7 +14,6 @@ settings = Settings()
 
 
 # Spells supported by the game
->>>>>>> origin/develop
 class Spells(enum.Enum):
     none = 0
     divination = 1
@@ -26,11 +22,8 @@ class Spells(enum.Enum):
     imperio = 4
 
 
-<<<<<<< HEAD
-=======
 # Order of spell according to the number of player and death eaters proclaimed
 # The format is: {number_of_players: {death_eater_proclamations: spell}}
->>>>>>> origin/develop
 SPELLS_PLAYERS = {5: {0: Spells.none,
                       1: Spells.none,
                       2: Spells.none,
@@ -68,11 +61,7 @@ SPELLS_PLAYERS = {5: {0: Spells.none,
                        4: Spells.avada_kedavra,
                        5: Spells.avada_kedavra}}
 
-<<<<<<< HEAD
-NUM_DEATH_EATERS = {5: 2, 6: 2, 7: 3, 8: 3, 9: 4, 10: 4}
-NUM_PHOENIX_CARDS = 6
-PROC_CARD_NUMBER = 17
-=======
+
 # Number of death eaters for the match according to the number of players
 # Format {number_of_player: number_of_death_eaters}
 NUM_DEATH_EATERS = {5: 2, 6: 2, 7: 3, 8: 3, 9: 4, 10: 4}
@@ -90,4 +79,3 @@ VOLDEMORT_PERMISSIONS = {
     8: False,
     9: False,
     10: False}
->>>>>>> origin/develop

@@ -5,9 +5,8 @@ from app.crud.card import *
 from app.crud.player import *
 from app.validators.constants import *
 
+
 # Gets player from game and returns its id or raises and exception
-
-
 def get_player(email: str, game_id: int):
     player_id = get_player_id(email, game_id)
     if player_id == -1:

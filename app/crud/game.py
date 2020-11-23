@@ -1,18 +1,13 @@
 from app.crud.card import *
 from app.crud.lobby import *
 from app.crud.player import *
-<<<<<<< HEAD
 from app.crud.chat import *
-=======
->>>>>>> origin/develop
 from app.validators.constants import *
 
 
 # Create game in the database.
 @db_session
 def insert_game(lobby_id: int) -> int:
-    # (players, death_eaters)
-
     lobby = Lobby.get(id=lobby_id)
 
     max_players = lobby.max_players

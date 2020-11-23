@@ -48,8 +48,9 @@ def test_create_lobby():
         'max_players': lobby_mp,
         'name': lobby_name,
         'started': False,
-        "finished": False,
-        'is_owner': True}
+        'finished': False,
+        'is_owner': True,
+        'messages': []}
 
 
 # Try to crate a lobby not being logged in.

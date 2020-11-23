@@ -40,16 +40,45 @@ start = testc.post(
         "Authorization": tokens[0]})
 
 
-# Start a valid game.
+# Send a message to a valid game.
 def test_send_message():
+    message = "holaa"
+
     send_msg = testc.post(
         "api/games/" +
         str(lobby_id) +
-        "/chat/send/?msg=holaa",
+        "/chat/send/?msg="+message,
         headers={
             "Authorization": tokens[0],
-            "msg": "holaa"})
+            "msg": message})
 
     result = send_msg.json()
-    assert result == {}
+    assert result['message_sent'] == "holaa"
     assert send_msg.status_code == 200
+
+
+# Send a message to a INvalid game.
+def test_send_message_invalid_game():
+    message = "holaa"
+
+    send_msg = testc.post(
+        "api/games/789/chat/send/?msg="+message,
+        headers={
+            "Authorization": tokens[0],
+            "msg": message})
+
+    result = send_msg.json()
+    assert send_msg.status_code == 409
+
+
+# Send a message with no user.
+def test_send_message_no_user():
+    message = "holaa"
+
+    send_msg = testc.post(
+        "api/games/" +
+        str(lobby_id) +
+        "/chat/send/?msg="+message)
+
+    result = send_msg.json()
+    assert send_msg.status_code == 401

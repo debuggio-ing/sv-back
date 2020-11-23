@@ -190,4 +190,4 @@ def send_message(game_id: int, msg: str, auth: AuthJWT = Depends()):
     is_player_dead(player_id=player_id)
 
     insert_message(player_id=player_id, message=msg)
-    return {}
+    return {"message_sent": msg}
