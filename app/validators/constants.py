@@ -60,7 +60,6 @@ SPELLS_PLAYERS = {5: {0: Spells.none,
                        4: Spells.avada_kedavra,
                        5: Spells.avada_kedavra}}
 
-
 # Number of death eaters for the match according to the number of players
 # Format {number_of_player: number_of_death_eaters}
 NUM_DEATH_EATERS = {5: 2, 6: 2, 7: 3, 8: 3, 9: 4, 10: 4}

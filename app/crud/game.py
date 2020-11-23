@@ -310,9 +310,8 @@ def finish_director_proclamation(game_id: int):
     if len(
         list(
             filter(
-            lambda c: c.proclaimed,
-            cards))) == 5:
-        print("SHUFFLE")
+            lambda c: not (c.proclaimed or c.discarded),
+            cards))) <= 2:
         shuffle_cards(game_id=game_id)
     if len(
         list(
