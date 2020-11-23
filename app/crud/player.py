@@ -175,6 +175,13 @@ def discharge_director(game_id: int):
     if director is not None:
         director.director = False
 
+        prev_director = Player.get(lobby=game_id, prev_director=True)
+        if prev_director is not None:
+            prev_director.prev_director = False
+
+        director.prev_director = True
+
+
     commit()
 
 
