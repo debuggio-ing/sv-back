@@ -3,6 +3,7 @@ from fastapi import APIRouter, UploadFile, File, Response, status
 from app.database.binder import *
 from app.validators.auth_validator import *
 from app.validators.game_validator import *
+from app.validators.hasher import *
 
 # Users endpoints' router
 r = users_router = APIRouter()
@@ -52,9 +53,12 @@ def get_profile_picture(auth: AuthJWT = Depends()):
 def modify_user_info(new_profile: UserProfile, auth: AuthJWT = Depends()):
     user_email = validate_user(auth=auth)
     # Needs to check the values inserted are appropriate
-    # AGREGAR EN FUTURO
     set_nickname(user_email=user_email, nickname=new_profile.nickname)
-    set_password(user_email=user_email, password=new_profile.password)
+    if new_profile.password is not None and check_password(
+            user_email, new_profile.oldpassword):
+        set_password(user_email=user_email, password=new_profile.password)
+    elif new_profile.password is not None:
+        raise HTTPException(status_code=401, detail='Bad password')
     return get_user_public(user_email=user_email)
 
 
