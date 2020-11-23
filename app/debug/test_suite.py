@@ -200,3 +200,13 @@ def post_new_candidate(game_id: int, candidate_id: int, user: User):
             game_id, candidate_id), headers={
             "Authorization": user.token})
     return response
+
+
+# Send a message to game_id.
+def send_message(game_id: int, user: User, message: str):
+    response = test_client.post(
+        "api/games/" +
+        str(game_id) +
+        "/chat/send/?msg=" + message, headers={
+            "Authorization": user.token})
+    return response

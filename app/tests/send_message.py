@@ -47,7 +47,7 @@ def test_send_message():
     send_msg = testc.post(
         "api/games/" +
         str(lobby_id) +
-        "/chat/send/?msg="+message,
+        "/chat/send/?msg=" + message,
         headers={
             "Authorization": tokens[0],
             "msg": message})
@@ -62,7 +62,7 @@ def test_send_message_invalid_game():
     message = "holaa"
 
     send_msg = testc.post(
-        "api/games/789/chat/send/?msg="+message,
+        "api/games/789/chat/send/?msg=" + message,
         headers={
             "Authorization": tokens[0],
             "msg": message})
@@ -78,7 +78,7 @@ def test_send_message_no_user():
     send_msg = testc.post(
         "api/games/" +
         str(lobby_id) +
-        "/chat/send/?msg="+message)
+        "/chat/send/?msg=" + message)
 
     result = send_msg.json()
     assert send_msg.status_code == 401
