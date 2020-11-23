@@ -201,8 +201,8 @@ def get_all_lobbies_ids(lobby_from: Optional[int], lobby_to: Optional[int],
 
 # Check if lobby id==lid exists
 @db_session
-def lobby_exists(lid):
-    return Lobby.get(id=lid) is not None
+def lobby_exists(lobby_id: int):
+    return Lobby.get(id=lobby_id) is not None
 
 
 # Check if lobby has started.

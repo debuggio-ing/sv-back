@@ -26,7 +26,7 @@ for x in range(NUM_OF_PLAYERS):
 
 create_lobby = testc.post("/api/lobbies/new/",
                           headers={"Authorization": tokens[0]},
-                          json={"name": "lobby_test", "max_players": 7})
+                          json={"name": "lobby_test", "max_players": 5})
 lobby_id = create_lobby.json()["id"]
 
 

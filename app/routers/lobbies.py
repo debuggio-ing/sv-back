@@ -1,6 +1,5 @@
 from fastapi import APIRouter, status
 
-from app.database.binder import *
 from app.validators.auth_validator import *
 from app.validators.game_validator import *
 
@@ -42,10 +41,8 @@ def get_lobby_list(
 
 # Return lobby_id lobby information.
 @r.get("/lobbies/{lobby_id}/", response_model=LobbyPublic)
-def get_lobby(lobby_id: int, Authorize: AuthJWT = Depends()):
-    Authorize.jwt_required()
-
-    user_email = Authorize.get_jwt_identity()
+def get_lobby(lobby_id: int, auth: AuthJWT = Depends()):
+    user_email = validate_user(auth=auth)
 
     if lobby_exists(lobby_id):
         lobby = get_lobby_public_info(lobby_id=lobby_id, user_email=user_email)
@@ -59,10 +56,8 @@ def get_lobby(lobby_id: int, Authorize: AuthJWT = Depends()):
 @r.post("/lobbies/new/",
         response_model=LobbyPublic,
         status_code=status.HTTP_201_CREATED)
-def create_lobby(new_lobby: LobbyReg, Authorize: AuthJWT = Depends()):
-    Authorize.jwt_required()
-
-    user_email = Authorize.get_jwt_identity()
+def create_lobby(new_lobby: LobbyReg, auth: AuthJWT = Depends()):
+    user_email = validate_user(auth=auth)
 
     lobby_id = insert_lobby(lobby=new_lobby, user_email=user_email)
     insert_player(user_email=user_email, lobby_id=lobby_id)
@@ -83,14 +78,13 @@ def create_lobby(new_lobby: LobbyReg, Authorize: AuthJWT = Depends()):
 # Join lobby_id lobby.
 @r.post("/lobbies/{lobby_id}/join/",
         response_model=LobbyPublic)
-def join_game(lobby_id: int, Authorize: AuthJWT = Depends()):
-    Authorize.jwt_required()
+def join_game(lobby_id: int, auth: AuthJWT = Depends()):
+    user_email = validate_user(auth=auth)
 
-    if not lobby_exists(lobby_id):
+    if not lobby_exists(lobby_id=lobby_id):
         raise HTTPException(status_code=404,
                             detail="The game id is incorrect.")
-    # Get information from jwt_token.
-    user_email = Authorize.get_jwt_identity()
+
     if insert_player(user_email=user_email, lobby_id=lobby_id) == -1:
         raise HTTPException(status_code=409,
                             detail="The game id is full.")
@@ -115,10 +109,8 @@ def join_game(lobby_id: int, Authorize: AuthJWT = Depends()):
         response_model=StartConfirmation)
 def start_game(lobby_id: int,
                # current_players: LobbyStart,
-               Authorize: AuthJWT = Depends()):
-    Authorize.jwt_required()
-
-    user_email = Authorize.get_jwt_identity()
+               auth: AuthJWT = Depends()):
+    user_email = validate_user(auth=auth)
 
     if not get_lobby_is_owner(lobby_id=lobby_id, user_email=user_email):
         raise HTTPException(status_code=409,

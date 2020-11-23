@@ -37,7 +37,7 @@ class PlayerRole(BaseModel):
     role: Role
 
 
-# Player output pulic data
+# Player output public data
 class PlayerPublic(BaseModel):
     player_id: int
     alive: bool
@@ -64,7 +64,7 @@ class CardToProclaim(BaseModel):
     phoenix: bool
 
 
-# Game's proclamations' statusgo
+# Game's proclamations' status
 class Score(BaseModel):
     good: int
     bad: int
