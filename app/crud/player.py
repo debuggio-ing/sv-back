@@ -1,6 +1,5 @@
 from app.crud.vote import *
 
-
 # Create player in the database.
 @db_session
 def insert_player(user_email: str, lobby_id: int) -> int:
@@ -204,3 +203,17 @@ def get_player_in_game(player_id: int, game_id: int) -> bool:
     player = Player.get(id=player_id, lobby=game_id)
 
     return player is not None
+
+@db_session
+def get_number_players_alive(game_id: int) -> int:
+    pid_list = list(select(
+        p.id for p in Player if game_id == p.lobby.id and p.alive))
+    print(len(pid_list))
+    return len(pid_list)
+
+@db_session
+def get_player_electable(player_id: int, game_id: int) -> bool:
+    player = Player.get(id=player_id, lobby=game_id)
+    lobby = Lobby.get(id=game_id)
+    game = lobby.game
+    return not player.prev_director and not player.minister and not (player.prev_minister and get_number_players_alive(game_id)>5)

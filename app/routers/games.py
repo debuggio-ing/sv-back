@@ -179,4 +179,6 @@ def director_candidate(
     # is candidate alive
     is_player_dead(player_id=candidate_id)
 
+    is_player_electable(player_id=candidate_id, game_id=game_id)
+
     propose_government(game_id=game_id, dir_id=candidate_id)
