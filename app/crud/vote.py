@@ -95,6 +95,7 @@ def update_public_vote(game_id: int):
 
     commit()
 
+
 @db_session
 def unleash_caos(game_id: int):
     card = select(

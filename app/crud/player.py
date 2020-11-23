@@ -83,13 +83,13 @@ def get_player_id(user_email: str, game_id: int) -> int:
     user = User.get(email=user_email)
     lobby = Lobby.get(id=game_id)
 
-    player = Player.get(user=user, lobby=lobby)
-
-    # If there's no player with user_email in game_id,
-    # it returns default the value.
     player_id = -1
-    if player is not None:
-        player_id = player.id
+    if lobby is not None and lobby is not None:
+        player = Player.get(user=user, lobby=lobby)
+        # If there's no player with user_email in game_id,
+        # it returns default the value.
+        if player is not None:
+            player_id = player.id
 
     return player_id
 

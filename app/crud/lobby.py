@@ -1,3 +1,4 @@
+from app.crud.chat import *
 from app.crud.user import *
 
 
@@ -26,7 +27,8 @@ def get_lobby_public_info(lobby_id: int, user_email: str):
                        max_players=get_lobby_max_players(lobby_id),
                        started=get_lobby_started(lobby_id),
                        finished=get_lobby_finished(lobby_id),
-                       is_owner=get_lobby_is_owner(lobby_id, user_email))
+                       is_owner=get_lobby_is_owner(lobby_id, user_email),
+                       messages=get_messages(id=lobby_id))
 
 
 # Get lobby_id lobby's owner_id attribute.

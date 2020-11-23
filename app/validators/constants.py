@@ -1,4 +1,5 @@
 import enum
+
 from functools import lru_cache
 from pydantic import BaseSettings
 
@@ -59,6 +60,7 @@ SPELLS_PLAYERS = {5: {0: Spells.none,
                        3: Spells.imperio,
                        4: Spells.avada_kedavra,
                        5: Spells.avada_kedavra}}
+
 
 # Number of death eaters for the match according to the number of players
 # Format {number_of_player: number_of_death_eaters}

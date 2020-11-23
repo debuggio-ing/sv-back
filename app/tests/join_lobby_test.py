@@ -60,17 +60,16 @@ def test_join_valid_lobby():
         headers={
             "Authorization": token2})
 
+    join_json = join.json()
+
     assert join.status_code == 200
-    assert join.json() == {
-        'current_players': [
-            user1.nickname,
-            user2.nickname],
-        'id': lobby_id,
-        'max_players': max_players,
-        'name': lobby_name,
-        'started': False,
-        'finished': False,
-        'is_owner': False}
+    assert join_json['current_players'] == [user1.nickname, user2.nickname]
+    assert join_json['id'] == lobby_id
+    assert join_json['max_players'] == max_players
+    assert join_json['name'] == lobby_name
+    assert join_json['started'] == False
+    assert join_json['finished'] == False
+    assert join_json['is_owner'] == False
 
 
 # Try to join the lobby with no jwt available.

@@ -24,7 +24,12 @@ def get_selected_cards(game_id: int):
 # Discard the card identified by card_pos and game_id
 @db_session
 def discard_card(card_pos: int, game_id: int):
-    card = ProcCard.get(position=card_pos, game=game_id, discarded=False, proclaimed=False, selected=True)
+    card = ProcCard.get(
+        position=card_pos,
+        game=game_id,
+        discarded=False,
+        proclaimed=False,
+        selected=True)
     card.selected = False
     card.discarded = True
     commit()

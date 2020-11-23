@@ -54,3 +54,10 @@ class ProcCard(db.Entity):
     position = Required(int)
     phoenix = Required(bool)
     game = Required('Game')
+
+
+# Storing chat's messages.
+class Message(db.Entity):
+    id = PrimaryKey(int, auto=True)
+    sender = Required('Player')
+    message = Required(str)

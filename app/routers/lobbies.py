@@ -63,14 +63,7 @@ def create_lobby(new_lobby: LobbyReg, auth: AuthJWT = Depends()):
     insert_player(user_email=user_email, lobby_id=lobby_id)
 
     current_players = get_lobby_player_list(lobby_id=lobby_id)
-    lobby = LobbyPublic(
-        id=lobby_id,
-        name=new_lobby.name,
-        current_players=current_players,
-        max_players=new_lobby.max_players,
-        started=get_lobby_started(lobby_id=lobby_id),
-        finished=get_lobby_finished(lobby_id=lobby_id),
-        is_owner=get_lobby_is_owner(lobby_id=lobby_id, user_email=user_email))
+    lobby = get_lobby_public_info(lobby_id=lobby_id, user_email=user_email)
 
     return lobby
 
@@ -92,14 +85,7 @@ def join_game(lobby_id: int, auth: AuthJWT = Depends()):
     current_players = get_lobby_player_list(lobby_id=lobby_id)
     lobby_name = get_lobby_name(lobby_id=lobby_id)
     lobby_max_players = get_lobby_max_players(lobby_id=lobby_id)
-    lobby = LobbyPublic(
-        id=lobby_id,
-        name=lobby_name,
-        current_players=current_players,
-        max_players=lobby_max_players,
-        started=get_lobby_started(lobby_id=lobby_id),
-        finished=get_lobby_finished(lobby_id=lobby_id),
-        is_owner=get_lobby_is_owner(lobby_id=lobby_id, user_email=user_email))
+    lobby = get_lobby_public_info(lobby_id=lobby_id, user_email=user_email)
 
     return lobby
 

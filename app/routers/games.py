@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 
+from app.crud.chat import *
 from app.validators.auth_validator import *
 from app.validators.game_validator import *
 
@@ -173,3 +174,20 @@ def director_candidate(
     is_player_dead(player_id=candidate_id)
 
     propose_government(game_id=game_id, dir_id=candidate_id)
+
+
+# Nominate director in specified game
+@r.post("/games/{game_id}/chat/send/")
+def send_message(game_id: int, msg: MessageIn, auth: AuthJWT = Depends()):
+    email = validate_user(auth=auth)
+
+    player_id = get_player(email=email, game_id=game_id)
+
+    # is player in game
+    is_player_in_game(player_id=player_id, game_id=game_id)
+
+    # is player alive
+    is_player_dead(player_id=player_id)
+
+    insert_message(player_id=player_id, message=msg.msg)
+    return msg
