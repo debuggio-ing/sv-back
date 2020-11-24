@@ -96,7 +96,23 @@ def caos_db():
     curr_vote4 = CurrentVote(
         game=game1.id, player=p4.id, vote=False, voter_id=4)
 
-    last_vote1 = PublicVote(game=game1.id, player=p1.id, vote=False, voter_id=1)
-    last_vote2 = PublicVote(game=game1.id, player=p2.id, vote=False, voter_id=2)
-    last_vote3 = PublicVote(game=game1.id, player=p3.id, vote=False, voter_id=3)
-    last_vote4 = PublicVote(game=game1.id, player=p4.id, vote=False, voter_id=4)
+    last_vote1 = PublicVote(
+        game=game1.id,
+        player=p1.id,
+        vote=False,
+        voter_id=1)
+    last_vote2 = PublicVote(
+        game=game1.id,
+        player=p2.id,
+        vote=False,
+        voter_id=2)
+    last_vote3 = PublicVote(
+        game=game1.id,
+        player=p3.id,
+        vote=False,
+        voter_id=3)
+    last_vote4 = PublicVote(
+        game=game1.id,
+        player=p4.id,
+        vote=False,
+        voter_id=4)

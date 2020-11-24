@@ -283,13 +283,13 @@ def propose_government(game_id: int, dir_id: int):
 
 # Finish the current legislative session
 @db_session
-def finish_legislative_session(game_id: int):
+def finish_legislative_session(game_id: int, imperio: bool):
     game = Lobby.get(id=game_id).game
     game.in_session = False
     game.minister_proclaimed = False
     game.director_proclaimed = False
-
-    set_next_minister_candidate(game_id)
+    if not imperio:
+        set_next_minister_candidate(game_id)
     commit()
 
 

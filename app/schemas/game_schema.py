@@ -72,7 +72,7 @@ class Score(BaseModel):
 
 # Message input data
 class MessageIn(BaseModel):
-    msg:str
+    msg: str
 
 
 # Message output data

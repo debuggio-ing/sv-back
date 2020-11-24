@@ -105,6 +105,8 @@ def unleash_caos(game_id: int):
     card.proclaimed = True
 
 # Set voting results.
+
+
 @db_session
 def process_vote_result(game_id: int):
     lobby = Lobby.get(id=game_id)
