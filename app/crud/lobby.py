@@ -23,6 +23,7 @@ def insert_lobby(lobby: LobbyReg, user_email: str) -> int:
 @db_session
 def get_lobby_public_info(lobby_id: int, user_email: str):
     return LobbyPublic(id=lobby_id, name=get_lobby_name(lobby_id),
+                       owner_alias=get_lobby_owner_nickname(lobby_id),
                        current_players=get_lobby_player_list(lobby_id),
                        max_players=get_lobby_max_players(lobby_id),
                        started=get_lobby_started(lobby_id),
@@ -228,3 +229,10 @@ def is_lobby_started(lobby_id: int) -> bool:
         started = True
 
     return started
+
+# Return owners nickname
+@db_session
+def get_lobby_owner_nickname(lobby_id: int) -> str:
+
+    owner_id =Lobby.get(id=lobby_id).owner_id
+    return User.get(id=owner_id).nickname
