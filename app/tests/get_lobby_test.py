@@ -77,7 +77,7 @@ def test_get_lobby():
     assert get_lobby_json['name'] == join_json["name"]
     assert get_lobby_json['started'] == join_json["started"]
     assert get_lobby_json['finished'] == join_json["finished"]
-    assert get_lobby_json['is_owner'] == True
+    assert get_lobby_json['is_owner']
 
 
 # Try to get a lobby not being logged in
