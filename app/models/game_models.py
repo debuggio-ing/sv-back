@@ -11,6 +11,7 @@ class Game(db.Entity):
     in_session = Required(bool, default=False)  # in legislative session
     minister_proclaimed = Required(bool, default=False)  # minister chose cards
     director_proclaimed = Required(bool, default=False)  # director chose cards
+    expelliarmus = Required(bool, default=False) # director asked for expelliarmus?
     last_proc_negative = Required(
         bool, default=False)  # last proclamation was bad
     voting = Required(bool, default=False)  # are players currently voting?

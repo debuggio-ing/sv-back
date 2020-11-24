@@ -4,7 +4,7 @@ import random
 
 
 @db_session
-def caos_db():
+def chaos_db():
     user1 = User(
         email="maw@gmail.com",
         nickname="maw",

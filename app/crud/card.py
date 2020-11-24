@@ -5,6 +5,18 @@ from app.models.user_models import *
 from app.models.game_models import *
 from app.models.lobby_models import *
 
+# Discard all selected cards in a game identified by game_id
+@db_session
+def discard_selected_cards(game_id: int):
+    selected_cards = list(select(c for c in ProcCard if c.selected and c.game.lobby.id == game_id))
+    for c in selected_cards:
+        c.selected = False
+        c.discarded = True
+    commit()
+    cards = list(select(c for c in ProcCard if not(c.discarded or c. proclaimed) and c.game.lobby.id == game_id))
+    if len(cards) <= 2:
+        shuffle_cards(game_id=game_id)
+
 
 # Return all selected cards in a game identified by game_id
 @db_session

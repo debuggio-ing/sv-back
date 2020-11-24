@@ -22,10 +22,24 @@ def is_game_over(game_id):
 
 # Checks if minister can proclaim a card
 def is_min_proc_time(game_id: int, player_id: int):
-    return minister_chooses_proc(game_id) and get_is_player_minister(player_id)
+    return minister_chooses_proc(game_id=game_id) and get_is_player_minister(player_id=player_id) and not get_expelliarmus(game_id=game_id)
 
 
-# Checks if director or user can proclaim a card. It raises an exception on failure
+# Checks if minister can cast Expelliarmus
+def is_min_expelliarmus_time(game_id: int, player_id: int):
+    return minister_chooses_proc(game_id=game_id) and get_is_player_minister(player_id=player_id) and get_expelliarmus(game_id=game_id)
+
+
+# Cast expelliarmus spell
+def cast_expelliarmus(game_id: int):
+    # discards all selected cards in the game
+    discard_selected_cards(game_id=game_id)
+    # minister and director are removed from government and chaos is updated
+    update_chaos(game_id=game_id)
+
+
+
+# Checks if director can proclaim a card. It raises an exception on failure
 # It returns true on success
 def is_dir_proc_time(game_id: int, player_id: int):
     # check if it's time for a director to choose
@@ -35,6 +49,19 @@ def is_dir_proc_time(game_id: int, player_id: int):
     # check if the player is the director
     if not is_player_director(player_id=player_id):
         raise HTTPException(status_code=401, detail='Player isn\'nt director')
+    return True
+
+
+# Checks if the director can cast Expelliarmus. It raises an exception on failure
+# It returns true on success
+def is_dir_expelliarmus_time(game_id: int, player_id: int):
+    # check if it's time for a director to scream Expelliarmus
+    if not director_chooses_proc(game_id=game_id) or get_expelliarmus(game_id=game_id):
+        raise HTTPException(status_code=401, detail='You can\'t ask for Expelliarmus twice')
+
+    # check if the player is the director
+    if not is_player_director(player_id=player_id):
+        raise HTTPException(status_code=401, detail='Player isn\'t director')
     return True
 
 

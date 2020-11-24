@@ -58,6 +58,12 @@ class ProposedDirector(BaseModel):
     player: int
 
 
+# Legislative session input data
+class Legislation(BaseModel):
+    election: int
+    expelliarmus: bool
+
+
 # Card output data
 class CardToProclaim(BaseModel):
     card_pos: int
@@ -86,6 +92,7 @@ class GamePublic(BaseModel):
     player_list: List[PlayerPublic]  # players order
     voting: bool
     in_session: bool  # currently in legislative session
+    expelliarmus: bool # did the director ask for expelliarmus?
     minister_proclaimed: bool  # did the minister pass the proc cards?
     director_proclaimed: bool  # did the director pass the proc cards?
     last_proc_negative: bool

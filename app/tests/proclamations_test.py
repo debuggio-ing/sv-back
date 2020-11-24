@@ -54,10 +54,14 @@ def test_min_discard():
     token = "Bearer " + login.json()["access_token"]
 
     discard_response = test_client.post(
-        "api/games/1/proc/?election=2",
+        "api/games/1/proc/",
         headers={
             "Authorization": token,
-            "Content-Type": "application/json"})
+            "Content-Type": "application/json"},
+        json={
+            "election": 2,
+            "expelliarmus": False
+        })
 
     assert discard_response.status_code == 200
 
@@ -101,9 +105,13 @@ def test_dir_proclaim():
     token = "Bearer " + login.json()["access_token"]
 
     response = test_client.post(
-        "api/games/1/proc/?election=1",
+        "api/games/1/proc/",
         headers={
-            "Authorization": token})
+            "Authorization": token},
+        json={
+            "election" : 1,
+            "expelliarmus": False
+        })
 
     assert response.status_code == 200
 
