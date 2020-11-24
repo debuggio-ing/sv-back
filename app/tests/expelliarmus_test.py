@@ -91,4 +91,4 @@ def test_expelliarmus_ok():
     assert not (response.json()["expelliarmus"] or response.json()["in_session"] or response.json()[
                 "minister_proclaimed"] or response.json()["director_proclaimed"])
     assert response.json()["score"]["bad"] == 5 and response.json()[
-        "score"]["good"] == 0 and response.json()["semaphore"] == 1
+        "score"]["good"] == 0
