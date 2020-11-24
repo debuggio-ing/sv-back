@@ -164,6 +164,12 @@ def discharge_former_minister(game_id: int):
     if ex_minister is not None:
         ex_minister.minister = False
 
+        ex_ex_minister = Player.get(lobby=lobby, prev_minister=True)
+        if ex_ex_minister is not None:
+            ex_ex_minister.prev_minister = False
+
+        ex_minister.prev_minister = True
+
     commit()
 
 # Deletes every entry in the current vote

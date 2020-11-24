@@ -145,3 +145,9 @@ def is_player_in_game(player_id: int, game_id: int):
         raise HTTPException(
             status_code=401,
             detail='Player isn\'nt in the game')
+
+def is_player_electable(player_id: int, game_id: int):
+    if not get_player_electable(player_id=player_id, game_id=game_id):
+        raise HTTPException(
+            status_code=401,
+            detail='Player isn\'nt electable as Director')
