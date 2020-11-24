@@ -64,14 +64,6 @@ def test_expelliarmus_ok():
         user=users[1])
     assert response.status_code == 200
 
-    # check that the minister can't discard one more card
-    response = post_proclamation_cards(
-        game_id=1,
-        election=7,
-        expelliarmus=False,
-        user=users[0])
-    assert response.status_code == 401
-
     # check that the game is in expelliarmus
     response = get_game_info(game_id=1, user=users[0])
     assert response.json()["expelliarmus"] and not response.json()[
