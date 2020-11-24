@@ -17,6 +17,55 @@ populate_test_db()
 # estado de juego)
 
 
+# el correcto elige un incorrecto
+def test_choose_uneligable_candidate():
+    login = testc.post(
+        "api/login/",
+        headers={
+            "Content-Type": "application/json"},
+        json={
+            "email": "maw@gmail.com",
+            "password": "password"})
+
+    token = "Bearer " + login.json()["access_token"]
+    candidate_response = testc.post("/api/games/2/director/9/",
+                               headers={"Authorization": token},
+                               json={"vote": "false"})
+
+    assert candidate_response.status_code == 401
+
+    game_state = testc.get("api/games/2", headers={"Authorization": token})
+
+    start_json = game_state.json()
+    player_list = start_json['player_list']
+
+    assert start_json['director'] == -1
+
+# el correcto elige un incorrecto
+def test_choose_self_as_candidate():
+    login = testc.post(
+        "api/login/",
+        headers={
+            "Content-Type": "application/json"},
+        json={
+            "email": "maw@gmail.com",
+            "password": "password"})
+
+    token = "Bearer " + login.json()["access_token"]
+    candidate_response = testc.post("/api/games/2/director/6/",
+                               headers={"Authorization": token},
+                               json={"vote": "false"})
+
+    assert candidate_response.status_code == 401
+
+    game_state = testc.get("api/games/2", headers={"Authorization": token})
+
+    start_json = game_state.json()
+    player_list = start_json['player_list']
+
+    assert start_json['director'] == -1
+
+
 # el correcto elige un correcto
 def test_choose_candidate():
     login = testc.post(
@@ -28,11 +77,11 @@ def test_choose_candidate():
             "password": "password"})
 
     token = "Bearer " + login.json()["access_token"]
-    vote_response = testc.post("/api/games/2/director/10/",
+    candidate_response = testc.post("/api/games/2/director/10/",
                                headers={"Authorization": token},
                                json={"vote": "false"})
 
-    assert vote_response.status_code == 200
+    assert candidate_response.status_code == 200
 
     game_state = testc.get("api/games/2", headers={"Authorization": token})
 
