@@ -44,6 +44,7 @@ def test_create_lobby():
     print(response.json())
     assert response.json() == {
         'id': response.json()['id'],
+        'owner_alias': "test",
         'current_players': [user.nickname],
         'max_players': lobby_mp,
         'name': lobby_name,

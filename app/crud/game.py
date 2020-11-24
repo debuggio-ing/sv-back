@@ -351,3 +351,21 @@ def get_last_proc_negative(game_id) -> bool:
 def get_number_players(game_id: int):
     lobby = Lobby.get(id=game_id)
     return lobby.max_players
+
+
+@db_session
+def delete_player_from_game(game_id: int, player_id: int):
+    lobby = Lobby.get(id=game_id)
+ 
+    # if owner set another person as lobby owner
+    if get_lobby_is_id_owner(lobby_id=game_id, player_id=player_id):
+        players = select(p for p in lobby.player if p.user.id != lobby.owner_id)
+        if players.first() is not None:
+            lobby.owner_id = players.first().user.id
+        else:
+            lobby.delete()
+
+    player = Player.get(id=player_id)
+    if player is not None:
+        player.delete()
+    commit()
