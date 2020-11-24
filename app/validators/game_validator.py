@@ -134,7 +134,7 @@ def get_spell(game_id: int):
     elif spell == Spells.crucio:
         result = 1
     elif spell == Spells.imperio:
-        result = 1
+        result = 2
     else:
         result = 1
 

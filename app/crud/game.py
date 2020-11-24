@@ -319,7 +319,7 @@ def finish_director_proclamation(game_id: int):
             lambda c: c.proclaimed and not c.phoenix, cards))
     ) <= 2 or not game.last_proc_negative:
         discharge_director(game_id=game_id)
-        finish_legislative_session(game_id=game_id)
+        finish_legislative_session(game_id=game_id, imperio=False)
 
     commit()
 
