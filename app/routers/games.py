@@ -139,9 +139,14 @@ def post_proclamations(
             # ask minister for expelliarmus
             director_ask_expelliarmus(game_id=game_id)
     else:
+        # check if minister didn't accept expelliarmus request
+        if get_expelliarmus(game_id=game_id) and get_is_player_minister(
+                player_id=player_id):
+            reject_expelliarmus(game_id=game_id, player_id=player_id)
+
         # check if minister or director can proclaim/discard and the player's
         # role
-        if is_min_proc_time(game_id=game_id, player_id=player_id):
+        elif is_min_proc_time(game_id=game_id, player_id=player_id):
             # minister discard the selected card
             minister_discards(election=legislation.election, game_id=game_id)
             # update game status

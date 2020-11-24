@@ -244,17 +244,12 @@ def get_game_minister_proclaimed(game_id) -> bool:
     return ans
 
 
+# Ends expelliarmus and legislative session with it
 @db_session
-def update_chaos(game_id: int):
-    game = Lobby.get(id=game_id).game
-    game.expelliarmus = False
-    game.semaphore += 1
-    if game.semaphore == 3:
-        unleash_chaos(game_id=game_id)
-        game.semaphore = 0
-    commit()
+def end_expelliarmus(game_id: int):
     discharge_director(game_id=game_id)
     finish_legislative_session(game_id=game_id)
+    commit()
 
 
 # Get game's total proclaimed cards (phoenix = good, death eaters = bad)
@@ -309,7 +304,7 @@ def finish_legislative_session(game_id: int):
     game.in_session = False
     game.minister_proclaimed = False
     game.director_proclaimed = False
-
+    game.expelliarmus = False
     set_next_minister_candidate(game_id)
     commit()
 
@@ -331,6 +326,7 @@ def director_ask_expelliarmus(game_id: int):
     commit()
 
 
+# Proclaim and discard cards,
 @db_session
 def finish_director_proclamation(game_id: int):
     game = Lobby.get(id=game_id).game
@@ -353,9 +349,8 @@ def finish_director_proclamation(game_id: int):
 
     commit()
 
+
 # Check if game in legislative session
-
-
 @db_session
 def in_legislative_session(game_id) -> bool:
     game = Lobby.get(id=game_id).game
