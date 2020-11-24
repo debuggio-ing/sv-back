@@ -124,7 +124,7 @@ def leave_game(lobby_id: int,
                # current_players: LobbyStart,
                auth: AuthJWT = Depends()):
     user_email = validate_user(auth=auth)
-    player_id = get_player(email=user_email, game_id=game_id)
+    player_id = get_player(email=user_email, game_id=lobby_id)
 
     if is_lobby_started(lobby_id):
         raise HTTPException(status_code=409,

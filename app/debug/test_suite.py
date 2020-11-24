@@ -17,6 +17,7 @@ class User:
             email: str,
             password: str,
             token: str = ""):
+        self.uid = 0
         self.nickname = nickname
         self.email = email
         self.password = password
@@ -34,6 +35,7 @@ def register_user(user: User):
             "email": user.email,
             "password": user.password})
     assert response.status_code == status.HTTP_201_CREATED
+    user.uid = response.json()
 
 
 # Updates the token of the user
@@ -53,11 +55,12 @@ def login(user: User):
 
 # Requires that the user object is logged in
 # Returns LobbyPublic with the data of lobby identified by lobby_id
-def get_lobby_info(lobby_id: int, user: User):
+def get_lobby_info(lobby_id: int, user: User, user_id: int):
     response = test_client.get(
         "api/lobbies/{}".format(lobby_id),
         headers={
             "Authorization": user.token})
+
     return response
 
 
@@ -102,10 +105,16 @@ def join_lobby(lobby_id: int, user: User):
             "Authorization": user.token})
     return response
 
+# Requires that the user object is logged in
+# Deletes the player from the lobby and returns its game_id
+def leave_match(lobby_id: int, user: User):
+    response = test_client.post("api/lobbies/{}/leave/".format(lobby_id),
+                                headers={"Authorization": user.token})
+    return response
+
 
 # Requires that the user object is logged in
 # Starts the match and returns its game_id
-# should it be lobby_id instead?
 def start_match(lobby_id: int, user: User):
     response = test_client.post("api/lobbies/{}/start/".format(lobby_id),
                                 headers={"Authorization": user.token})
