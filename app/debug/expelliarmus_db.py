@@ -13,7 +13,7 @@ def create_cards(game):
             discarded=False,
             selected=i in [6, 7, 8],
             position=i,
-            phoenix=i in [6,7,8,9,10,11])
+            phoenix=i in [6, 7, 8, 9, 10, 11])
     commit()
 
 
@@ -87,8 +87,8 @@ def expelliarmus_db():
     create_players(users=users, lobby=lobby)
 
     game = Game(
-            lobby=lobby,
-            in_session=True
+        lobby=lobby,
+        in_session=True
     )
     create_cards(game=game)
     commit()

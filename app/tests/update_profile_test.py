@@ -19,6 +19,8 @@ nickname2 = "snowden"
 password2 = "nosociallife"
 
 # Modify the user's nickname
+
+
 def test_modify_nickname():
     login = testc.post(
         "api/login/",

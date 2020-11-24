@@ -109,7 +109,7 @@ def test_dir_proclaim():
         headers={
             "Authorization": token},
         json={
-            "election" : 1,
+            "election": 1,
             "expelliarmus": False
         })
 

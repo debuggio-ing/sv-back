@@ -245,7 +245,7 @@ def get_game_minister_proclaimed(game_id) -> bool:
 
 
 @db_session
-def update_chaos(game_id:int):
+def update_chaos(game_id: int):
     game = Lobby.get(id=game_id).game
     game.expelliarmus = False
     game.semaphore += 1

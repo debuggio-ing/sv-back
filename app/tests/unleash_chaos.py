@@ -15,8 +15,8 @@ chaos_db()
 @db_session
 def test_chaos():
     proclaimed_cards = list(
-                        select(
-                            card.position for card in ProcCard if card.proclaimed and card.game.lobby.id == 1))
+        select(
+            card.position for card in ProcCard if card.proclaimed and card.game.lobby.id == 1))
 
     login = testc.post(
         "api/login/",
@@ -34,9 +34,8 @@ def test_chaos():
         json={
             "vote": "false"})
 
-    proclaimed_cards_after = list(
-                        select(
-                            card.position for card in ProcCard if card.proclaimed and card.game.lobby.id == 1))
+    proclaimed_cards_after = list(select(
+        card.position for card in ProcCard if card.proclaimed and card.game.lobby.id == 1))
 
     assert response.status_code == 200
-    assert len(proclaimed_cards) == len(proclaimed_cards_after)-1
+    assert len(proclaimed_cards) == len(proclaimed_cards_after) - 1
