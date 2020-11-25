@@ -110,7 +110,7 @@ def cast_spell(game_id: int, target: int):
         if target == -1:
             raise HTTPException(
                 status_code=409,
-                detail='select proper target pliz')
+                detail='You should select a proper target')
         result = cast_imperio(game_id=game_id, target=target)
         if result == -1:
             raise HTTPException(
