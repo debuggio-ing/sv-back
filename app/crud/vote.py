@@ -117,13 +117,16 @@ def process_vote_result(game_id: int):
         select(v for v in PublicVote if v.game == game_id and v.vote))
     if result < math.ceil((max_players + 1) / 2):
         set_next_minister_candidate(game_id)
-        if(game.semaphore == 3):
-            unleash_chaos(game_id)
-        game.semaphore = (game.semaphore + 1) % 4
+        if(game.semaphore >= 2):
+            unleash_caos(game_id)
+            game.semaphore = 3
+        else:
+            game.semaphore = (game.semaphore + 1) % 4
         dir = Player.get(lobby=lobby, director=True)
         dir.director = False
     else:
         game.in_session = True
+        game.semaphore = 0
         # select cards for legislative session
         cards = list(
             select(
