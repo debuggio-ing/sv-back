@@ -107,6 +107,10 @@ def cast_spell(game_id: int, target: int):
     elif spell == Spells.crucio:
         result = 1
     elif spell == Spells.imperio:
+        if target == -1:
+            raise HTTPException(
+                status_code=409,
+                detail='select proper target pliz')
         result = cast_imperio(game_id=game_id, target=target)
         if result == -1:
             raise HTTPException(
