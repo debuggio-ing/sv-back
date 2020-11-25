@@ -189,14 +189,19 @@ def get_proclamation_cards(game_id: int, user: User):
 # Requires that the user is logged in and a player of the game
 # It requires that the game and the player are able to handle a `get
 # proclamation`
-def post_proclamation_cards(game_id: int, election: int, user: User):
+def post_proclamation_cards(
+        game_id: int,
+        election: int,
+        expelliarmus: bool,
+        user: User):
     response = test_client.post(
         "api/games/{}/proc/".format(game_id),
         headers={
             "Content-Type": "application/json",
             "Authorization": user.token},
         json={
-            "election": election})
+            "election": election,
+            "expelliarmus": expelliarmus})
     return response
 
 

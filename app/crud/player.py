@@ -196,12 +196,14 @@ def minister_chooses_proc(game_id: int) -> bool:
     return game and game.in_session and not game.minister_proclaimed
 
 
+# Checks if player is alive
 @db_session
 def get_player_alive(player_id: int) -> bool:
     player = Player.get(id=player_id)
     return player.alive
 
 
+# Checks if the player is in the game
 @db_session
 def get_player_in_game(player_id: int, game_id: int) -> bool:
     player = Player.get(id=player_id, lobby=game_id)

@@ -26,6 +26,8 @@ for x in range(1, len(users)):
     join_lobby(lobby_id=lobby_id, user=users[x])
 
 # Send a message to a valid game.
+
+
 def test_send_message():
     message = "holaa"
 
