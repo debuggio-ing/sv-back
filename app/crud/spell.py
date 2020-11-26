@@ -1,6 +1,8 @@
 from app.crud.card import *
+from app.crud.lobby import *
+from app.crud.player import *
 
-
+from app.schemas.game_schema import Role, PlayerRole
 # add dead/alive condition to the game logic
 @db_session
 def cast_avada_kedavra(game_id: int, target: int):
@@ -17,11 +19,21 @@ def cast_avada_kedavra(game_id: int, target: int):
         tplayer.game.ended = True
 
     commit()
-
+    return 1
 
 def cast_imperio(game_id: int, target: int):
     return
 
+@db_session
+def cast_crucio(game_id: int, target: int) -> PlayerRole:
 
-def cast_crucio(game_id: int, target: int):
-    return
+    pr = None
+    if Player.get(id=target).role.phoenix:
+        pr = PlayerRole(role=Role.phoenix)
+    if Player.get(id=target).role.voldemort:
+        pr = PlayerRole(role=Role.voldemort)
+    else:
+        pr = PlayerRole(role=Role.eater)
+
+    return pr
+

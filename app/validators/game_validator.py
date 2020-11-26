@@ -140,16 +140,31 @@ def in_casting_phase(game_id: int) -> bool:
 # Execute the appropriate spell given the circumstances of the game
 def cast_spell(game_id: int, target: int):
     negative_procs = get_number_neg_procs(game_id=game_id)
-    # number_players = get_number_players(game_id=game_id)
-    # this can be extended for the general amount of players
-    if negative_procs > 3:
+    number_players = get_number_players(game_id=game_id)
+    spell = SPELLS_PLAYERS[number_players][negative_procs]
+    result = 1
 
-        cast_avada_kedavra(game_id=game_id, target=target)
+    if spell == Spells.divination:
+        result = get_divination_cards(game_id=game_id)
+    elif spell == Spells.avada_kedavra:
+        result = cast_avada_kedavra(game_id=game_id, target=target)
+    elif spell == Spells.crucio:
+        if target == -1:
+            raise HTTPException(
+                status_code=409,
+                detail='You should select a proper target')
+        result = cast_crucio(game_id=game_id, target=target)
+        if result == -1:
+            raise HTTPException(
+                status_code=409,
+                detail='You can\'t select yourself as minister')
+    elif spell == Spells.imperio:
+        result = 2
 
     discharge_director(game_id=game_id)
-    finish_legislative_session(game_id)
-    return 1
-
+    finish_legislative_session(
+        game_id=game_id)
+    return result
 
 # Gets information for the appropiate spell given the circumstances of the game
 def get_spell(game_id: int):
@@ -163,7 +178,7 @@ def get_spell(game_id: int):
     elif spell == Spells.avada_kedavra:
         result = 1
     elif spell == Spells.crucio:
-        result = 1
+        result = 3
     elif spell == Spells.imperio:
         result = 1
     else:
