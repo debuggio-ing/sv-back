@@ -248,7 +248,7 @@ def get_game_minister_proclaimed(game_id) -> bool:
 @db_session
 def end_expelliarmus(game_id: int):
     discharge_director(game_id=game_id)
-    finish_legislative_session(game_id=game_id)
+    finish_legislative_session(game_id=game_id,imperio = False)
     commit()
 
 
@@ -299,13 +299,14 @@ def propose_government(game_id: int, dir_id: int):
 
 # Finish the current legislative session
 @db_session
-def finish_legislative_session(game_id: int):
+def finish_legislative_session(game_id: int, imperio: bool):
     game = Lobby.get(id=game_id).game
     game.in_session = False
     game.minister_proclaimed = False
     game.director_proclaimed = False
+    if not imperio:
+        set_next_minister_candidate(game_id)
     game.expelliarmus = False
-    set_next_minister_candidate(game_id)
     commit()
 
 
@@ -345,7 +346,7 @@ def finish_director_proclamation(game_id: int):
             lambda c: c.proclaimed and not c.phoenix, cards))
     ) <= 2 or not game.last_proc_negative:
         discharge_director(game_id=game_id)
-        finish_legislative_session(game_id=game_id)
+        finish_legislative_session(game_id=game_id, imperio=False)
 
     commit()
 
@@ -381,10 +382,11 @@ def get_number_players(game_id: int):
 @db_session
 def delete_player_from_game(game_id: int, player_id: int):
     lobby = Lobby.get(id=game_id)
- 
+
     # if owner set another person as lobby owner
     if get_lobby_is_id_owner(lobby_id=game_id, player_id=player_id):
-        players = select(p for p in lobby.player if p.user.id != lobby.owner_id)
+        players = select(
+            p for p in lobby.player if p.user.id != lobby.owner_id)
         if players.first() is not None:
             lobby.owner_id = players.first().user.id
         else:

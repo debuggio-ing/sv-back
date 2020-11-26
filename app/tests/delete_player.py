@@ -1,10 +1,10 @@
 
-#El usuario esta en el juego y es owner
-#El usuario esta en el juego y no es owner
-#El usuario no esta en el juego 
-#El juego ya comenzó
-#El lobby es incorrecto
-#El player es incorrecto
+# El usuario esta en el juego y es owner
+# El usuario esta en el juego y no es owner
+# El usuario no esta en el juego
+# El juego ya comenzó
+# El lobby es incorrecto
+# El player es incorrecto
 from app.debug.test_suite import *
 from fastapi import status
 
@@ -49,7 +49,7 @@ def check_users_join(lobby_id: int, max_players: int):
 
 
 def test_leave_lobby():
-    
+
     lobby_create = create_new_lobby(
         name="asd",
         max_players=5,
@@ -66,8 +66,8 @@ def deplete_match(lid):
         leave_join = leave_match(lobby_id=lid, user=users[i])
         response = get_lobby_info(lid, users[i], user_id=users[i].uid)
         if i < 4:
-            assert len(response.json()['current_players']) == response.json()['max_players'] -i-1
+            assert len(response.json()['current_players']) == response.json()[
+                'max_players'] - i - 1
 
     response = get_lobbies(users[4])
     assert response.json() == []
-

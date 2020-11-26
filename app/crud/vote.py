@@ -118,7 +118,7 @@ def process_vote_result(game_id: int):
     if result < math.ceil((max_players + 1) / 2):
         set_next_minister_candidate(game_id)
         if(game.semaphore >= 2):
-            unleash_caos(game_id)
+            unleash_chaos(game_id)
             game.semaphore = 3
         else:
             game.semaphore = (game.semaphore + 1) % 4

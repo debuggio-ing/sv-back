@@ -45,6 +45,8 @@ def get_lobby_is_owner(lobby_id: int, user_email: str) -> int:
     return is_owner
 
 # Get lobby_id lobby's owner_id attribute.
+
+
 @db_session
 def get_lobby_is_id_owner(lobby_id: int, player_id: int) -> int:
     lobby = Lobby.get(id=lobby_id)
@@ -57,6 +59,8 @@ def get_lobby_is_id_owner(lobby_id: int, player_id: int) -> int:
     return is_owner
 
 # Get all players nickname who are in lobby_id lobby.
+
+
 @db_session
 def get_lobby_player_list(lobby_id: int):
     players = list(select(
@@ -231,8 +235,10 @@ def is_lobby_started(lobby_id: int) -> bool:
     return started
 
 # Return owners nickname
+
+
 @db_session
 def get_lobby_owner_nickname(lobby_id: int) -> str:
 
-    owner_id =Lobby.get(id=lobby_id).owner_id
+    owner_id = Lobby.get(id=lobby_id).owner_id
     return User.get(id=owner_id).nickname

@@ -76,4 +76,3 @@ def caos_db():
         minister=False,
         director=False)
     commit()
-
