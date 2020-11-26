@@ -1,8 +1,9 @@
 from app.crud.vote import *
 from app.validators.constants import *
 
-
 # Create player in the database.
+
+
 @db_session
 def insert_player(user_email: str, lobby_id: int) -> int:
     lobby = Lobby.get(id=lobby_id)
@@ -179,6 +180,12 @@ def discharge_director(game_id: int):
     if director is not None:
         director.director = False
 
+        prev_director = Player.get(lobby=game_id, prev_director=True)
+        if prev_director is not None:
+            prev_director.prev_director = False
+
+        director.prev_director = True
+
     commit()
 
 
@@ -190,14 +197,33 @@ def minister_chooses_proc(game_id: int) -> bool:
     return game and game.in_session and not game.minister_proclaimed
 
 
+# Checks if player is alive
 @db_session
 def get_player_alive(player_id: int) -> bool:
     player = Player.get(id=player_id)
     return player.alive
 
 
+# Checks if the player is in the game
 @db_session
 def get_player_in_game(player_id: int, game_id: int) -> bool:
     player = Player.get(id=player_id, lobby=game_id)
 
     return player is not None
+
+
+@db_session
+def get_number_players_alive(game_id: int) -> int:
+    pid_list = list(select(
+        p.id for p in Player if game_id == p.lobby.id and p.alive))
+    print(len(pid_list))
+    return len(pid_list)
+
+
+@db_session
+def get_player_electable(player_id: int, game_id: int) -> bool:
+    player = Player.get(id=player_id, lobby=game_id)
+    lobby = Lobby.get(id=game_id)
+    game = lobby.game
+    return not player.prev_director and not player.minister and not (
+        player.prev_minister and get_number_players_alive(game_id) > 5)

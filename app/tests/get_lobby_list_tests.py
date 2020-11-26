@@ -83,6 +83,8 @@ def test_get_lobby_list():
 
     assert get_all.status_code == 200
     assert get_all.json() == [{"id": lobby1_id,
+                               'owner_alias': "user1",
+
                                "name": join.json()["name"],
                                "current_players":join.json()["current_players"],
                                "max_players":join.json()["max_players"],
@@ -91,6 +93,7 @@ def test_get_lobby_list():
                                "is_owner":True,
                                "messages":[]},
                               {"id": create2.json()["id"],
+                               'owner_alias': "user1",
                                "name":create2.json()["name"],
                                "current_players":create2.json()["current_players"],
                                "max_players":create2.json()["max_players"],
@@ -130,6 +133,7 @@ def test_lobby_from():
 
     assert get_all.status_code == 200
     assert get_all.json() == [{"id": create2.json()["id"],
+                               'owner_alias': "user1",
                                "name":create2.json()["name"],
                                "current_players":create2.json()["current_players"],
                                "max_players":create2.json()["max_players"],
@@ -154,6 +158,7 @@ def test_lobby_to():
 
     assert get_all.status_code == 200
     assert get_all.json() == [{"id": lobby1_id,
+                               'owner_alias': "user1",
                                "name": join.json()["name"],
                                "current_players":join.json()["current_players"],
                                "max_players":join.json()["max_players"],

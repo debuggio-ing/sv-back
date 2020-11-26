@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 
-from app.debug.caos_db import *
+from app.debug.chaos_db import *
 from app.debug.populate_database import *
 from app.debug.set_db_to_proclaim import *
 from app.debug.spell_database import *
@@ -9,11 +9,11 @@ from app.test import test_svapi
 testc = TestClient(test_svapi)
 
 
-caos_db()
+chaos_db()
 
 
 @db_session
-def test_caos():
+def test_chaos():
     proclaimed_cards = list(
         select(
             card.position for card in ProcCard if card.proclaimed and card.game.lobby.id == 1))

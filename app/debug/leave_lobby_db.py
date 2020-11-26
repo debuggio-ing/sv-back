@@ -36,16 +36,6 @@ def caos_db():
 
     lobby1 = Lobby(name="mortifagos 4ever", max_players=5, owner_id=user_id)
 
-    game1 = Game(lobby=lobby1, voting=True,
-                 semaphore=3, num_votes=4, list_head=2)
-
-    positions = list(range(17))
-    random.shuffle(positions)
-    card_pool = []
-    for i in range(17):
-        c = ProcCard(game=game1, discarded=False,
-                     position=positions[i], phoenix=(i < 6))
-
     role_vol = GRole(voldemort=True, phoenix=False)
     role_dea = GRole(voldemort=False, phoenix=False)
     role_ord = GRole(voldemort=False, phoenix=True)
@@ -86,33 +76,3 @@ def caos_db():
         minister=False,
         director=False)
     commit()
-
-    curr_vote1 = CurrentVote(
-        game=game1.id, player=p1.id, vote=False, voter_id=1)
-    curr_vote3 = CurrentVote(
-        game=game1.id, player=p3.id, vote=False, voter_id=2)
-    curr_vote3 = CurrentVote(
-        game=game1.id, player=p3.id, vote=False, voter_id=3)
-    curr_vote4 = CurrentVote(
-        game=game1.id, player=p4.id, vote=False, voter_id=4)
-
-    last_vote1 = PublicVote(
-        game=game1.id,
-        player=p1.id,
-        vote=False,
-        voter_id=1)
-    last_vote2 = PublicVote(
-        game=game1.id,
-        player=p2.id,
-        vote=False,
-        voter_id=2)
-    last_vote3 = PublicVote(
-        game=game1.id,
-        player=p3.id,
-        vote=False,
-        voter_id=3)
-    last_vote4 = PublicVote(
-        game=game1.id,
-        player=p4.id,
-        vote=False,
-        voter_id=4)

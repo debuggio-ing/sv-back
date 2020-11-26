@@ -97,7 +97,7 @@ def update_public_vote(game_id: int):
 
 
 @db_session
-def unleash_caos(game_id: int):
+def unleash_chaos(game_id: int):
     card = select(
         c for c in ProcCard if c.game.lobby.id == game_id and not(
             c.proclaimed or c.discarded)).order_by(
@@ -117,13 +117,16 @@ def process_vote_result(game_id: int):
         select(v for v in PublicVote if v.game == game_id and v.vote))
     if result < math.ceil((max_players + 1) / 2):
         set_next_minister_candidate(game_id)
-        if(game.semaphore == 3):
-            unleash_caos(game_id)
-        game.semaphore = (game.semaphore + 1) % 4
+        if(game.semaphore >= 2):
+            unleash_chaos(game_id)
+            game.semaphore = 3
+        else:
+            game.semaphore = (game.semaphore + 1) % 4
         dir = Player.get(lobby=lobby, director=True)
         dir.director = False
     else:
         game.in_session = True
+        game.semaphore = 0
         # select cards for legislative session
         cards = list(
             select(
@@ -165,6 +168,12 @@ def discharge_former_minister(game_id: int):
     ex_minister = Player.get(lobby=lobby, minister=True)
     if ex_minister is not None:
         ex_minister.minister = False
+
+        ex_ex_minister = Player.get(lobby=lobby, prev_minister=True)
+        if ex_ex_minister is not None:
+            ex_ex_minister.prev_minister = False
+
+        ex_minister.prev_minister = True
 
     commit()
 

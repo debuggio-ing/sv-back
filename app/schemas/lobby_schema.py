@@ -30,6 +30,7 @@ class LobbyFilter(BaseModel):
 class LobbyPublic(BaseModel):
     id: int
     name: str
+    owner_alias: str
     current_players: List[str]  # list of nicknames
     max_players: int
     started: bool

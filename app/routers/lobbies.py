@@ -115,3 +115,21 @@ def start_game(lobby_id: int,
     game_id = insert_game(lobby_id=lobby_id)
 
     return StartConfirmation(game_id=game_id)
+
+
+# Deletes the player from the lobby.
+@r.post("/lobbies/{lobby_id}/leave/",
+        response_model=StartConfirmation)
+def leave_game(lobby_id: int,
+               # current_players: LobbyStart,
+               auth: AuthJWT = Depends()):
+    user_email = validate_user(auth=auth)
+    player_id = get_player(email=user_email, game_id=lobby_id)
+
+    if is_lobby_started(lobby_id):
+        raise HTTPException(status_code=409,
+                            detail="Game has already started.")
+
+    delete_player_from_game(player_id=player_id, game_id=lobby_id)
+
+    return StartConfirmation(game_id=lobby_id)

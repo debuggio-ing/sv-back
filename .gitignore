@@ -4,3 +4,4 @@ __pycache__/
 *.sqlite
 .gitignore
 .pytest_cache
+.coverage
