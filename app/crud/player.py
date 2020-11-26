@@ -2,6 +2,8 @@ from app.crud.vote import *
 from app.validators.constants import *
 
 # Create player in the database.
+
+
 @db_session
 def insert_player(user_email: str, lobby_id: int) -> int:
     lobby = Lobby.get(id=lobby_id)
@@ -184,7 +186,6 @@ def discharge_director(game_id: int):
 
         director.prev_director = True
 
-
     commit()
 
 
@@ -210,6 +211,7 @@ def get_player_in_game(player_id: int, game_id: int) -> bool:
 
     return player is not None
 
+
 @db_session
 def get_number_players_alive(game_id: int) -> int:
     pid_list = list(select(
@@ -217,9 +219,11 @@ def get_number_players_alive(game_id: int) -> int:
     print(len(pid_list))
     return len(pid_list)
 
+
 @db_session
 def get_player_electable(player_id: int, game_id: int) -> bool:
     player = Player.get(id=player_id, lobby=game_id)
     lobby = Lobby.get(id=game_id)
     game = lobby.game
-    return not player.prev_director and not player.minister and not (player.prev_minister and get_number_players_alive(game_id)>5)
+    return not player.prev_director and not player.minister and not (
+        player.prev_minister and get_number_players_alive(game_id) > 5)

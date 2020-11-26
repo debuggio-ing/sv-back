@@ -29,8 +29,8 @@ def test_choose_uneligable_candidate():
 
     token = "Bearer " + login.json()["access_token"]
     candidate_response = testc.post("/api/games/2/director/9/",
-                               headers={"Authorization": token},
-                               json={"vote": "false"})
+                                    headers={"Authorization": token},
+                                    json={"vote": "false"})
 
     assert candidate_response.status_code == 401
 
@@ -42,6 +42,8 @@ def test_choose_uneligable_candidate():
     assert start_json['director'] == -1
 
 # el correcto elige un incorrecto
+
+
 def test_choose_self_as_candidate():
     login = testc.post(
         "api/login/",
@@ -53,8 +55,8 @@ def test_choose_self_as_candidate():
 
     token = "Bearer " + login.json()["access_token"]
     candidate_response = testc.post("/api/games/2/director/6/",
-                               headers={"Authorization": token},
-                               json={"vote": "false"})
+                                    headers={"Authorization": token},
+                                    json={"vote": "false"})
 
     assert candidate_response.status_code == 401
 
@@ -78,8 +80,8 @@ def test_choose_candidate():
 
     token = "Bearer " + login.json()["access_token"]
     candidate_response = testc.post("/api/games/2/director/10/",
-                               headers={"Authorization": token},
-                               json={"vote": "false"})
+                                    headers={"Authorization": token},
+                                    json={"vote": "false"})
 
     assert candidate_response.status_code == 200
 

@@ -107,6 +107,8 @@ def join_lobby(lobby_id: int, user: User):
 
 # Requires that the user object is logged in
 # Deletes the player from the lobby and returns its game_id
+
+
 def leave_match(lobby_id: int, user: User):
     response = test_client.post("api/lobbies/{}/leave/".format(lobby_id),
                                 headers={"Authorization": user.token})

@@ -381,10 +381,11 @@ def get_number_players(game_id: int):
 @db_session
 def delete_player_from_game(game_id: int, player_id: int):
     lobby = Lobby.get(id=game_id)
- 
+
     # if owner set another person as lobby owner
     if get_lobby_is_id_owner(lobby_id=game_id, player_id=player_id):
-        players = select(p for p in lobby.player if p.user.id != lobby.owner_id)
+        players = select(
+            p for p in lobby.player if p.user.id != lobby.owner_id)
         if players.first() is not None:
             lobby.owner_id = players.first().user.id
         else:

@@ -129,7 +129,7 @@ def leave_game(lobby_id: int,
     if is_lobby_started(lobby_id):
         raise HTTPException(status_code=409,
                             detail="Game has already started.")
-    
+
     delete_player_from_game(player_id=player_id, game_id=lobby_id)
 
     return StartConfirmation(game_id=lobby_id)

@@ -1,3 +1,5 @@
+from fastapi import status
+from app.debug.test_suite import *
 from fastapi.testclient import TestClient
 
 from app.debug.spell_database import *
@@ -6,12 +8,11 @@ from app.test import test_svapi
 testc = TestClient(test_svapi)
 
 
-from app.debug.test_suite import *
-from fastapi import status
-
 crucio_database()
 
 # This function tests if the game is able to respond to a crucio request
+
+
 def test_get_crucio():
     login = testc.post(
         "api/login/",
