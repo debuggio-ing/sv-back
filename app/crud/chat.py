@@ -22,7 +22,7 @@ def get_messages(id: int):
         select(
             m for m in Message if m.sender.lobby.id == id).order_by(
             lambda msg: desc(
-                msg.id)).limit(6))
+                msg.id)))
 
     messages = list(map(lambda x: MessageSchema(
         sender=x.sender.user.nickname, message=x.message), msgs))
