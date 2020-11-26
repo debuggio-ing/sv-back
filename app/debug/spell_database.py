@@ -126,3 +126,67 @@ def spell_database(spell: str):
         create_cards_avada_kedavra(game=game)
 
     commit()
+
+@db_session
+def crucio_database():
+    users = [
+    User(
+        email="maw@gmail.com",
+        nickname="maw",
+        password="$5$rounds=535000$hN.xjQV17DkWk3zX$cDFQJeakbvfB6Fn.5mB/XnSS/xjrplJ./7rh.I33Ss.",
+        verification_code=111111),
+    User(
+        email="law@gmail.com",
+        nickname="law",
+        password="$5$rounds=535000$hN.xjQV17DkWk3zX$cDFQJeakbvfB6Fn.5mB/XnSS/xjrplJ./7rh.I33Ss.",
+        verification_code=111111),
+    User(
+        email="lau@gmail.com",
+        nickname="lau",
+        password="$5$rounds=535000$hN.xjQV17DkWk3zX$cDFQJeakbvfB6Fn.5mB/XnSS/xjrplJ./7rh.I33Ss.",
+        verification_code=111111),
+    User(
+        email="ulince@gmail.com",
+        nickname="ulince",
+        password="$5$rounds=535000$hN.xjQV17DkWk3zX$cDFQJeakbvfB6Fn.5mB/XnSS/xjrplJ./7rh.I33Ss.",
+        verification_code=111111),
+    User(
+        email="nico@gmail.com",
+        nickname="nico",
+        password="$5$rounds=535000$hN.xjQV17DkWk3zX$cDFQJeakbvfB6Fn.5mB/XnSS/xjrplJ./7rh.I33Ss.",
+        verification_code=111111),
+    User(
+        email="diego@maradona.com",
+        nickname="el10",
+        password="$5$rounds=535000$hN.xjQV17DkWk3zX$cDFQJeakbvfB6Fn.5mB/XnSS/xjrplJ./7rh.I33Ss.",
+        verification_code=111111),
+    User(
+        email="laura@gmail.com",
+        nickname="laura",
+        password="$5$rounds=535000$hN.xjQV17DkWk3zX$cDFQJeakbvfB6Fn.5mB/XnSS/xjrplJ./7rh.I33Ss.",
+        verification_code=111111)
+        ]
+    commit()
+    lobby = Lobby(name="mortifagos 4ever", max_players=7, owner_id=users[0].id)
+    create_players(users=users, lobby=lobby)
+
+    game = Game(
+        lobby=lobby,
+        in_session=True,
+        minister_proclaimed=True,
+        director_proclaimed=True,
+        last_proc_negative=True)
+
+    for i in range(17):
+        # the position of the next cards are 0,6,12
+        c = ProcCard(
+            game=game,
+            proclaimed=(i in [15, 16]),
+            discarded=(i in [3, 4]),
+            selected=False,
+            position=i,
+            phoenix=(
+                i in [
+                    0,
+                    12]))
+    commit()
