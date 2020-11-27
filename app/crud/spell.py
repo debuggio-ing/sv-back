@@ -32,6 +32,7 @@ def cast_imperio(game_id: int, target: int):
 def cast_crucio(game_id: int, target: int) -> PlayerRole:
 
     pr = None
+    Player.get(id=target).crucied = True
     if Player.get(id=target).role.phoenix:
         pr = PlayerRole(role=Role.phoenix)
     if Player.get(id=target).role.voldemort:
