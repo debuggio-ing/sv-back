@@ -31,6 +31,7 @@ def test_get_game_public():
 
     assert ("player_list" in jgame and "score" in jgame)
     assert "role" in jgame["player_list"][0]
+    assert False == jgame["player_list"][0]["crucied"]
     assert len(jgame["player_list"]) >= 5
     assert jgame["score"]["good"] == 0 and jgame["score"]["bad"] == 0
     assert any(jgame["minister"] == player["player_id"]
