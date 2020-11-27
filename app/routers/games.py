@@ -75,7 +75,7 @@ def post_cast_spell(game_id: int, spell: CastSpell, auth: AuthJWT = Depends()):
         is_player_in_game(player_id=player_id, game_id=game_id)
         is_player_dead(player_id=spell.target)
 
-    # cast spell(send spell)
+    # execute spell
     return cast_spell(game_id=game_id, target=spell.target)
 
 
