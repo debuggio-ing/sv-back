@@ -41,6 +41,7 @@ class PlayerRole(BaseModel):
 class PlayerPublic(BaseModel):
     player_id: int
     alive: bool
+    crucied: bool
     voted: bool  # if the player already voted this round
     last_vote: bool  # last public vote
     position: int

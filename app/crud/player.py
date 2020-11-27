@@ -50,6 +50,7 @@ def get_player_public(player_id: int, c_player_id: int) -> PlayerPublic:
             role = Role("Death Eater")
         return PlayerPublic(player_id=player_id,
                             alive=player.alive,
+                            crucied=player.crucied,
                             voted=get_player_vote_status(player_id),
                             last_vote=get_player_last_vote(player_id),
                             nickname=player.user.nickname,
@@ -58,6 +59,7 @@ def get_player_public(player_id: int, c_player_id: int) -> PlayerPublic:
     else:
         return PlayerPublic(player_id=player_id,
                             alive=player.alive,
+                            crucied=player.crucied,
                             voted=get_player_vote_status(player_id),
                             last_vote=get_player_last_vote(player_id),
                             nickname=player.user.nickname,
