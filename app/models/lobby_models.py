@@ -19,6 +19,7 @@ class Lobby(db.Entity):
 class Player(db.Entity):
     id = PrimaryKey(int, auto=True)
     alive = Required(bool, default=True)
+    crucied = Required(bool, default=False)
     position = Required(int, default=0)
     role = Optional('GRole')
     minister = Required(bool, default=False)

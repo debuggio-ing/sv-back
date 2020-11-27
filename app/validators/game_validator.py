@@ -149,7 +149,7 @@ def cast_spell(game_id: int, target: int):
     elif spell == Spells.avada_kedavra:
         result = cast_avada_kedavra(game_id=game_id, target=target)
     elif spell == Spells.crucio:
-        if target == -1:
+        if target in get_crucied_players(game_id=game_id):
             raise HTTPException(
                 status_code=409,
                 detail='You should select a proper target')

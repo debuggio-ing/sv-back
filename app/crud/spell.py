@@ -40,3 +40,13 @@ def cast_crucio(game_id: int, target: int) -> PlayerRole:
         pr = PlayerRole(role=Role.eater)
 
     return pr
+
+@db_session
+def get_crucied_players(game_id: int) -> List[int]:
+
+    cplayers = list(
+        select(
+            p for p in Player
+                if p.lobby.id == game_id 
+                    and p.crucied))
+    return cplayers
