@@ -41,7 +41,7 @@ def test_get_game_public():
         print("User not phoenix")
         assert any("Order of the Phoenix" ==
                    player["role"] for player in jgame["player_list"])
-        assert any("voldemort" == player["role"]
+        assert any("Voldemort" == player["role"]
                    for player in jgame["player_list"])
         assert any("Death Eater" == player["role"]
                    for player in jgame["player_list"])

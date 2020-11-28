@@ -45,7 +45,7 @@ def get_player_public(player_id: int, c_player_id: int) -> PlayerPublic:
         if player.role.phoenix:
             role = Role("Order of the Phoenix")
         elif player.role.voldemort:
-            role = Role("voldemort")
+            role = Role("Voldemort")
         else:
             role = Role("Death Eater")
         return PlayerPublic(player_id=player_id,

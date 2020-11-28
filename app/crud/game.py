@@ -74,6 +74,7 @@ def get_game_public_info(game_id: int, player_id: int):
         semaphore=get_game_semaphore(game_id=game_id),
         score=get_game_score(game_id=game_id),
         voting=get_game_voting(game_id=game_id),
+        in_crucio=get_in_crucio(game_id=game_id),
         expelliarmus=get_expelliarmus(game_id=game_id),
         in_session=get_game_in_session(game_id=game_id),
         minister_proclaimed=get_game_minister_proclaimed(game_id=game_id),
@@ -232,6 +233,19 @@ def get_expelliarmus(game_id: int) -> bool:
     return lobby and lobby.game and lobby.game.expelliarmus
 
 
+# Check if the game is in a crucio torture
+@db_session
+def get_in_crucio(game_id: int) -> bool:
+    lobby = Lobby.get(id=game_id)
+    return lobby and lobby.game and lobby.game.in_crucio
+
+
+# Returns a list of the tortured players
+@db_session
+def get_crucied_players(game_id: int):
+    return list(select(p for p in Player if p.lobby.id == game_id and p.crucied))
+
+
 # Check if the minister has already proclaimed cards
 @db_session
 def get_game_minister_proclaimed(game_id) -> bool:
@@ -333,18 +347,15 @@ def finish_director_proclamation(game_id: int):
     game = Lobby.get(id=game_id).game
     game.director_proclaimed = True
     cards = list(select(c for c in ProcCard if c.game.lobby.id == game_id))
-
+    neg_procs = get_number_neg_procs(game_id=game_id)
+    players = game.lobby.max_players
     if len(
         list(
             filter(
             lambda c: not (c.proclaimed or c.discarded),
             cards))) <= 2:
         shuffle_cards(game_id=game_id)
-    if len(
-        list(
-            filter(
-            lambda c: c.proclaimed and not c.phoenix, cards))
-    ) <= 2 or not game.last_proc_negative:
+    if SPELLS_PLAYERS[players][neg_procs] == Spells.none or not game.last_proc_negative:
         discharge_director(game_id=game_id)
         finish_legislative_session(game_id=game_id, imperio=False)
 

@@ -80,7 +80,7 @@ def post_cast_spell(game_id: int, spell: CastSpell, auth: AuthJWT = Depends()):
 
 
 # Get information to cast spell in specified game
-@r.get("/games/{game_id}/spell/")
+@r.get("/games/{game_id}/spell/", response_model=Spell)
 def get_cast_spell(game_id: int, auth: AuthJWT = Depends()):
     email = validate_user(auth=auth)
 
