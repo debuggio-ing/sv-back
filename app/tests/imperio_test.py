@@ -19,6 +19,7 @@ for u in users:
 def test_get_imperio():
     response = get_spell(game_id=1, user=users[0])
     assert response.status_code == 200
+    assert response.json()['spell_type'] == 'Imperio'
     response = get_game_info(game_id=1, user=users[0])
     assert response.status_code == 200
 

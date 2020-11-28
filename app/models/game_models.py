@@ -13,6 +13,10 @@ class Game(db.Entity):
     director_proclaimed = Required(bool, default=False)  # director chose cards
     # director asked for expelliarmus?
     expelliarmus = Required(bool, default=False)
+    # is the match waiting for a cucio curse?
+    in_crucio = Required(bool, default=False)
+    # last player_id that has been cruciated
+    last_tortured = Required(int, default=-1)
     last_proc_negative = Required(
         bool, default=False)  # last proclamation was bad
     voting = Required(bool, default=False)  # are players currently voting?

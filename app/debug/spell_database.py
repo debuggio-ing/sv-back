@@ -40,23 +40,6 @@ def create_cards_avada_kedavra(game):
 
 
 @db_session
-def create_cards_avada_kedavra(game):
-    for i in range(17):
-        # the position of the next cards are 0,6,12
-        c = ProcCard(
-            game=game,
-            proclaimed=(i in [13, 14, 15, 16]),
-            discarded=(i in [2, 3, 4]),
-            selected=False,
-            position=i,
-            phoenix=(
-                i in [
-                    0,
-                    12]))
-    commit()
-
-
-@db_session
 def create_cards_imperio(game):
     for i in range(17):
         # the position of the next cards are 0,6,12
@@ -69,9 +52,25 @@ def create_cards_imperio(game):
             phoenix=i in [0, 1, 2, 3, 4, 5])
     commit()
 
+
+@db_session
+def create_cards_crucio(game):
+    for i in range(17):
+        # the position of the next cards are 0,6,12
+        c = ProcCard(
+            game=game,
+            proclaimed=(i in [15, 16]),
+            discarded=(i in [3, 4]),
+            selected=False,
+            position=i,
+            phoenix=(
+                i in [
+                    0,
+                    12]))
+    commit()
+
+
 # This functions creates players in a game given the users and the lobby
-
-
 @db_session
 def create_players(users, lobby, player_amount):
     role_vol = GRole(voldemort=True, phoenix=False)
@@ -146,7 +145,7 @@ def spell_database(spell: str):
             password="$5$rounds=535000$hN.xjQV17DkWk3zX$cDFQJeakbvfB6Fn.5mB/XnSS/xjrplJ./7rh.I33Ss.",
             verification_code=111111)]
     commit()
-    if spell == 'Imperio':
+    if spell == 'Imperio' or spell == "Crucio":
         lobby = Lobby(
             name="mortifagos 4ever",
             max_players=7,
@@ -187,4 +186,14 @@ def spell_database(spell: str):
             last_proc_negative=True)
 
         create_cards_imperio(game=game)
+    elif spell == "Crucio":
+        create_players(users=users, lobby=lobby, player_amount=7)
+        game = Game(
+            lobby=lobby,
+            in_session=True,
+            minister_proclaimed=True,
+            director_proclaimed=True,
+            last_proc_negative=True)
+
+        create_cards_crucio(game=game)
     commit()

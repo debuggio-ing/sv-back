@@ -137,6 +137,19 @@ def in_casting_phase(game_id: int) -> bool:
                             detail='It\'s not time to cast a spell')
 
 
+# Checks if the target selected is appropriate for the given match
+def check_target(game_id: int, target: int):
+    if not get_in_crucio(game_id=game_id):
+        crucied_players = get_crucied_players(game_id=game_id)
+        if target in crucied_players:
+            raise HTTPException(status_code=409,
+                                detail='You can\'t torture a tortured player')
+        if target not in get_lobby_players_id(lobby_id=game_id):
+            raise HTTPException(
+                status_code=409,
+                detail='You can\'t torture someone who is not in the game')
+
+
 # Execute the appropriate spell given the circumstances of the game
 def cast_spell(game_id: int, target: int):
     negative_procs = get_number_neg_procs(game_id=game_id)
@@ -149,7 +162,10 @@ def cast_spell(game_id: int, target: int):
     elif spell == Spells.avada_kedavra:
         result = cast_avada_kedavra(game_id=game_id, target=target)
     elif spell == Spells.crucio:
-        result = 1
+        check_target(game_id=game_id, target=target)
+        result = cast_crucio(game_id=game_id, target=target)
+        if get_in_crucio(game_id=game_id):
+            return result
     elif spell == Spells.imperio:
         if target == -1:
             raise HTTPException(
@@ -172,20 +188,22 @@ def cast_spell(game_id: int, target: int):
 def get_spell(game_id: int):
     negative_procs = get_number_neg_procs(game_id=game_id)
     number_players = get_number_players(game_id=game_id)
-    result = 1
-    # this could be extended for any other spell.
+
     spell = SPELLS_PLAYERS[number_players][negative_procs]
     if spell == Spells.divination:
-        result = get_divination_cards(game_id=game_id)
+        result = Spell(
+            spell_type=SpellType.divination,
+            cards=get_divination_cards(
+                game_id=game_id))
     elif spell == Spells.avada_kedavra:
-        result = 1
+        result = Spell(spell_type=SpellType.avada)
     elif spell == Spells.crucio:
-        result = 1
+        result = Spell(
+            spell_type=SpellType.crucio,
+            role=torture_player(
+                game_id=game_id))
     elif spell == Spells.imperio:
-        result = 2
-    else:
-        result = 1
-
+        result = Spell(spell_type=SpellType.imperio)
     return result
 
 

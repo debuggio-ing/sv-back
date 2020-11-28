@@ -1,6 +1,5 @@
 from enum import Enum
 from typing import Optional, List
-
 from pydantic import BaseModel, EmailStr
 
 
@@ -13,7 +12,7 @@ class StartConfirmation(BaseModel):
 # Me parece que es un dato derivado, asi que quizás la api nunca lo utilice
 # pero creo que se le puede informar al front los hechizos a mostrar en el
 # board
-class Spell(str, Enum):
+class SpellType(str, Enum):
     divination = "Divination"
     avada = "Avada Kedavra"
     crucio = "Crucio"
@@ -23,7 +22,7 @@ class Spell(str, Enum):
 # [ENUM class] Players' possible roles
 class Role(str, Enum):
     eater = "Death Eater"
-    voldemort = "voldemort"
+    voldemort = "Voldemort"
     phoenix = "Order of the Phoenix"
 
 
@@ -43,6 +42,7 @@ class PlayerPublic(BaseModel):
     alive: bool
     voted: bool  # if the player already voted this round
     last_vote: bool  # last public vote
+    crucied: bool  # has the player been tortured?
     position: int
     nickname: str
     role: Optional[Role]
@@ -70,7 +70,15 @@ class CardToProclaim(BaseModel):
     phoenix: bool
 
 
+# Spell out type
+class Spell(BaseModel):
+    spell_type: SpellType
+    cards: Optional[List[CardToProclaim]]
+    role: Optional[Role]
+
 # Game's proclamations' status
+
+
 class Score(BaseModel):
     good: int
     bad: int
@@ -99,6 +107,7 @@ class GamePublic(BaseModel):
     minister: int
     prev_minister: int
     director: int
+    in_crucio: bool
     prev_director: int
     semaphore: int
     score: Score
