@@ -37,6 +37,12 @@ def get_player_last_vote(player_id: int) -> bool:
     return pv.vote
 
 
+# Returns true if the player has been tortured
+@db_session
+def get_player_crucied(player_id: int) -> bool:
+    return Player.get(id=player_id).crucied
+
+
 # Return the required player_id status according to the caller player_id.
 @db_session
 def get_player_public(player_id: int, c_player_id: int) -> PlayerPublic:
@@ -51,6 +57,7 @@ def get_player_public(player_id: int, c_player_id: int) -> PlayerPublic:
         return PlayerPublic(player_id=player_id,
                             alive=player.alive,
                             voted=get_player_vote_status(player_id),
+                            crucied=get_player_crucied(player_id),
                             last_vote=get_player_last_vote(player_id),
                             nickname=player.user.nickname,
                             position=player.position,
@@ -59,6 +66,7 @@ def get_player_public(player_id: int, c_player_id: int) -> PlayerPublic:
         return PlayerPublic(player_id=player_id,
                             alive=player.alive,
                             voted=get_player_vote_status(player_id),
+                            crucied=get_player_crucied(player_id),
                             last_vote=get_player_last_vote(player_id),
                             nickname=player.user.nickname,
                             position=player.position)
