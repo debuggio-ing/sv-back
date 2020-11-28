@@ -76,6 +76,8 @@ class Spell(BaseModel):
     role: Optional[Role]
 
 # Game's proclamations' status
+
+
 class Score(BaseModel):
     good: int
     bad: int

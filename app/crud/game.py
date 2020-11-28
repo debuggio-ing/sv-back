@@ -243,7 +243,9 @@ def get_in_crucio(game_id: int) -> bool:
 # Returns a list of the tortured players
 @db_session
 def get_crucied_players(game_id: int):
-    return list(select(p for p in Player if p.lobby.id == game_id and p.crucied))
+    return list(
+        select(
+            p for p in Player if p.lobby.id == game_id and p.crucied))
 
 
 # Check if the minister has already proclaimed cards
@@ -262,7 +264,7 @@ def get_game_minister_proclaimed(game_id) -> bool:
 @db_session
 def end_expelliarmus(game_id: int):
     discharge_director(game_id=game_id)
-    finish_legislative_session(game_id=game_id,imperio = False)
+    finish_legislative_session(game_id=game_id, imperio=False)
     commit()
 
 

@@ -23,10 +23,7 @@ def register_user(user: UserReg) -> int:
              password=encrypt_password(user.password), verification_code=code)
     commit()
 
-    if settings.demo:
-        send_email(user_email=user.email, code=code)
-    else:
-        print("Debugging mode")
+    send_email(user_email=user.email, code=code)
 
     return u.id
 

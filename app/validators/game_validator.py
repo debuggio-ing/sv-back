@@ -145,8 +145,9 @@ def check_target(game_id: int, target: int):
             raise HTTPException(status_code=409,
                                 detail='You can\'t torture a tortured player')
         if target not in get_lobby_players_id(lobby_id=game_id):
-            raise HTTPException(status_code=409,
-                                detail='You can\'t torture someone who is not in the game')
+            raise HTTPException(
+                status_code=409,
+                detail='You can\'t torture someone who is not in the game')
 
 
 # Execute the appropriate spell given the circumstances of the game
@@ -190,11 +191,17 @@ def get_spell(game_id: int):
 
     spell = SPELLS_PLAYERS[number_players][negative_procs]
     if spell == Spells.divination:
-        result = Spell(spell_type=SpellType.divination, cards=get_divination_cards(game_id=game_id))
+        result = Spell(
+            spell_type=SpellType.divination,
+            cards=get_divination_cards(
+                game_id=game_id))
     elif spell == Spells.avada_kedavra:
         result = Spell(spell_type=SpellType.avada)
     elif spell == Spells.crucio:
-        result = Spell(spell_type=SpellType.crucio, role=torture_player(game_id=game_id))
+        result = Spell(
+            spell_type=SpellType.crucio,
+            role=torture_player(
+                game_id=game_id))
     elif spell == Spells.imperio:
         result = Spell(spell_type=SpellType.imperio)
     return result
