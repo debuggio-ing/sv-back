@@ -116,7 +116,7 @@ def start_game(lobby_id: int,
 
 
 # add a bot
-@r.post("/lobbies/{lobby_id}/bot/add")
+@r.post("/lobbies/{lobby_id}/bot/add/")
 def addbot_game(lobby_id: int,
                # current_players: LobbyStart,
                auth: AuthJWT = Depends()):

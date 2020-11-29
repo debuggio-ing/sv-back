@@ -157,7 +157,7 @@ def bot_random_logic(bot: Bot, game_id: int):
     while True:
         response = bot.bot_get_lobby_info(game_id=game_id)
         if not response.json()["started"]:
-            time.sleep(1)
+            time.sleep(3)
             continue
         response = bot.bot_get_game_info(game_id=game_id)
         if response.json()["end"]:
