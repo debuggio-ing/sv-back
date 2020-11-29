@@ -7,9 +7,6 @@ import requests
 from enum import Enum
 import string 
 
-data = {"ip": "1.1.2.3"}
-headers = {"Authorization": "Bearer MYREALLYLONGTOKENIGOT"}
-
 
 def random_mail(length):
    letters = string.ascii_lowercase
@@ -36,37 +33,112 @@ class Bot():
         self.token = token
         self.active = False
 
-def register_bot(bot: Bot):
+    def register_bot(self):
 
-    response = requests.post("http://localhost:8000/api/register/",
-    headers={
-        "Content-Type": "application/json"},
-    json={
-        "nickname": bot.nickname,
-        "email": bot.email,
-        "password": bot.password})
-    assert response.status_code == 201
-    bot.uid = response.json()
-
-def bot_login(bot: Bot):
-    response = requests.post(
-        "http://localhost:8000/api/login/",
+        response = requests.post("http://localhost:8000/api/register/",
         headers={
             "Content-Type": "application/json"},
         json={
-            "email": bot.email,
-            "password": bot.password})
-    assert response.status_code == 200
-    # tokens
-    bot.token = "Bearer " + response.json()["access_token"]
-    return
+            "nickname": self.nickname,
+            "email": self.email,
+            "password": self.password})
+        assert response.status_code == 201
+        self.uid = response.json()
 
-def bot_join_lobby(lobby_id: int, bot: Bot):
-    response = requests.post(
-        "http://localhost:8000/api/lobbies/{}/join/".format(lobby_id),
-        headers={
-            "Authorization": bot.token})
-    return response
+    def bot_login(self):
+        response = requests.post(
+            "http://localhost:8000/api/login/",
+            headers={
+                "Content-Type": "application/json"},
+            json={
+                "email": self.email,
+                "password": self.password})
+        assert response.status_code == 200
+        # tokens
+        self.token = "Bearer " + response.json()["access_token"]
+        return
+
+    def bot_join_lobby(self, lobby_id: int):
+        response = requests.post(
+            "http://localhost:8000/api/lobbies/{}/join/".format(lobby_id),
+            headers={
+                "Authorization": self.token})
+        return response
+
+
+    def bot_leave_match(self, game_id:int):
+        response = requests.post("http://localhost:8000/api/lobbies/{}/leave/".format(game_id),
+                            headers={"Authorization": self.token})
+        idle_bots.append(bot)
+        playing_bots.remove([bot, game_id])
+
+    def bot_get_lobby_info(self, game_id: int):
+        response = requests.get(
+            "http://localhost:8000/api/lobbies/{}".format(game_id),
+            headers={
+                "Authorization": self.token})
+
+        return response
+
+    def bot_get_game_info(self, game_id: int):
+        response = requests.get(
+            "http://localhost:8000/api/games/{}/".format(game_id),
+            headers={
+                "Authorization": self.token})
+        return response
+
+
+
+    def bot_post_vote(self, game_id: int, vote: bool):
+        response = requests.post(
+            "http://localhost:8000/api/games/{}/vote/".format(game_id),
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": self.token},
+            json={
+                "vote": vote})
+        return response
+
+    def bot_post_spell(self, game_id: int, target: int):
+        response = requests.post(
+            "http://localhost:8000/api/games/{}/spell/".format(game_id),
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": self.token},
+            json={
+                "target": target})
+        return response
+
+
+    def bot_get_proclamation_cards(self, game_id: int):
+        response = requests.get(
+            "http://localhost:8000/api/games/{}/proc/".format(game_id),
+            headers={
+                "Authorization": self.token})
+        return response
+
+
+    def bot_post_proclamation_cards(self, 
+            game_id: int,
+            election: int,
+            expelliarmus: bool):
+        response = requests.post(
+            "http://localhost:8000/api/games/{}/proc/".format(game_id),
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": self.token},
+            json={
+                "election": election,
+                "expelliarmus": expelliarmus})
+        return response
+
+
+    def bot_post_new_candidate(self, game_id: int, candidate_id: int):
+        response = requests.post(
+            "http://localhost:8000/api/games/{}/director/{}/".format(
+                game_id, candidate_id), headers={
+                "Authorization": self.token})
+        return response
 
 
 idle_bots = []
@@ -74,10 +146,46 @@ playing_bots = []
 
 def create_new_bot(nickname, email, password):
 
-   bot = Bot(nickname=nickname, email=email, password=password)
-   register_bot(bot=bot)
-   bot_login(bot=bot)
-   idle_bots.append(bot)
+    bot = Bot(nickname=nickname, email=email, password=password)
+    bot.register_bot()
+    bot.bot_login()
+    idle_bots.append(bot)
+
+
+
+def bot_random_logic(bot: Bot, game_id: int):
+    while True:
+        response = bot.bot_get_lobby_info(game_id=game_id)
+        if not response.json()["started"]:
+            time.sleep(1)
+            continue
+        response = bot.bot_get_game_info(game_id=game_id)
+        if response.json()["end"]:
+            playing_bots.remove([bot, game_id])
+            idle_bots.append(bot)
+        targets = []
+        for p in response.json()["player_list"]:             #no implementado todavia
+            if p["alive"]: #and not p["crucied"] :
+                targets.append(p["player_id"])
+        bot.bot_post_vote(game_id=game_id, vote=True)
+        bot.bot_post_spell(game_id=game_id, target=random.choice(targets))
+        
+        bot.bot_post_new_candidate(game_id=game_id,
+            candidate_id=random.choice(targets))
+        bot.bot_login()
+        
+        procls = bot.bot_get_proclamation_cards(game_id=game_id)
+        if procls.status_code == 200:
+            try:
+                bot.bot_post_proclamation_cards(game_id=game_id,
+                    election=procls.json()[0]["card_pos"],
+                    expelliarmus=False)
+            except:
+                print("error")
+
+        time.sleep(3)
+
+
 
 def add_bot_to_game(game_id):
 
@@ -88,121 +196,7 @@ def add_bot_to_game(game_id):
         create_new_bot(nickname, email, password)
 
     bot = idle_bots.pop() 
-    bot_join_lobby(lobby_id=game_id, bot=bot)
+    bot.bot_join_lobby(lobby_id=game_id)
     playing_bots.append([bot, game_id])
+    th.start_new_thread(bot_random_logic, (bot, game_id))
 
-def bot_leave_match(game_id:int, bot: Bot):
-    response = requests.post("http://localhost:8000/api/lobbies/{}/leave/".format(game_id),
-                        headers={"Authorization": bot.token})
-    idle_bots.append(bot)
-    playing_bots.remove([bot, game_id])
-
-def bot_get_lobby_info(game_id: int, bot: Bot):
-    response = requests.get(
-        "http://localhost:8000/api/lobbies/{}".format(game_id),
-        headers={
-            "Authorization": bot.token})
-
-    return response
-
-def bot_get_game_info(game_id: int, bot: Bot):
-    response = requests.get(
-        "http://localhost:8000/api/games/{}/".format(game_id),
-        headers={
-            "Authorization": bot.token})
-    return response
-
-
-
-def bot_post_vote(game_id: int, vote: bool, bot: Bot):
-    response = requests.post(
-        "http://localhost:8000/api/games/{}/vote/".format(game_id),
-        headers={
-            "Content-Type": "application/json",
-            "Authorization": bot.token},
-        json={
-            "vote": vote})
-    return response
-
-def bot_post_spell(game_id: int, bot: Bot, target: int):
-    response = requests.post(
-        "http://localhost:8000/api/games/{}/spell/".format(game_id),
-        headers={
-            "Content-Type": "application/json",
-            "Authorization": bot.token},
-        json={
-            "target": target})
-    return response
-
-
-def bot_get_proclamation_cards(game_id: int, bot: Bot):
-    response = requests.get(
-        "http://localhost:8000/api/games/{}/proc/".format(game_id),
-        headers={
-            "Authorization": bot.token})
-    return response
-
-
-def bot_post_proclamation_cards(
-        game_id: int,
-        election: int,
-        expelliarmus: bool,
-        bot: Bot):
-    response = requests.post(
-        "http://localhost:8000/api/games/{}/proc/".format(game_id),
-        headers={
-            "Content-Type": "application/json",
-            "Authorization": bot.token},
-        json={
-            "election": election,
-            "expelliarmus": expelliarmus})
-    return response
-
-
-
-def bot_post_new_candidate(game_id: int, candidate_id: int, bot: Bot):
-    response = requests.post(
-        "http://localhost:8000/api/games/{}/director/{}/".format(
-            game_id, candidate_id), headers={
-            "Authorization": bot.token})
-    return response
-
-
-
-def bots_play():
-
-    while True:
-    
-        for i, par in enumerate(playing_bots):
-            response = bot_get_lobby_info(game_id=par[1], bot=par[0])
-            if not response.json()["started"]:
-                time.sleep(1)
-                break
-            response = bot_get_game_info(game_id=par[1], bot=par[0])
-            targets = []
-            print(i)
-            for p in response.json()["player_list"]:             #no implementado todavia
-                if p["alive"]: #and not p["crucied"] :
-                    targets.append(p["player_id"])
-            bot_post_vote(bot=par[0], game_id=par[1], vote=True)
-            bot_post_spell(bot=par[0], game_id=par[1], target=random.choice(targets))
-            
-            bot_post_new_candidate(game_id=par[1],
-                candidate_id=random.choice(targets),
-                bot=par[0])
-            bot_login(par[0])
-            
-            procls = bot_get_proclamation_cards(game_id=par[1], bot=par[0])
-            if procls.status_code == 200:
-                try:
-                    bot_post_proclamation_cards(game_id=par[1],
-                        election=procls.json()[0]["card_pos"],
-                        expelliarmus=False,
-                        bot=par[0])
-                except:
-                    print("error")
-
-            time.sleep(0.5)
-
-
-th.start_new_thread(bots_play, ())
