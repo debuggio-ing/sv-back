@@ -5,9 +5,8 @@ from app.models.user_models import *
 from app.models.game_models import *
 from app.models.lobby_models import *
 
+
 # Discard all selected cards in a game identified by game_id
-
-
 @db_session
 def discard_selected_cards(game_id: int):
     selected_cards = list(
@@ -25,19 +24,25 @@ def discard_selected_cards(game_id: int):
         shuffle_cards(game_id=game_id)
 
 
-# Return all selected cards in a game identified by game_id
+# Return the position of all selected cards in a game identified by game_id
 @db_session
 def get_selected_cards_pos(game_id: int):
-    return list(
-        select(
-            card.position for card in ProcCard if card.selected and card.game.lobby.id == game_id))
+    selected_cards = get_selected_cards(game_id=game_id)
+    return map(lambda c: c.position, selected_cards)
 
 
+# Returns the amount of cards that have been discarded in a game
+@db_session
+def get_discarded_cards(game_id: int):
+    return select(card for card in ProcCard if card.discarded and card.game.lobby.id == game_id).count()
+
+
+# Return all selected cards in a game identified by game_id@db_session
 @db_session
 def get_selected_cards(game_id: int):
     return list(
         select(
-            card for card in ProcCard if card.selected and card.game.lobby.id == game_id))
+            card for card in ProcCard if card.selected and card.game.lobby.id == game_id).order_by(lambda c: c.position))
 
 
 # Discard the card identified by card_pos and game_id

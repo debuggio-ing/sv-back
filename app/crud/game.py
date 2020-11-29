@@ -78,6 +78,7 @@ def get_game_public_info(game_id: int, player_id: int):
             director=get_game_director_id(game_id=game_id),
             prev_director=get_game_prev_director_id(game_id=game_id),
             semaphore=get_game_semaphore(game_id=game_id),
+            discarded=get_discarded_cards(game_id=game_id),
             score=get_game_score(game_id=game_id),
             voting=get_game_voting(game_id=game_id),
             in_crucio=get_in_crucio(game_id=game_id),
@@ -102,6 +103,7 @@ def get_game_public_info(game_id: int, player_id: int):
             director=get_game_director_id(game_id=game_id),
             prev_director=get_game_prev_director_id(game_id=game_id),
             semaphore=get_game_semaphore(game_id=game_id),
+            discarded=get_discarded_cards(game_id=game_id),
             score=get_game_score(game_id=game_id),
             voting=get_game_voting(game_id=game_id),
             in_crucio=get_in_crucio(game_id=game_id),
@@ -139,8 +141,9 @@ def get_all_games_ids(game_from: int, game_to: int) -> List[int]:
 def get_game_player_public_list(
         game_id: int,
         c_player_id: int) -> List[PlayerPublic]:
-    pid_list = list(select(
-        p.id for p in Player if game_id == p.lobby.id))
+    player_list = list(select(
+        p for p in Player if game_id == p.lobby.id).order_by(lambda p: p.position))
+    pid_list = map(lambda p: p.id, player_list)
 
     players = [get_player_public(player_id, c_player_id)
                for player_id in pid_list]
