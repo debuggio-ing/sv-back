@@ -10,7 +10,7 @@ from app.validators.constants import *
 def insert_game(lobby_id: int) -> int:
     lobby = Lobby.get(id=lobby_id)
 
-    max_players = lobby.max_players
+    max_players = select(p for p in Player if p.lobby.id == lobby_id).count()
     ultra_random_number = random.randint(0, 4)
 
     player_order = [i for i in range(max_players)]
