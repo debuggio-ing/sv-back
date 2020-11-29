@@ -111,7 +111,6 @@ def start_game(lobby_id: int,
     set_lobby_started(lobby_id=lobby_id)
 
     game_id = insert_game(lobby_id=lobby_id)
-    start_bots()
 
     return StartConfirmation(game_id=game_id)
 

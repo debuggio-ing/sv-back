@@ -173,27 +173,36 @@ def bots_play():
 
     while True:
     
-        for par in playing_bots:
+        for i, par in enumerate(playing_bots):
             response = bot_get_lobby_info(game_id=par[1], bot=par[0])
             if not response.json()["started"]:
                 time.sleep(1)
                 break
-            bot_login(par[0])
             response = bot_get_game_info(game_id=par[1], bot=par[0])
             targets = []
+            print(i)
             for p in response.json()["player_list"]:             #no implementado todavia
                 if p["alive"]: #and not p["crucied"] :
                     targets.append(p["player_id"])
             bot_post_vote(bot=par[0], game_id=par[1], vote=True)
             bot_post_spell(bot=par[0], game_id=par[1], target=random.choice(targets))
-            bot_post_proclamation_cards(game_id=par[1],
-                election=random.randint(0,2),
-                expelliarmus=False,
-                bot=par[0])
+            
             bot_post_new_candidate(game_id=par[1],
                 candidate_id=random.choice(targets),
                 bot=par[0])
-            time.sleep(2)
+            bot_login(par[0])
+            
+            procls = bot_get_proclamation_cards(game_id=par[1], bot=par[0])
+            if procls.status_code == 200:
+                try:
+                    bot_post_proclamation_cards(game_id=par[1],
+                        election=procls.json()[0]["card_pos"],
+                        expelliarmus=False,
+                        bot=par[0])
+                except:
+                    print("error")
+
+            time.sleep(0.5)
 
 
 th.start_new_thread(bots_play, ())
