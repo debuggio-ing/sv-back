@@ -120,8 +120,8 @@ def start_game(lobby_id: int,
 # add a bot
 @r.post("/lobbies/{lobby_id}/bot/add/")
 def addbot_game(lobby_id: int,
-               # current_players: LobbyStart,
-               auth: AuthJWT = Depends()):
+                # current_players: LobbyStart,
+                auth: AuthJWT = Depends()):
     user_email = validate_user(auth=auth)
 
     if not get_lobby_is_owner(lobby_id=lobby_id, user_email=user_email):
@@ -136,7 +136,6 @@ def addbot_game(lobby_id: int,
     if len(users_in_lobby) < 5:
         add_bot_to_game(lobby_id)
     return 1
-
 
 
 # Deletes the player from the lobby.
@@ -157,10 +156,12 @@ def leave_game(lobby_id: int,
     return StartConfirmation(game_id=lobby_id)
 
 # add a bot
+
+
 @r.post("/lobbies/{lobby_id}/bot/add")
 def addbot_game(lobby_id: int,
-               # current_players: LobbyStart,
-               auth: AuthJWT = Depends()):
+                # current_players: LobbyStart,
+                auth: AuthJWT = Depends()):
     user_email = validate_user(auth=auth)
 
     if not get_lobby_is_owner(lobby_id=lobby_id, user_email=user_email):
@@ -175,4 +176,3 @@ def addbot_game(lobby_id: int,
     if len(users_in_lobby) < 5:
         add_bot_to_game(lobby_id)
     return 1
-

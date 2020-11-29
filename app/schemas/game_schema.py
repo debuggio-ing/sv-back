@@ -105,6 +105,7 @@ class GamePublic(BaseModel):
     director_proclaimed: bool  # did the director pass the proc cards?
     last_proc_negative: bool
     minister: int
+    discarded: int
     prev_minister: int
     director: int
     in_crucio: bool
