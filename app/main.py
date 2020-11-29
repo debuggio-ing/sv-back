@@ -21,7 +21,8 @@ bind_db(False)
 # origins allowed by the API
 origins = [
     "http://localhost",
-    "http://localhost:8080"
+    "http://localhost:8080",
+    "https://debuggio.herokuapp.com"
 ]
 
 
