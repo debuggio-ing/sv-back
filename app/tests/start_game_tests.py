@@ -74,7 +74,7 @@ def test_start_game():
     assert start_json['roleReveal'] is None
     assert start_json['score'] == {'bad': 0, 'good': 0}
     assert start_json['semaphore'] == 0
-    assert start_json['winners'] is None
+    assert start_json['phoenix_win'] is None
 
 
 # Some user that's not the owner of the game starts the game.

@@ -2,7 +2,7 @@ from app.models.user_models import *
 from app.models.game_models import *
 from app.models.lobby_models import *
 from app.schemas.game_schema import *
-
+from app.crud.lobby import get_lobby_max_players
 import math
 
 
@@ -19,7 +19,7 @@ def is_last_vote(player_id: int, game_id: int):
     lobby = Lobby.get(id=game_id)
     game = lobby.game
     player = Player.get(id=player_id)
-    max_players = lobby.max_players
+    max_players = get_lobby_max_players(lobby_id=game_id)
 
     current_votes = lobby.game.num_votes
     already_vote = CurrentVote.get(voter_id=player_id)

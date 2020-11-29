@@ -68,6 +68,17 @@ def proclaim_card(card_pos: int, game_id: int):
             game.last_proc_negative = (not card.phoenix)
         else:
             card.discarded = True
+    eater_score = select(c for c in ProcCard if c.game.lobby.id ==
+                   game_id and c.proclaimed and not card.phoenix).count()
+    phoenix_score = select(c for c in ProcCard if c.game.lobby.id ==
+                   game_id and c.proclaimed and card.phoenix).count()
+    if eater_score > 5:
+        game.ended = True
+        game.phoenix_win = False
+    elif  phoenix_score > 4:
+        game.ended = True
+        game.phoenix_win = True
+
     commit()
 
 

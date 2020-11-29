@@ -10,7 +10,7 @@ from app.validators.constants import *
 def insert_game(lobby_id: int) -> int:
     lobby = Lobby.get(id=lobby_id)
 
-    max_players = lobby.max_players
+    max_players = select(p for p in Player if p.lobby.id == lobby_id).count()
     ultra_random_number = random.randint(0, 4)
 
     player_order = [i for i in range(max_players)]
@@ -62,27 +62,57 @@ def insert_game(lobby_id: int) -> int:
 # Return the required game status.
 @db_session
 def get_game_public_info(game_id: int, player_id: int):
-    return GamePublic(
-        id=game_id,
-        player_list=get_game_player_public_list(
-            game_id=game_id,
-            c_player_id=player_id),
-        minister=get_game_minister_id(game_id=game_id),
-        prev_minister=get_game_prev_minister_id(game_id=game_id),
-        director=get_game_director_id(game_id=game_id),
-        prev_director=get_game_prev_director_id(game_id=game_id),
-        semaphore=get_game_semaphore(game_id=game_id),
-        score=get_game_score(game_id=game_id),
-        voting=get_game_voting(game_id=game_id),
-        in_crucio=get_in_crucio(game_id=game_id),
-        expelliarmus=get_expelliarmus(game_id=game_id),
-        in_session=get_game_in_session(game_id=game_id),
-        minister_proclaimed=get_game_minister_proclaimed(game_id=game_id),
-        director_proclaimed=get_director_proclaimed(game_id=game_id),
-        last_proc_negative=get_last_proc_negative(game_id=game_id),
-        client_minister=get_is_player_minister(player_id=player_id),
-        client_director=is_player_director(player_id=player_id),
-        messages=get_messages(id=game_id))
+    if get_game_ended(game_id=game_id):
+
+# end: Optional[bool]
+# winners: Optional[bool]
+# # players' role reaveal party at the end of the game
+# roleReveal: Optional[List[Role]]
+        return GamePublic(
+            id=game_id,
+            player_list=get_game_player_public_list(
+                game_id=game_id,
+                c_player_id=player_id),
+            minister=get_game_minister_id(game_id=game_id),
+            prev_minister=get_game_prev_minister_id(game_id=game_id),
+            director=get_game_director_id(game_id=game_id),
+            prev_director=get_game_prev_director_id(game_id=game_id),
+            semaphore=get_game_semaphore(game_id=game_id),
+            score=get_game_score(game_id=game_id),
+            voting=get_game_voting(game_id=game_id),
+            in_crucio=get_in_crucio(game_id=game_id),
+            expelliarmus=get_expelliarmus(game_id=game_id),
+            in_session=get_game_in_session(game_id=game_id),
+            minister_proclaimed=get_game_minister_proclaimed(game_id=game_id),
+            director_proclaimed=get_director_proclaimed(game_id=game_id),
+            last_proc_negative=get_last_proc_negative(game_id=game_id),
+            client_minister=get_is_player_minister(player_id=player_id),
+            client_director=is_player_director(player_id=player_id),
+            messages=get_messages(id=game_id),
+            end=True,
+            phoenix_win=get_game_phoenix_win(game_id=game_id))
+    else:
+        return GamePublic(
+            id=game_id,
+            player_list=get_game_player_public_list(
+                game_id=game_id,
+                c_player_id=player_id),
+            minister=get_game_minister_id(game_id=game_id),
+            prev_minister=get_game_prev_minister_id(game_id=game_id),
+            director=get_game_director_id(game_id=game_id),
+            prev_director=get_game_prev_director_id(game_id=game_id),
+            semaphore=get_game_semaphore(game_id=game_id),
+            score=get_game_score(game_id=game_id),
+            voting=get_game_voting(game_id=game_id),
+            in_crucio=get_in_crucio(game_id=game_id),
+            expelliarmus=get_expelliarmus(game_id=game_id),
+            in_session=get_game_in_session(game_id=game_id),
+            minister_proclaimed=get_game_minister_proclaimed(game_id=game_id),
+            director_proclaimed=get_director_proclaimed(game_id=game_id),
+            last_proc_negative=get_last_proc_negative(game_id=game_id),
+            client_minister=get_is_player_minister(player_id=player_id),
+            client_director=is_player_director(player_id=player_id),
+            messages=get_messages(id=game_id))
 
 
 # Returns true if pid is minister.
@@ -409,3 +439,13 @@ def delete_player_from_game(game_id: int, player_id: int):
     if player is not None:
         player.delete()
     commit()
+
+
+@db_session
+def get_game_ended(game_id: int):
+    return Lobby.get(id=game_id).game.ended
+
+
+@db_session
+def get_game_phoenix_win(game_id: int):
+    return Lobby.get(id=game_id).game.phoenix_win

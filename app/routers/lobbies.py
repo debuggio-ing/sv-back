@@ -2,6 +2,8 @@ from fastapi import APIRouter, status
 from app.bots.basic_bot import add_bot_to_game
 from app.validators.auth_validator import *
 from app.validators.game_validator import *
+from app.basic_bot import add_bot_to_game
+
 from typing import Optional
 
 # Lobbies endpoints' router
@@ -153,3 +155,24 @@ def leave_game(lobby_id: int,
     delete_player_from_game(player_id=player_id, game_id=lobby_id)
 
     return StartConfirmation(game_id=lobby_id)
+
+# add a bot
+@r.post("/lobbies/{lobby_id}/bot/add")
+def addbot_game(lobby_id: int,
+               # current_players: LobbyStart,
+               auth: AuthJWT = Depends()):
+    user_email = validate_user(auth=auth)
+
+    if not get_lobby_is_owner(lobby_id=lobby_id, user_email=user_email):
+        raise HTTPException(status_code=409,
+                            detail="User is not game's owner.")
+
+    if is_lobby_started(lobby_id):
+        raise HTTPException(status_code=409,
+                            detail="Game has already started.")
+
+    users_in_lobby = get_lobby_player_list(lobby_id=lobby_id)
+    if len(users_in_lobby) < 5:
+        add_bot_to_game(lobby_id)
+    return 1
+
