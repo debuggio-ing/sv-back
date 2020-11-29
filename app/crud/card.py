@@ -34,7 +34,8 @@ def get_selected_cards_pos(game_id: int):
 # Returns the amount of cards that have been discarded in a game
 @db_session
 def get_discarded_cards(game_id: int):
-    return select(card for card in ProcCard if card.discarded and card.game.lobby.id == game_id).count()
+    return select(
+        card for card in ProcCard if card.discarded and card.game.lobby.id == game_id).count()
 
 
 # Return all selected cards in a game identified by game_id@db_session
@@ -42,7 +43,8 @@ def get_discarded_cards(game_id: int):
 def get_selected_cards(game_id: int):
     return list(
         select(
-            card for card in ProcCard if card.selected and card.game.lobby.id == game_id).order_by(lambda c: c.position))
+            card for card in ProcCard if card.selected and card.game.lobby.id == game_id).order_by(
+            lambda c: c.position))
 
 
 # Discard the card identified by card_pos and game_id
@@ -74,13 +76,13 @@ def proclaim_card(card_pos: int, game_id: int):
         else:
             card.discarded = True
     eater_score = select(c for c in ProcCard if c.game.lobby.id ==
-                   game_id and c.proclaimed and not card.phoenix).count()
+                         game_id and c.proclaimed and not card.phoenix).count()
     phoenix_score = select(c for c in ProcCard if c.game.lobby.id ==
-                   game_id and c.proclaimed and card.phoenix).count()
+                           game_id and c.proclaimed and card.phoenix).count()
     if eater_score > 5:
         game.ended = True
         game.phoenix_win = False
-    elif  phoenix_score > 4:
+    elif phoenix_score > 4:
         game.ended = True
         game.phoenix_win = True
 

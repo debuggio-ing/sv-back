@@ -64,10 +64,10 @@ def insert_game(lobby_id: int) -> int:
 def get_game_public_info(game_id: int, player_id: int):
     if get_game_ended(game_id=game_id):
 
-# end: Optional[bool]
-# winners: Optional[bool]
-# # players' role reaveal party at the end of the game
-# roleReveal: Optional[List[Role]]
+        # end: Optional[bool]
+        # winners: Optional[bool]
+        # # players' role reaveal party at the end of the game
+        # roleReveal: Optional[List[Role]]
         return GamePublic(
             id=game_id,
             player_list=get_game_player_public_list(
@@ -141,8 +141,10 @@ def get_all_games_ids(game_from: int, game_to: int) -> List[int]:
 def get_game_player_public_list(
         game_id: int,
         c_player_id: int) -> List[PlayerPublic]:
-    player_list = list(select(
-        p for p in Player if game_id == p.lobby.id).order_by(lambda p: p.position))
+    player_list = list(
+        select(
+            p for p in Player if game_id == p.lobby.id).order_by(
+            lambda p: p.position))
     pid_list = map(lambda p: p.id, player_list)
 
     players = [get_player_public(player_id, c_player_id)

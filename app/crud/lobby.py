@@ -98,7 +98,8 @@ def get_lobby_max_players(lobby_id: int):
     max_players = 0
     if lobby is not None:
         if lobby.started:
-            max_players = select(p for p in Player if p.lobby.id == lobby_id).count()
+            max_players = select(
+                p for p in Player if p.lobby.id == lobby_id).count()
         else:
             max_players = lobby.max_players
 

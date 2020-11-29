@@ -5,18 +5,18 @@ import time
 import random
 import requests
 from enum import Enum
-import string 
+import string
 
 
 def random_mail(length):
-   letters = string.ascii_lowercase
-   return ''.join(random.choice(letters) for i in range(length))
+    letters = string.ascii_lowercase
+    return ''.join(random.choice(letters) for i in range(length))
+
 
 class Endpoint(Enum):
     Login = "http://localhost:8000/api/user/login"
     Register = "http://localhost:8000/api/user/register"
     Base = "http://localhost:8000/api/"
-
 
 
 class Bot():
@@ -36,12 +36,12 @@ class Bot():
     def register_bot(self):
 
         response = requests.post("http://localhost:8000/api/register/",
-        headers={
-            "Content-Type": "application/json"},
-        json={
-            "nickname": self.nickname,
-            "email": self.email,
-            "password": self.password})
+                                 headers={
+                                     "Content-Type": "application/json"},
+                                 json={
+                                     "nickname": self.nickname,
+                                     "email": self.email,
+                                     "password": self.password})
         assert response.status_code == 201
         self.uid = response.json()
 
@@ -65,10 +65,11 @@ class Bot():
                 "Authorization": self.token})
         return response
 
-
-    def bot_leave_match(self, game_id:int):
-        response = requests.post("http://localhost:8000/api/lobbies/{}/leave/".format(game_id),
-                            headers={"Authorization": self.token})
+    def bot_leave_match(self, game_id: int):
+        response = requests.post(
+            "http://localhost:8000/api/lobbies/{}/leave/".format(game_id),
+            headers={
+                "Authorization": self.token})
         idle_bots.append(bot)
         playing_bots.remove([bot, game_id])
 
@@ -86,8 +87,6 @@ class Bot():
             headers={
                 "Authorization": self.token})
         return response
-
-
 
     def bot_post_vote(self, game_id: int, vote: bool):
         response = requests.post(
@@ -109,7 +108,6 @@ class Bot():
                 "target": target})
         return response
 
-
     def bot_get_proclamation_cards(self, game_id: int):
         response = requests.get(
             "http://localhost:8000/api/games/{}/proc/".format(game_id),
@@ -117,11 +115,10 @@ class Bot():
                 "Authorization": self.token})
         return response
 
-
-    def bot_post_proclamation_cards(self, 
-            game_id: int,
-            election: int,
-            expelliarmus: bool):
+    def bot_post_proclamation_cards(self,
+                                    game_id: int,
+                                    election: int,
+                                    expelliarmus: bool):
         response = requests.post(
             "http://localhost:8000/api/games/{}/proc/".format(game_id),
             headers={
@@ -131,7 +128,6 @@ class Bot():
                 "election": election,
                 "expelliarmus": expelliarmus})
         return response
-
 
     def bot_post_new_candidate(self, game_id: int, candidate_id: int):
         response = requests.post(
@@ -144,13 +140,13 @@ class Bot():
 idle_bots = []
 playing_bots = []
 
+
 def create_new_bot(nickname, email, password):
 
     bot = Bot(nickname=nickname, email=email, password=password)
     bot.register_bot()
     bot.bot_login()
     idle_bots.append(bot)
-
 
 
 def bot_random_logic(bot: Bot, game_id: int):
@@ -164,38 +160,37 @@ def bot_random_logic(bot: Bot, game_id: int):
             playing_bots.remove([bot, game_id])
             idle_bots.append(bot)
         targets = []
-        for p in response.json()["player_list"]:             #no implementado todavia
-            if p["alive"]: #and not p["crucied"] :
+        for p in response.json()["player_list"]:  # no implementado todavia
+            if p["alive"]:  # and not p["crucied"] :
                 targets.append(p["player_id"])
         bot.bot_post_vote(game_id=game_id, vote=True)
         bot.bot_post_spell(game_id=game_id, target=random.choice(targets))
 
         bot.bot_post_new_candidate(game_id=game_id,
-            candidate_id=random.choice(targets))
+                                   candidate_id=random.choice(targets))
         bot.bot_login()
 
         procls = bot.bot_get_proclamation_cards(game_id=game_id)
         if procls.status_code == 200:
             try:
                 bot.bot_post_proclamation_cards(game_id=game_id,
-                    election=procls.json()[0]["card_pos"],
-                    expelliarmus=False)
-            except:
+                                                election=procls.json()[0]["card_pos"],
+                                                expelliarmus=False)
+            except BaseException:
                 print("error")
 
         time.sleep(3)
 
 
-
 def add_bot_to_game(game_id):
 
     if 0 == len(idle_bots):
-        nickname = "BOT" + str(random.randint(0,10000))
-        email = random_mail(8)+"@m.com"
+        nickname = "BOT" + str(random.randint(0, 10000))
+        email = random_mail(8) + "@m.com"
         password = "12341234"
         create_new_bot(nickname, email, password)
 
-    bot = idle_bots.pop() 
+    bot = idle_bots.pop()
     bot.bot_join_lobby(lobby_id=game_id)
     playing_bots.append([bot, game_id])
     th.start_new_thread(bot_random_logic, (bot, game_id))
