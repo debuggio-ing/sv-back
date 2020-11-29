@@ -195,7 +195,5 @@ def bots_play():
                 bot=par[0])
             time.sleep(2)
 
-def start_bots():
-    return 1
 
 th.start_new_thread(bots_play, ())
