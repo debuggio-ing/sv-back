@@ -112,7 +112,7 @@ class GamePublic(BaseModel):
     semaphore: int
     score: Score
     end: Optional[bool]
-    winners: Optional[bool]
+    phoenix_win: Optional[bool]
     # players' role reaveal party at the end of the game
     roleReveal: Optional[List[Role]]
     client_minister: bool
