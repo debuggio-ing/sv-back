@@ -1,9 +1,8 @@
 from fastapi import APIRouter, status
-
+from app.bots.basic_bot import add_bot_to_game, start_bots
 from app.validators.auth_validator import *
 from app.validators.game_validator import *
 from typing import Optional
-
 
 # Lobbies endpoints' router
 r = lobbies_router = APIRouter()
@@ -112,14 +111,14 @@ def start_game(lobby_id: int,
     set_lobby_started(lobby_id=lobby_id)
 
     game_id = insert_game(lobby_id=lobby_id)
+    start_bots()
 
     return StartConfirmation(game_id=game_id)
 
 
 # add a bot
-@r.post("/lobbies/{lobby_id}/addbot/",
-        response_model=StartConfirmation)
-def start_game(lobby_id: int,
+@r.post("/lobbies/{lobby_id}/bot/add")
+def addbot_game(lobby_id: int,
                # current_players: LobbyStart,
                auth: AuthJWT = Depends()):
     user_email = validate_user(auth=auth)
