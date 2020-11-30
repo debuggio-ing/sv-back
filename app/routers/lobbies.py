@@ -2,7 +2,7 @@ from fastapi import APIRouter, status
 from app.bots.basic_bot import add_bot_to_game
 from app.validators.auth_validator import *
 from app.validators.game_validator import *
-from app.basic_bot import add_bot_to_game
+from app.bots.basic_bot import add_bot_to_game
 
 from typing import Optional
 
