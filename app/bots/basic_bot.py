@@ -17,7 +17,7 @@ heroku_path = "https://secret-voldemort-back.herokuapp.com/api/"
 local_path = "http://localhost:8000/api/"
 
 
-is_local = False
+is_local = True
 basepath = local_path
 if not is_local:
     basepath = heroku_path
@@ -153,35 +153,48 @@ def create_new_bot(nickname, email, password):
 
 
 def bot_random_logic(bot: Bot, game_id: int):
+    start = time.time()
     while True:
         response = bot.bot_get_lobby_info(game_id=game_id)
-        if not response.json()["started"]:
+        if response.status_code != 200:
+            time.sleep(3)
+            continue
+        rjson = response.json()
+        if not rjson["started"]:
             time.sleep(3)
             continue
         response = bot.bot_get_game_info(game_id=game_id)
-        if response.json()["end"]:
+        if response.status_code != 200:
+            time.sleep(3)
+            continue
+        rjson = response.json()
+        end = time.time()
+        if ("end" in rjson.keys() and rjson["end"])or  (end - start) > 3600:
             idle_bots.append(bot)
             break
+    
         targets = []
-        for p in response.json()["player_list"]:  # no implementado todavia
+        for p in rjson["player_list"]:  # no implementado todavia
             if p["alive"]:  # and not p["crucied"] :
                 targets.append(p["player_id"])
-        bot.bot_post_vote(game_id=game_id, vote=True)
-        bot.bot_post_spell(game_id=game_id, target=random.choice(targets))
-
-        bot.bot_post_new_candidate(game_id=game_id,
+        if rjson["voting"]:
+            bot.bot_post_vote(game_id=game_id, vote=True)
+        if rjson["in_session"] and rjson["director_proclaimed"]:
+            bot.bot_post_spell(game_id=game_id, target=random.choice(targets))
+        if not rjson["in_session"] and not rjson["voting"]:
+            bot.bot_post_new_candidate(game_id=game_id,
                                    candidate_id=random.choice(targets))
         bot.bot_login()
-
-        procls = bot.bot_get_proclamation_cards(game_id=game_id)
-        if procls.status_code == 200:
-            try:
-                bot.bot_post_proclamation_cards(game_id=game_id,
-                                                election=procls.json()[0]["card_pos"],
-                                                expelliarmus=False)
-            except BaseException:
-                print("error")
-
+        if rjson["in_session"]:
+            procls = bot.bot_get_proclamation_cards(game_id=game_id)
+            if procls.status_code == 200:
+                try:
+                    bot.bot_post_proclamation_cards(game_id=game_id,
+                                                    election=procls.json()[
+                                                        0]["card_pos"],
+                                                    expelliarmus=False)
+                except BaseException:
+                    print("error")
         time.sleep(3)
 
 
