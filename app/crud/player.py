@@ -12,7 +12,7 @@ def insert_player(user_email: str, lobby_id: int) -> int:
     player_id = -1
     if existing_player:
         return existing_player.id
-    if lobby is not None and not existing_player and len(
+    if user and lobby and not existing_player and len(
             list(select(p for p in lobby.player))) < lobby.max_players and not lobby.started:
         p = Player(user=user, lobby=lobby)
         commit()
@@ -160,7 +160,7 @@ def get_player_id_role(player_id: int) -> (bool, bool):
     player = Player.get(id=player_id)
 
     voldemort = phoenix = False
-    if player is not None and player.role is not None:
+    if player and player.role is not None:
         voldemort = player.role.voldemort
         phoenix = player.role.phoenix
 
