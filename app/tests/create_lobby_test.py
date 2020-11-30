@@ -41,7 +41,6 @@ def test_create_lobby():
 
     assert response.status_code == 201
 
-    print(response.json())
     assert response.json() == {
         'id': response.json()['id'],
         'owner_alias': "test",

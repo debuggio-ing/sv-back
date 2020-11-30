@@ -76,15 +76,17 @@ def proclaim_card(card_pos: int, game_id: int):
         else:
             card.discarded = True
     eater_score = select(c for c in ProcCard if c.game.lobby.id ==
-                         game_id and c.proclaimed and not card.phoenix).count()
+                         game_id and (c.proclaimed and not c.phoenix)).count()
     phoenix_score = select(c for c in ProcCard if c.game.lobby.id ==
-                           game_id and c.proclaimed and card.phoenix).count()
+                           game_id and (c.proclaimed and c.phoenix)).count()
     if eater_score > 5:
         game.ended = True
         game.phoenix_win = False
+        print("GAME OVER, Phoenix won? {}".format(game.phoenix_win))
     elif phoenix_score > 4:
         game.ended = True
         game.phoenix_win = True
+        print("GAME OVER, Phoenix won? {}".format(game.phoenix_win))
 
     commit()
 
@@ -104,8 +106,8 @@ def shuffle_cards(game_id: int):
 @db_session
 def get_number_neg_procs(game_id: int):
     cards = select(c for c in ProcCard if c.game.lobby.id ==
-                   game_id and (c.proclaimed and not c.phoenix))
-    return len(cards)
+                   game_id and (c.proclaimed and not c.phoenix)).count()
+    return cards
 
 
 # Returns the next three proclamation cards in the deck

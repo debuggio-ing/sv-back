@@ -153,7 +153,7 @@ def check_target(game_id: int, target: int):
 # Execute the appropriate spell given the circumstances of the game
 def cast_spell(game_id: int, target: int):
     negative_procs = get_number_neg_procs(game_id=game_id)
-    number_players = get_number_players(game_id=game_id)
+    number_players = get_lobby_max_players(lobby_id=game_id)
     spell = SPELLS_PLAYERS[number_players][negative_procs]
     result = 1
 
@@ -187,7 +187,7 @@ def cast_spell(game_id: int, target: int):
 # Gets information for the appropiate spell given the circumstances of the game
 def get_spell(game_id: int):
     negative_procs = get_number_neg_procs(game_id=game_id)
-    number_players = get_number_players(game_id=game_id)
+    number_players = get_lobby_max_players(lobby_id=game_id)
 
     spell = SPELLS_PLAYERS[number_players][negative_procs]
     if spell == Spells.divination:

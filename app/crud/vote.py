@@ -3,6 +3,7 @@ from app.models.game_models import *
 from app.models.lobby_models import *
 from app.schemas.game_schema import *
 from app.crud.lobby import get_lobby_max_players
+from app.crud.card import get_number_neg_procs
 import math
 
 
@@ -111,7 +112,7 @@ def unleash_chaos(game_id: int):
 def process_vote_result(game_id: int):
     lobby = Lobby.get(id=game_id)
     game = lobby.game
-    max_players = lobby.max_players
+    max_players = get_lobby_max_players(lobby_id=game_id)
 
     result = len(
         select(v for v in PublicVote if v.game == game_id and v.vote))
@@ -124,6 +125,9 @@ def process_vote_result(game_id: int):
             game.semaphore = (game.semaphore + 1) % 4
         dir = Player.get(lobby=lobby, director=True)
         dir.director = False
+    elif Player.get(lobby=lobby, director=True).role.voldemort and get_number_neg_procs(game_id=game_id) >= 3:
+        game.ended = True
+        print("GAME OVER, Phoenix won? {}".format(game.phoenix_win))
     else:
         game.in_session = True
         game.semaphore = 0
@@ -140,22 +144,24 @@ def process_vote_result(game_id: int):
     commit()
 
 
-# Set next minister as candidate in gid game.
+# Set next minister as candidate in game_id game.
 @db_session
-def set_next_minister_candidate(gid: int):
-    lobby = Lobby.get(id=gid)
+def set_next_minister_candidate(game_id: int):
+    lobby = Lobby.get(id=game_id)
 
-    discharge_former_minister(game_id=gid)
+    discharge_former_minister(game_id=game_id)
     # set new minister
     new_minister = Player.get(lobby=lobby, position=lobby.game.list_head)
 
     while new_minister is None or not new_minister.alive:
-        lobby.game.list_head = (lobby.game.list_head + 1) % lobby.max_players
+        lobby.game.list_head = (lobby.game.list_head +
+                                1) % get_lobby_max_players(lobby_id=game_id)
         new_minister = Player.get(lobby=lobby, position=lobby.game.list_head)
 
     new_minister.minister = True
     # update list head
-    lobby.game.list_head = (lobby.game.list_head + 1) % lobby.max_players
+    lobby.game.list_head = (lobby.game.list_head +
+                            1) % get_lobby_max_players(lobby_id=game_id)
 
     commit()
 

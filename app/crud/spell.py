@@ -18,6 +18,7 @@ def cast_avada_kedavra(game_id: int, target: int):
     if tplayer.role.voldemort:
         tplayer.lobby.game.ended = True
         tplayer.lobby.game.phoenix_win = True
+        print("GAME OVER, Phoenix won? {}".format(game.phoenix_win))
 
     commit()
     return 1
