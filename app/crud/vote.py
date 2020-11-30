@@ -151,6 +151,7 @@ def unleash_chaos(game_id: int):
     elif phoenix_score > 4:
         game.ended = True
         game.phoenix_win = True
+    commit()
 
 
 
