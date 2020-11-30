@@ -70,8 +70,7 @@ class Bot():
             "http://localhost:8000/api/lobbies/{}/leave/".format(game_id),
             headers={
                 "Authorization": self.token})
-        idle_bots.append(bot)
-        playing_bots.remove([bot, game_id])
+        idle_bots.append(self)
 
     def bot_get_lobby_info(self, game_id: int):
         response = requests.get(
@@ -138,7 +137,7 @@ class Bot():
 
 
 idle_bots = []
-playing_bots = []
+
 
 
 def create_new_bot(nickname, email, password):
@@ -157,8 +156,8 @@ def bot_random_logic(bot: Bot, game_id: int):
             continue
         response = bot.bot_get_game_info(game_id=game_id)
         if response.json()["end"]:
-            playing_bots.remove([bot, game_id])
             idle_bots.append(bot)
+            break
         targets = []
         for p in response.json()["player_list"]:  # no implementado todavia
             if p["alive"]:  # and not p["crucied"] :
@@ -192,5 +191,4 @@ def add_bot_to_game(game_id):
 
     bot = idle_bots.pop()
     bot.bot_join_lobby(lobby_id=game_id)
-    playing_bots.append([bot, game_id])
     th.start_new_thread(bot_random_logic, (bot, game_id))
