@@ -17,7 +17,7 @@ heroku_path = "https://secret-voldemort-back.herokuapp.com/api/"
 local_path = "http://localhost:8000/api/"
 
 
-is_local = True
+is_local = False
 basepath = local_path
 if not is_local:
     basepath = heroku_path
