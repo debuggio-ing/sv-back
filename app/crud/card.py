@@ -56,9 +56,10 @@ def discard_card(card_pos: int, game_id: int):
         discarded=False,
         proclaimed=False,
         selected=True)
-    card.selected = False
-    card.discarded = True
-    commit()
+    if card:
+        card.selected = False
+        card.discarded = True
+        commit()
 
 
 # Proclaim the card identified by card_pos and game_id.
