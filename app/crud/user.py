@@ -119,7 +119,7 @@ def set_nickname(user_email: str, nickname: str):
 def set_picture(user_email: str, image: bytes):
     if image is not None:
         user = User.get(email=user_email)
-        if user.image is None:
+        if user and user.image is None:
             user.image = Image(image=image, user=user)
         else:
             user.image.image = image
@@ -131,7 +131,7 @@ def set_picture(user_email: str, image: bytes):
 def get_picture(user_email: str):
     user = User.get(email=user_email)
     image = None
-    if user.image is not None:
+    if user and user.image is not None:
         image = user.image.image
     return image
 
