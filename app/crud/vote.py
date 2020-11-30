@@ -88,7 +88,6 @@ def update_public_vote(game_id: int):
 
     votes = (select((v.vote, v.voter_id)
                     for v in CurrentVote if v.game == game_id))[:]
-
     for v in votes:
         player = Player.get(id=v[1])
         pv = PublicVote(
@@ -97,26 +96,16 @@ def update_public_vote(game_id: int):
     commit()
 
 
-@db_session
-def unleash_chaos(game_id: int):
-    card = select(
-        c for c in ProcCard if c.game.lobby.id == game_id and not(
-            c.proclaimed or c.discarded)).order_by(
-        lambda c: c.position).limit(1)[0]
-    card.proclaimed = True
-
 # Set voting results.
-
-
 @db_session
 def process_vote_result(game_id: int):
     lobby = Lobby.get(id=game_id)
     game = lobby.game
     max_players = get_lobby_max_players(lobby_id=game_id)
-
+    dead_players = lobby.game.dead_players
     result = len(
         select(v for v in PublicVote if v.game == game_id and v.vote))
-    if result < math.ceil((max_players + 1) / 2):
+    if result < math.ceil((max_players - dead_players + 1) / 2):
         set_next_minister_candidate(game_id)
         if(game.semaphore >= 2):
             unleash_chaos(game_id)
@@ -127,7 +116,6 @@ def process_vote_result(game_id: int):
         dir.director = False
     elif Player.get(lobby=lobby, director=True).role.voldemort and get_number_neg_procs(game_id=game_id) >= 3:
         game.ended = True
-        print("GAME OVER, Phoenix won? {}".format(game.phoenix_win))
     else:
         game.in_session = True
         game.semaphore = 0
@@ -142,6 +130,29 @@ def process_vote_result(game_id: int):
 
     game.voting = False
     commit()
+
+
+@db_session
+def unleash_chaos(game_id: int):
+    game = Lobby.get(id=game_id).game
+    card = select(
+        c for c in ProcCard if c.game.lobby.id == game_id and not(
+            c.proclaimed or c.discarded)).order_by(
+        lambda c: c.position).limit(1)[0]
+    card.proclaimed = True
+    eater_score = select(c for c in ProcCard if c.game.lobby.id ==
+                         game_id and (c.proclaimed and not c.phoenix)).count()
+    phoenix_score = select(c for c in ProcCard if c.game.lobby.id ==
+                           game_id and (c.proclaimed and c.phoenix)).count()
+
+    if eater_score > 5:
+        game.ended = True
+        game.phoenix_win = False
+    elif phoenix_score > 4:
+        game.ended = True
+        game.phoenix_win = True
+    commit()
+
 
 
 # Set next minister as candidate in game_id game.
