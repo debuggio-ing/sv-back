@@ -441,9 +441,18 @@ def delete_player_from_game(game_id: int, player_id: int):
 
 @db_session
 def get_game_ended(game_id: int):
-    return Lobby.get(id=game_id).game.ended
+    lobby = Lobby.get(id=game_id)
+    if lobby:
+        return Lobby.get(id=game_id).game.ended
+    else:
+        return True
 
 
 @db_session
 def get_game_phoenix_win(game_id: int):
-    return Lobby.get(id=game_id).game.phoenix_win
+    lobby = Lobby.get(id=game_id)
+    if lobby:
+        return Lobby.get(id=game_id).game.ended
+    else:
+        return True
+

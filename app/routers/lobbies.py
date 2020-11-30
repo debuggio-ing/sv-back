@@ -78,13 +78,18 @@ def join_game(lobby_id: int, auth: AuthJWT = Depends()):
         raise HTTPException(status_code=404,
                             detail="The game id is incorrect.")
 
+    current_players = get_lobby_player_list(lobby_id=lobby_id)
+    lobby_max_players = get_lobby_max_players(lobby_id=lobby_id)
+
+    if len(current_players) >= lobby_max_players:
+        raise HTTPException(status_code=409,
+                            detail="The game id is full.")
+
     if insert_player(user_email=user_email, lobby_id=lobby_id) == -1:
         raise HTTPException(status_code=409,
                             detail="The game id is full.")
 
-    current_players = get_lobby_player_list(lobby_id=lobby_id)
     lobby_name = get_lobby_name(lobby_id=lobby_id)
-    lobby_max_players = get_lobby_max_players(lobby_id=lobby_id)
     lobby = get_lobby_public_info(lobby_id=lobby_id, user_email=user_email)
 
     return lobby
