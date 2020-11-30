@@ -88,7 +88,6 @@ def update_public_vote(game_id: int):
 
     votes = (select((v.vote, v.voter_id)
                     for v in CurrentVote if v.game == game_id))[:]
-    print(len(votes))
     for v in votes:
         player = Player.get(id=v[1])
         pv = PublicVote(
