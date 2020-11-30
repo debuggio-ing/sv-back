@@ -2,7 +2,7 @@ from fastapi import APIRouter, status
 from app.bots.basic_bot import add_bot_to_game
 from app.validators.auth_validator import *
 from app.validators.game_validator import *
-from app.basic_bot import add_bot_to_game
+from app.bots.basic_bot import add_bot_to_game
 
 from typing import Optional
 
@@ -78,13 +78,14 @@ def join_game(lobby_id: int, auth: AuthJWT = Depends()):
         raise HTTPException(status_code=404,
                             detail="The game id is incorrect.")
 
+    current_players = get_lobby_player_list(lobby_id=lobby_id)
+    lobby_max_players = get_lobby_max_players(lobby_id=lobby_id)
+
     if insert_player(user_email=user_email, lobby_id=lobby_id) == -1:
         raise HTTPException(status_code=409,
                             detail="The game id is full.")
 
-    current_players = get_lobby_player_list(lobby_id=lobby_id)
     lobby_name = get_lobby_name(lobby_id=lobby_id)
-    lobby_max_players = get_lobby_max_players(lobby_id=lobby_id)
     lobby = get_lobby_public_info(lobby_id=lobby_id, user_email=user_email)
 
     return lobby

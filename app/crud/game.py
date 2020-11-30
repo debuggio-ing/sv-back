@@ -120,14 +120,21 @@ def get_game_public_info(game_id: int, player_id: int):
 # Returns true if pid is minister.
 @db_session
 def get_is_player_minister(player_id: int) -> bool:
-    return Player.get(id=player_id).minister
+    player = Player.get(id=player_id)
+    if player:
+        return player.minister
+    else:
+        return False
 
 
 # Returns true if pid is director.
 @db_session
 def is_player_director(player_id: int) -> bool:
-    return Player.get(id=player_id).director
-
+    player = Player.get(id=player_id)
+    if player:
+        return player.director
+    else:
+        return False
 
 # Returns all game's ids
 @db_session
@@ -441,9 +448,18 @@ def delete_player_from_game(game_id: int, player_id: int):
 
 @db_session
 def get_game_ended(game_id: int):
-    return Lobby.get(id=game_id).game.ended
+    lobby = Lobby.get(id=game_id)
+    if lobby:
+        return Lobby.get(id=game_id).game.ended
+    else:
+        return True
 
 
 @db_session
 def get_game_phoenix_win(game_id: int):
-    return Lobby.get(id=game_id).game.phoenix_win
+    lobby = Lobby.get(id=game_id)
+    if lobby:
+        return Lobby.get(id=game_id).game.ended
+    else:
+        return True
+
