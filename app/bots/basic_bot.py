@@ -39,7 +39,7 @@ class Bot():
 
     def register_bot(self):
 
-        response = requests.post(basepath+"register/",
+        response = requests.post(basepath + "register/",
                                  headers={
                                      "Content-Type": "application/json"},
                                  json={
@@ -51,7 +51,7 @@ class Bot():
 
     def bot_login(self):
         response = requests.post(
-            basepath+"login/",
+            basepath + "login/",
             headers={
                 "Content-Type": "application/json"},
             json={
@@ -64,21 +64,21 @@ class Bot():
 
     def bot_join_lobby(self, lobby_id: int):
         response = requests.post(
-            basepath+"lobbies/{}/join/".format(lobby_id),
+            basepath + "lobbies/{}/join/".format(lobby_id),
             headers={
                 "Authorization": self.token})
         return response
 
     def bot_leave_match(self, game_id: int):
         response = requests.post(
-            basepath+"lobbies/{}/leave/".format(game_id),
+            basepath + "lobbies/{}/leave/".format(game_id),
             headers={
                 "Authorization": self.token})
         idle_bots.append(self)
 
     def bot_get_lobby_info(self, game_id: int):
         response = requests.get(
-            basepath+"lobbies/{}".format(game_id),
+            basepath + "lobbies/{}".format(game_id),
             headers={
                 "Authorization": self.token})
 
@@ -86,14 +86,14 @@ class Bot():
 
     def bot_get_game_info(self, game_id: int):
         response = requests.get(
-            basepath+"games/{}/".format(game_id),
+            basepath + "games/{}/".format(game_id),
             headers={
                 "Authorization": self.token})
         return response
 
     def bot_post_vote(self, game_id: int, vote: bool):
         response = requests.post(
-            basepath+"games/{}/vote/".format(game_id),
+            basepath + "games/{}/vote/".format(game_id),
             headers={
                 "Content-Type": "application/json",
                 "Authorization": self.token},
@@ -103,7 +103,7 @@ class Bot():
 
     def bot_post_spell(self, game_id: int, target: int):
         response = requests.post(
-            basepath+"games/{}/spell/".format(game_id),
+            basepath + "games/{}/spell/".format(game_id),
             headers={
                 "Content-Type": "application/json",
                 "Authorization": self.token},
@@ -113,7 +113,7 @@ class Bot():
 
     def bot_get_proclamation_cards(self, game_id: int):
         response = requests.get(
-            basepath+"games/{}/proc/".format(game_id),
+            basepath + "games/{}/proc/".format(game_id),
             headers={
                 "Authorization": self.token})
         return response
@@ -123,7 +123,7 @@ class Bot():
                                     election: int,
                                     expelliarmus: bool):
         response = requests.post(
-            basepath+"games/{}/proc/".format(game_id),
+            basepath + "games/{}/proc/".format(game_id),
             headers={
                 "Content-Type": "application/json",
                 "Authorization": self.token},
@@ -134,14 +134,13 @@ class Bot():
 
     def bot_post_new_candidate(self, game_id: int, candidate_id: int):
         response = requests.post(
-            basepath+"games/{}/director/{}/".format(
+            basepath + "games/{}/director/{}/".format(
                 game_id, candidate_id), headers={
                 "Authorization": self.token})
         return response
 
 
 idle_bots = []
-
 
 
 def create_new_bot(nickname, email, password):
@@ -151,6 +150,7 @@ def create_new_bot(nickname, email, password):
     bot.bot_login()
     idle_bots.append(bot)
     return bot
+
 
 def bot_random_logic(bot: Bot, game_id: int):
     while True:

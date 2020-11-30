@@ -127,6 +127,7 @@ def process_vote_result(game_id: int):
         dir.director = False
     elif Player.get(lobby=lobby, director=True).role.voldemort and get_number_neg_procs(game_id=game_id) >= 3:
         game.ended = True
+        print("GAME OVER, Phoenix won? {}".format(game.phoenix_win))
     else:
         game.in_session = True
         game.semaphore = 0
@@ -153,12 +154,14 @@ def set_next_minister_candidate(game_id: int):
     new_minister = Player.get(lobby=lobby, position=lobby.game.list_head)
 
     while new_minister is None or not new_minister.alive:
-        lobby.game.list_head = (lobby.game.list_head + 1) % get_lobby_max_players(lobby_id=game_id)
+        lobby.game.list_head = (lobby.game.list_head +
+                                1) % get_lobby_max_players(lobby_id=game_id)
         new_minister = Player.get(lobby=lobby, position=lobby.game.list_head)
 
     new_minister.minister = True
     # update list head
-    lobby.game.list_head = (lobby.game.list_head + 1) % get_lobby_max_players(lobby_id=game_id)
+    lobby.game.list_head = (lobby.game.list_head +
+                            1) % get_lobby_max_players(lobby_id=game_id)
 
     commit()
 

@@ -80,7 +80,8 @@ def can_know_roles(player_id_a: int, player_id_b: int) -> bool:
 
     result = False
     if player_a and player_a.role.voldemort:
-        result = VOLDEMORT_PERMISSIONS[get_lobby_max_players(lobby_id=player_a.lobby.id)]
+        result = VOLDEMORT_PERMISSIONS[get_lobby_max_players(
+            lobby_id=player_a.lobby.id)]
     elif not player_a.role.phoenix:
         result = True
     return result
@@ -224,7 +225,6 @@ def get_player_in_game(player_id: int, game_id: int) -> bool:
 def get_number_players_alive(game_id: int) -> int:
     pid_list = list(select(
         p.id for p in Player if game_id == p.lobby.id and p.alive))
-    print(len(pid_list))
     return len(pid_list)
 
 

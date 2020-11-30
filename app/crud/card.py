@@ -82,9 +82,11 @@ def proclaim_card(card_pos: int, game_id: int):
     if eater_score > 5:
         game.ended = True
         game.phoenix_win = False
+        print("GAME OVER, Phoenix won? {}".format(game.phoenix_win))
     elif phoenix_score > 4:
         game.ended = True
         game.phoenix_win = True
+        print("GAME OVER, Phoenix won? {}".format(game.phoenix_win))
 
     commit()
 
