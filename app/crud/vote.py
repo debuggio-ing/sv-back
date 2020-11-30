@@ -3,6 +3,7 @@ from app.models.game_models import *
 from app.models.lobby_models import *
 from app.schemas.game_schema import *
 from app.crud.lobby import get_lobby_max_players
+from app.crud.card import get_number_neg_procs
 import math
 
 
