@@ -385,7 +385,7 @@ def finish_director_proclamation(game_id: int):
     game.director_proclaimed = True
     cards = list(select(c for c in ProcCard if c.game.lobby.id == game_id))
     neg_procs = get_number_neg_procs(game_id=game_id)
-    players = game.lobby.max_players
+    players = get_lobby_max_players(lobby_id=game_id)
     if len(
         list(
             filter(
@@ -418,13 +418,6 @@ def get_director_proclaimed(game_id) -> bool:
 def get_last_proc_negative(game_id) -> bool:
     game = Lobby.get(id=game_id).game
     return game.last_proc_negative
-
-
-# Get the number of players in the game
-@db_session
-def get_number_players(game_id: int):
-    lobby = Lobby.get(id=game_id)
-    return lobby.max_players
 
 
 @db_session

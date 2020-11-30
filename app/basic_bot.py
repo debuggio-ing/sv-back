@@ -75,7 +75,7 @@ class Bot():
 
     def bot_get_lobby_info(self, game_id: int):
         response = requests.get(
-            "http://localhost:8000/api/lobbies/{}".format(game_id),
+            "http://localhost:8000/api/lobbies/{}/".format(game_id),
             headers={
                 "Authorization": self.token})
 
