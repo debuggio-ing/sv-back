@@ -476,12 +476,11 @@ def get_game_ended(game_id: int):
         return False
 
 
-
 @db_session
 def get_game_phoenix_win(game_id: int):
     lobby = Lobby.get(id=game_id)
-    if lobby and lobby.game:
-        return Lobby.get(id=game_id).game.ended
+    if lobby and lobby.game :
+        return Lobby.get(id=game_id).game.phoenix_win
     else:
         return False
 

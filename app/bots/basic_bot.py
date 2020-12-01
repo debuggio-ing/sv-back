@@ -161,6 +161,10 @@ def bot_random_logic(bot: Bot, game_id: int):
             continue
         rjson = response.json()
         if not rjson["started"]:
+            end = time.time()
+            if (end -start) > 120:
+                idle_bots.append(bot)
+                break
             time.sleep(3)
             continue
         response = bot.bot_get_game_info(game_id=game_id)
@@ -197,11 +201,12 @@ def bot_random_logic(bot: Bot, game_id: int):
                     print("error")
         time.sleep(3)
 
-
+nombres = ["Harry", "Hermione", "Ron", "Draco", "Neville", "Bot", "Diegote"]
 def add_bot_to_game(game_id):
 
+
     if 0 == len(idle_bots):
-        nickname = "BOT" + str(random.randint(0, 10000))
+        nickname = random.choice(nombres) + str(random.randint(0, 10000))
         email = random_mail(8) + "@m.com"
         password = "12341234"
         create_new_bot(nickname, email, password)
