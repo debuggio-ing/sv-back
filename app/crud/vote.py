@@ -120,7 +120,9 @@ def process_vote_result(game_id: int):
         dir.director = False
     elif Player.get(lobby=lobby, director=True).role.voldemort and get_number_neg_procs(game_id=game_id) >= 3:
         game.ended = True
+
         game.phoenix_win = False
+
     else:
         game.in_session = True
         game.semaphore = 0
