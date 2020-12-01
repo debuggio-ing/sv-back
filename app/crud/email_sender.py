@@ -20,7 +20,8 @@ def send_email(user_email: str, code: int):
     # Create a secure SSL context
     context = ssl.create_default_context()
 
-    if settings.demo:
+    # if settings.demo:
+    if True:
         with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
             server.login(sender_email, password)
             server.sendmail(
