@@ -479,7 +479,7 @@ def get_game_ended(game_id: int):
 def get_game_phoenix_win(game_id: int):
     lobby = Lobby.get(id=game_id)
     if lobby and lobby.game:
-        return Lobby.get(id=game_id).game.ended
+        return Lobby.get(id=game_id).game.pheonix_win
     else:
         return False
 
