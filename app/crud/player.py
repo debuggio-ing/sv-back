@@ -79,7 +79,9 @@ def can_know_roles(player_id_a: int, player_id_b: int) -> bool:
     player_a = Player.get(id=player_id_a)
 
     result = False
-    if player_a and player_a.role.voldemort:
+    if player_a and player_a.lobby.game.ended:
+        result = True
+    elif player_a and player_a.role.voldemort:
         result = VOLDEMORT_PERMISSIONS[get_lobby_max_players(
             lobby_id=player_a.lobby.id)]
     elif player_a and not player_a.role.phoenix:
