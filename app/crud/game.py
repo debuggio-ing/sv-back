@@ -469,10 +469,12 @@ def delete_player_from_game(game_id: int, player_id: int):
 @db_session
 def get_game_ended(game_id: int):
     lobby = Lobby.get(id=game_id)
+
     if lobby and lobby.game:
         return Lobby.get(id=game_id).game.ended
     else:
         return False
+
 
 
 @db_session
@@ -482,4 +484,5 @@ def get_game_phoenix_win(game_id: int):
         return Lobby.get(id=game_id).game.ended
     else:
         return False
+
 
