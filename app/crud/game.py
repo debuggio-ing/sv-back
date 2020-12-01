@@ -334,7 +334,12 @@ def get_game_score(game_id: int) -> Score:
 @db_session
 def goverment_proposal_needed(game_id: int) -> bool:
     game = Lobby.get(id=game_id).game
-    return not game.voting and not game.in_session
+
+    ans = False
+    if game is not None:
+        ans = not game.voting and not game.in_session
+
+    return ans
 
 
 # Purpose a director specified by the user id dir_id
@@ -349,8 +354,10 @@ def propose_government(game_id: int, dir_id: int):
         old_dir.director = False
 
     player = Player.get(id=dir_id)
-    player.director = True
-    lobby.game.voting = True
+    if player:
+        player.director = True
+    if lobby:
+        lobby.game.voting = True
 
     commit()
 
@@ -359,12 +366,13 @@ def propose_government(game_id: int, dir_id: int):
 @db_session
 def finish_legislative_session(game_id: int, imperio: bool):
     game = Lobby.get(id=game_id).game
-    game.in_session = False
-    game.minister_proclaimed = False
-    game.director_proclaimed = False
-    if not imperio:
-        set_next_minister_candidate(game_id)
-    game.expelliarmus = False
+    if game:
+        game.in_session = False
+        game.minister_proclaimed = False
+        game.director_proclaimed = False
+        if not imperio:
+            set_next_minister_candidate(game_id)
+        game.expelliarmus = False
     commit()
 
 
@@ -372,94 +380,109 @@ def finish_legislative_session(game_id: int, imperio: bool):
 @db_session
 def finish_minister_proclamation(game_id: int):
     game = Lobby.get(id=game_id).game
-    game.minister_proclaimed = True
-    commit()
+    if game:
+        game.minister_proclaimed = True
+        commit()
 
 
 # Director asks for Expelliarmus
 @db_session
 def director_ask_expelliarmus(game_id: int):
     game = Lobby.get(id=game_id).game
-    game.minister_proclaimed = False
-    game.expelliarmus = True
-    commit()
+    if game: 
+        game.minister_proclaimed = False
+        game.expelliarmus = True
+        commit()
 
 
 # Proclaim and discard cards,
 @db_session
 def finish_director_proclamation(game_id: int):
     game = Lobby.get(id=game_id).game
-    game.director_proclaimed = True
-    cards = list(select(c for c in ProcCard if c.game.lobby.id == game_id))
-    neg_procs = get_number_neg_procs(game_id=game_id)
-    players = get_lobby_max_players(lobby_id=game_id)
-    if len(
-        list(
-            filter(
-            lambda c: not (c.proclaimed or c.discarded),
-            cards))) <= 2:
-        shuffle_cards(game_id=game_id)
-    if SPELLS_PLAYERS[players][neg_procs] == Spells.none or not game.last_proc_negative:
-        discharge_director(game_id=game_id)
-        finish_legislative_session(game_id=game_id, imperio=False)
+    if game:
+        game.director_proclaimed = True
+        cards = list(select(c for c in ProcCard if c.game.lobby.id == game_id))
+        neg_procs = get_number_neg_procs(game_id=game_id)
+        players = get_lobby_max_players(lobby_id=game_id)
+        if len(
+            list(
+                filter(
+                lambda c: not (c.proclaimed or c.discarded),
+                cards))) <= 2:
+            shuffle_cards(game_id=game_id)
+        if SPELLS_PLAYERS[players][neg_procs] == Spells.none or not game.last_proc_negative:
+            discharge_director(game_id=game_id)
+            finish_legislative_session(game_id=game_id, imperio=False)
 
-    commit()
+        commit()
 
 
 # Check if game in legislative session
 @db_session
 def in_legislative_session(game_id) -> bool:
     game = Lobby.get(id=game_id).game
-    return game.in_session
+    if game:
+        return game.in_session
+    else:
+        return False
 
 
 # Check if director proclaimed
 @db_session
 def get_director_proclaimed(game_id) -> bool:
     game = Lobby.get(id=game_id).game
-    return game.director_proclaimed
+    if game:
+        return game.director_proclaimed
+    else:
+        return False
 
 
 # Check if last proclamation is negative
 @db_session
 def get_last_proc_negative(game_id) -> bool:
     game = Lobby.get(id=game_id).game
-    return game.last_proc_negative
-
+    if game:
+        return game.last_proc_negative
+    else:
+        return False
 
 @db_session
 def delete_player_from_game(game_id: int, player_id: int):
     lobby = Lobby.get(id=game_id)
 
+    if lobby:
     # if owner set another person as lobby owner
-    if get_lobby_is_id_owner(lobby_id=game_id, player_id=player_id):
-        players = select(
-            p for p in lobby.player if p.user.id != lobby.owner_id)
-        if players.first() is not None:
-            lobby.owner_id = players.first().user.id
-        else:
-            lobby.delete()
+        if get_lobby_is_id_owner(lobby_id=game_id, player_id=player_id):
+            players = select(
+                p for p in lobby.player if p.user.id != lobby.owner_id)
+            if players.first() is not None:
+                lobby.owner_id = players.first().user.id
+            else:
+                lobby.delete()
 
-    player = Player.get(id=player_id)
-    if player is not None:
-        player.delete()
-    commit()
+        player = Player.get(id=player_id)
+        if player is not None:
+            player.delete()
+        commit()
 
 
 @db_session
 def get_game_ended(game_id: int):
     lobby = Lobby.get(id=game_id)
-    if lobby:
+
+    if lobby and lobby.game:
         return Lobby.get(id=game_id).game.ended
     else:
-        return True
+        return False
+
 
 
 @db_session
 def get_game_phoenix_win(game_id: int):
     lobby = Lobby.get(id=game_id)
-    if lobby:
+    if lobby and lobby.game:
         return Lobby.get(id=game_id).game.ended
     else:
-        return True
+        return False
+
 

@@ -11,7 +11,10 @@ import math
 @db_session
 def currently_voting(game_id: int):
     lobby = Lobby.get(id=game_id)
-    return lobby.game.voting
+    if lobby:
+        return lobby.game.voting
+    else:
+        False
 
 
 # Checks if the vote about to cast is the last vote
@@ -21,7 +24,8 @@ def is_last_vote(player_id: int, game_id: int):
     game = lobby.game
     player = Player.get(id=player_id)
     max_players = get_lobby_max_players(lobby_id=game_id)
-
+    if not lobby:
+        return False
     current_votes = lobby.game.num_votes
     already_vote = CurrentVote.get(voter_id=player_id)
     dead_players = lobby.game.dead_players
@@ -116,6 +120,7 @@ def process_vote_result(game_id: int):
         dir.director = False
     elif Player.get(lobby=lobby, director=True).role.voldemort and get_number_neg_procs(game_id=game_id) >= 3:
         game.ended = True
+        game.phoenix_win = False
     else:
         game.in_session = True
         game.semaphore = 0
