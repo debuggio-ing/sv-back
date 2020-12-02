@@ -1,3 +1,4 @@
+from app.crud.chat import *
 from app.crud.user import *
 
 
@@ -22,11 +23,13 @@ def insert_lobby(lobby: LobbyReg, user_email: str) -> int:
 @db_session
 def get_lobby_public_info(lobby_id: int, user_email: str):
     return LobbyPublic(id=lobby_id, name=get_lobby_name(lobby_id),
+                       owner_alias=get_lobby_owner_nickname(lobby_id),
                        current_players=get_lobby_player_list(lobby_id),
                        max_players=get_lobby_max_players(lobby_id),
                        started=get_lobby_started(lobby_id),
                        finished=get_lobby_finished(lobby_id),
-                       is_owner=get_lobby_is_owner(lobby_id, user_email))
+                       is_owner=get_lobby_is_owner(lobby_id, user_email),
+                       messages=get_messages(id=lobby_id))
 
 
 # Get lobby_id lobby's owner_id attribute.
@@ -41,8 +44,23 @@ def get_lobby_is_owner(lobby_id: int, user_email: str) -> int:
 
     return is_owner
 
+# Get lobby_id lobby's owner_id attribute.
+
+
+@db_session
+def get_lobby_is_id_owner(lobby_id: int, player_id: int) -> int:
+    lobby = Lobby.get(id=lobby_id)
+    player = Player.get(id=player_id)
+
+    is_owner = False
+    if lobby is not None and player is not None:
+        is_owner = lobby.owner_id == player.user.id
+
+    return is_owner
 
 # Get all players nickname who are in lobby_id lobby.
+
+
 @db_session
 def get_lobby_player_list(lobby_id: int):
     players = list(select(
@@ -79,7 +97,11 @@ def get_lobby_max_players(lobby_id: int):
 
     max_players = 0
     if lobby is not None:
-        max_players = lobby.max_players
+        if lobby.started:
+            max_players = select(
+                p for p in Player if p.lobby.id == lobby_id).count()
+        else:
+            max_players = lobby.max_players
 
     return max_players
 
@@ -201,8 +223,8 @@ def get_all_lobbies_ids(lobby_from: Optional[int], lobby_to: Optional[int],
 
 # Check if lobby id==lid exists
 @db_session
-def lobby_exists(lid):
-    return Lobby.get(id=lid) is not None
+def lobby_exists(lobby_id: int):
+    return Lobby.get(id=lobby_id) is not None
 
 
 # Check if lobby has started.
@@ -215,3 +237,12 @@ def is_lobby_started(lobby_id: int) -> bool:
         started = True
 
     return started
+
+# Return owners nickname
+
+
+@db_session
+def get_lobby_owner_nickname(lobby_id: int) -> str:
+
+    owner_id = Lobby.get(id=lobby_id).owner_id
+    return User.get(id=owner_id).nickname

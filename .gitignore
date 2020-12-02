@@ -1,5 +1,7 @@
 venv/
 __pycache__/
+.idea/
 *.sqlite
 .gitignore
 .pytest_cache
+.coverage

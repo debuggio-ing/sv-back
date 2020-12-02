@@ -2,7 +2,8 @@ from app.models.user_models import *
 from app.models.game_models import *
 from app.models.lobby_models import *
 from app.schemas.game_schema import *
-
+from app.crud.lobby import get_lobby_max_players
+from app.crud.card import get_number_neg_procs
 import math
 
 
@@ -10,7 +11,10 @@ import math
 @db_session
 def currently_voting(game_id: int):
     lobby = Lobby.get(id=game_id)
-    return lobby.game.voting
+    if lobby:
+        return lobby.game.voting
+    else:
+        False
 
 
 # Checks if the vote about to cast is the last vote
@@ -19,8 +23,9 @@ def is_last_vote(player_id: int, game_id: int):
     lobby = Lobby.get(id=game_id)
     game = lobby.game
     player = Player.get(id=player_id)
-    max_players = lobby.max_players
-
+    max_players = get_lobby_max_players(lobby_id=game_id)
+    if not lobby:
+        return False
     current_votes = lobby.game.num_votes
     already_vote = CurrentVote.get(voter_id=player_id)
     dead_players = lobby.game.dead_players
@@ -87,7 +92,6 @@ def update_public_vote(game_id: int):
 
     votes = (select((v.vote, v.voter_id)
                     for v in CurrentVote if v.game == game_id))[:]
-
     for v in votes:
         player = Player.get(id=v[1])
         pv = PublicVote(
@@ -101,17 +105,26 @@ def update_public_vote(game_id: int):
 def process_vote_result(game_id: int):
     lobby = Lobby.get(id=game_id)
     game = lobby.game
-    max_players = lobby.max_players
-
+    max_players = get_lobby_max_players(lobby_id=game_id)
+    dead_players = lobby.game.dead_players
     result = len(
         select(v for v in PublicVote if v.game == game_id and v.vote))
-    if result < math.ceil((max_players + 1) / 2):
+    if result < math.ceil((max_players - dead_players + 1) / 2):
         set_next_minister_candidate(game_id)
-        game.semaphore = (game.semaphore + 1) % 4
+        if(game.semaphore >= 2):
+            unleash_chaos(game_id)
+            game.semaphore = 3
+        else:
+            game.semaphore = (game.semaphore + 1) % 4
         dir = Player.get(lobby=lobby, director=True)
         dir.director = False
+    elif Player.get(lobby=lobby, director=True).role.voldemort and get_number_neg_procs(game_id=game_id) >= 3:
+        game.ended = True
+        game.phoenix_win = False
+
     else:
         game.in_session = True
+        game.semaphore = 0
         # select cards for legislative session
         cards = list(
             select(
@@ -125,22 +138,47 @@ def process_vote_result(game_id: int):
     commit()
 
 
-# Set next minister as candidate in gid game.
 @db_session
-def set_next_minister_candidate(gid: int):
-    lobby = Lobby.get(id=gid)
+def unleash_chaos(game_id: int):
+    game = Lobby.get(id=game_id).game
+    card = select(
+        c for c in ProcCard if c.game.lobby.id == game_id and not(
+            c.proclaimed or c.discarded)).order_by(
+        lambda c: c.position).limit(1)[0]
+    card.proclaimed = True
+    eater_score = select(c for c in ProcCard if c.game.lobby.id ==
+                         game_id and (c.proclaimed and not c.phoenix)).count()
+    phoenix_score = select(c for c in ProcCard if c.game.lobby.id ==
+                           game_id and (c.proclaimed and c.phoenix)).count()
 
-    discharge_former_minister(game_id=gid)
+    if eater_score > 5:
+        game.ended = True
+        game.phoenix_win = False
+    elif phoenix_score > 4:
+        game.ended = True
+        game.phoenix_win = True
+    commit()
+
+
+
+# Set next minister as candidate in game_id game.
+@db_session
+def set_next_minister_candidate(game_id: int):
+    lobby = Lobby.get(id=game_id)
+
+    discharge_former_minister(game_id=game_id)
     # set new minister
     new_minister = Player.get(lobby=lobby, position=lobby.game.list_head)
 
     while new_minister is None or not new_minister.alive:
-        lobby.game.list_head = (lobby.game.list_head + 1) % lobby.max_players
+        lobby.game.list_head = (lobby.game.list_head +
+                                1) % get_lobby_max_players(lobby_id=game_id)
         new_minister = Player.get(lobby=lobby, position=lobby.game.list_head)
 
     new_minister.minister = True
     # update list head
-    lobby.game.list_head = (lobby.game.list_head + 1) % lobby.max_players
+    lobby.game.list_head = (lobby.game.list_head +
+                            1) % get_lobby_max_players(lobby_id=game_id)
 
     commit()
 
@@ -153,6 +191,12 @@ def discharge_former_minister(game_id: int):
     ex_minister = Player.get(lobby=lobby, minister=True)
     if ex_minister is not None:
         ex_minister.minister = False
+
+        ex_ex_minister = Player.get(lobby=lobby, prev_minister=True)
+        if ex_ex_minister is not None:
+            ex_ex_minister.prev_minister = False
+
+        ex_minister.prev_minister = True
 
     commit()
 

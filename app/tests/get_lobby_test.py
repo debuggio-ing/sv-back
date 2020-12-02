@@ -67,15 +67,17 @@ def test_get_lobby():
         "api/lobbies/{}/".format(lobby1_id),
         headers={"Authorization": token1})
 
+    join_json = join.json()
+    get_lobby_json = get_lobby.json()
+
     assert get_lobby.status_code == 200
-    assert get_lobby.json() == {
-        "id": lobby1_id,
-        "name": join.json()["name"],
-        "current_players": join.json()["current_players"],
-        "max_players": join.json()["max_players"],
-        "started": join.json()["started"],
-        "finished": join.json()["finished"],
-        "is_owner": True}
+    assert get_lobby_json['current_players'] == join_json["current_players"]
+    assert get_lobby_json['id'] == lobby1_id
+    assert get_lobby_json['max_players'] == join_json["max_players"]
+    assert get_lobby_json['name'] == join_json["name"]
+    assert get_lobby_json['started'] == join_json["started"]
+    assert get_lobby_json['finished'] == join_json["finished"]
+    assert get_lobby_json['is_owner']
 
 
 # Try to get a lobby not being logged in

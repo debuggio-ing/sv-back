@@ -3,6 +3,8 @@ from typing import Optional, List
 
 from pydantic import BaseModel, EmailStr
 
+from app.schemas.game_schema import *
+
 
 # Create lobby input data
 class LobbyReg(BaseModel):
@@ -28,10 +30,11 @@ class LobbyFilter(BaseModel):
 class LobbyPublic(BaseModel):
     id: int
     name: str
+    owner_alias: str
     current_players: List[str]  # list of nicknames
     max_players: int
     started: bool
     finished: bool
     # is_owner is true if player who sends the request is lobby's owner.
     is_owner: bool
-    # chat
+    messages: List[MessageSchema]

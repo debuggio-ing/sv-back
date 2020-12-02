@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 
+from app.crud.chat import *
 from app.validators.auth_validator import *
 from app.validators.game_validator import *
 
@@ -55,13 +56,6 @@ def player_vote(game_id: int, vote: PlayerVote, auth: AuthJWT = Depends()):
     return 1
 
 
-# Return player's role in the specified game
-@r.get("/games/{game_id}/role/", response_model=PlayerRole)
-def get_player_role(game_id: int, authorize: AuthJWT = Depends()):
-    authorize.jwt_required()
-    return
-
-
 # Cast spell in specified game
 @r.post("/games/{game_id}/spell/")
 def post_cast_spell(game_id: int, spell: CastSpell, auth: AuthJWT = Depends()):
@@ -81,12 +75,12 @@ def post_cast_spell(game_id: int, spell: CastSpell, auth: AuthJWT = Depends()):
         is_player_in_game(player_id=player_id, game_id=game_id)
         is_player_dead(player_id=spell.target)
 
-    # cast spell(send spell)
+    # execute spell
     return cast_spell(game_id=game_id, target=spell.target)
 
 
 # Get information to cast spell in specified game
-@r.get("/games/{game_id}/spell/")
+@r.get("/games/{game_id}/spell/", response_model=Spell)
 def get_cast_spell(game_id: int, auth: AuthJWT = Depends()):
     email = validate_user(auth=auth)
 
@@ -107,7 +101,7 @@ def get_cast_spell(game_id: int, auth: AuthJWT = Depends()):
 # Return to the minister/director the selected cards according to the game
 # status
 @r.get("/games/{game_id}/proc/", response_model=List[CardToProclaim])
-def get_director_proc(game_id: int, auth: AuthJWT = Depends()):
+def get_proclamations(game_id: int, auth: AuthJWT = Depends()):
     user_email = validate_user(auth=auth)
 
     player_id = get_player(email=user_email, game_id=game_id)
@@ -126,37 +120,44 @@ def get_director_proc(game_id: int, auth: AuthJWT = Depends()):
     return cards
 
 
-# This function can be called by the minister or the director of the game
-# If called by the minister, election represents the position of the card to be discarded
-# If called by the director, election represents the position of the card to be proclaimed
-# Returns True if game continues or False if game is over, always False if
-# called by minister
 @r.post("/games/{game_id}/proc/", response_model=bool)
-def proc_election(
+def post_proclamations(
         game_id: int,
-        election: int,
+        legislation: Legislation,
         auth: AuthJWT = Depends()):
     email = validate_user(auth=auth)
 
     player_id = get_player(email=email, game_id=game_id)
+    # if expelliarmus is asked
+    if legislation.expelliarmus:
+        # check if minister an cast expelliarmus spell
+        if is_min_expelliarmus_time(game_id=game_id, player_id=player_id):
+            # cast expelliarmus
+            cast_expelliarmus(game_id=game_id)
+        # check if director can ask for expelliarmus spell
+        elif is_dir_expelliarmus_time(game_id=game_id, player_id=player_id):
+            # ask minister for expelliarmus
+            director_ask_expelliarmus(game_id=game_id)
+    else:
+        # check if minister didn't accept expelliarmus request
+        if get_expelliarmus(game_id=game_id) and get_is_player_minister(
+                player_id=player_id):
+            reject_expelliarmus(game_id=game_id, player_id=player_id)
 
-    # check if it's time for the minister or director to choose and if the
-    # player is allowed
-    if is_min_proc_time(game_id=game_id, player_id=player_id):
+        # check if minister or director can proclaim/discard and the player's
+        # role
+        elif is_min_proc_time(game_id=game_id, player_id=player_id):
+            # minister discard the selected card
+            minister_discards(election=legislation.election, game_id=game_id)
+            # update game status
+            finish_minister_proclamation(game_id=game_id)
 
-        # minister discard the selected card
-        minister_discards(election=election, game_id=game_id)
-
-        # update game status
-        finish_minister_proclamation(game_id=game_id)
-
-    elif is_dir_proc_time(game_id=game_id, player_id=player_id):
-
-        # director proclaims the selected cards
-        director_proclaims(election=election, game_id=game_id)
-
-        # update game status and card deck
-        finish_director_proclamation(game_id=game_id)
+        # raise exceptions
+        elif is_dir_proc_time(game_id=game_id, player_id=player_id):
+            # director proclaims the selected cards
+            director_proclaims(election=legislation.election, game_id=game_id)
+            # update game status and card deck
+            finish_director_proclamation(game_id=game_id)
 
     return is_game_over(game_id)
 
@@ -179,4 +180,23 @@ def director_candidate(
     # is candidate alive
     is_player_dead(player_id=candidate_id)
 
+    is_player_electable(player_id=candidate_id, game_id=game_id)
+
     propose_government(game_id=game_id, dir_id=candidate_id)
+
+
+# Nominate director in specified game
+@r.post("/games/{game_id}/chat/send/")
+def send_message(game_id: int, msg: MessageIn, auth: AuthJWT = Depends()):
+    email = validate_user(auth=auth)
+
+    player_id = get_player(email=email, game_id=game_id)
+
+    # is player in game
+    is_player_in_game(player_id=player_id, game_id=game_id)
+
+    # is player alive
+    is_player_dead(player_id=player_id)
+
+    insert_message(player_id=player_id, message=msg.msg)
+    return msg

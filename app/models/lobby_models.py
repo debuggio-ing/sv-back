@@ -25,8 +25,10 @@ class Player(db.Entity):
     prev_minister = Required(bool, default=False)
     director = Required(bool, default=False)
     prev_director = Required(bool, default=False)
+    crucied = Required(bool, default=False)
     user = Required('User')
     lobby = Required('Lobby')
+    messages = Set('Message')
     composite_key(user, lobby)
 
 

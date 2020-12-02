@@ -1,6 +1,8 @@
 import smtplib
 import ssl
 
+from app.validators.constants import settings
+
 
 # Send email to verify email.
 def send_email(user_email: str, code: int):
@@ -18,9 +20,10 @@ def send_email(user_email: str, code: int):
     # Create a secure SSL context
     context = ssl.create_default_context()
 
-    with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
-        server.login(sender_email, password)
-        server.sendmail(
-            from_addr=sender_email,
-            to_addrs=receiver_email,
-            msg=message)
+    if settings.demo:
+        with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
+            server.login(sender_email, password)
+            server.sendmail(
+                from_addr=sender_email,
+                to_addrs=receiver_email,
+                msg=message)

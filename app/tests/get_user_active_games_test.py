@@ -96,8 +96,6 @@ def test_get_user_games_one_entry():
     join1 = testc.post("/api/lobbies/" + str(lobby1_id) + "/join/",
                        headers={"Authorization": tokens[-1]})
 
-    print(join1)
-
     user_games = testc.get(
         "/api/users/games/",
         headers={

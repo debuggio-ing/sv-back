@@ -21,14 +21,16 @@ bind_db(False)
 # origins allowed by the API
 origins = [
     "http://localhost",
-    "http://localhost:8080"
+    "http://localhost:8080",
+    "https://debuggio.herokuapp.com",
+    "https://secret-voldemort.herokuapp.com"
 ]
 
 
 # CORS setup
 svapi.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

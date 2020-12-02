@@ -1,11 +1,12 @@
 import random
-
 from app.validators.hasher import *
 from app.models.user_models import *
 from app.models.game_models import *
 from app.models.lobby_models import *
 from app.schemas.user_schema import *
 from app.schemas.lobby_schema import *
+from app.validators.constants import settings
+from app.crud.email_sender import *
 
 
 # Insert user into the database.
@@ -22,7 +23,8 @@ def register_user(user: UserReg) -> int:
              password=encrypt_password(user.password), verification_code=code)
     commit()
 
-    # send_email(user_email=user.email, code=code)
+    send_email(user_email=user.email, code=code)
+
     return u.id
 
 
@@ -117,7 +119,7 @@ def set_nickname(user_email: str, nickname: str):
 def set_picture(user_email: str, image: bytes):
     if image is not None:
         user = User.get(email=user_email)
-        if user.image is None:
+        if user and user.image is None:
             user.image = Image(image=image, user=user)
         else:
             user.image.image = image
@@ -129,7 +131,7 @@ def set_picture(user_email: str, image: bytes):
 def get_picture(user_email: str):
     user = User.get(email=user_email)
     image = None
-    if user.image is not None:
+    if user and user.image is not None:
         image = user.image.image
     return image
 

@@ -1,7 +1,9 @@
 from app.crud.vote import *
-
+from app.validators.constants import *
 
 # Create player in the database.
+
+
 @db_session
 def insert_player(user_email: str, lobby_id: int) -> int:
     lobby = Lobby.get(id=lobby_id)
@@ -10,7 +12,7 @@ def insert_player(user_email: str, lobby_id: int) -> int:
     player_id = -1
     if existing_player:
         return existing_player.id
-    if lobby is not None and not existing_player and len(
+    if user and lobby and not existing_player and len(
             list(select(p for p in lobby.player))) < lobby.max_players and not lobby.started:
         p = Player(user=user, lobby=lobby)
         commit()
@@ -35,20 +37,27 @@ def get_player_last_vote(player_id: int) -> bool:
     return pv.vote
 
 
+# Returns true if the player has been tortured
+@db_session
+def get_player_crucied(player_id: int) -> bool:
+    return Player.get(id=player_id).crucied
+
+
 # Return the required player_id status according to the caller player_id.
 @db_session
 def get_player_public(player_id: int, c_player_id: int) -> PlayerPublic:
     player = Player.get(id=player_id)
-    if can_know_role_of(c_player_id, player_id):
+    if can_know_roles(c_player_id, player_id):
         if player.role.phoenix:
             role = Role("Order of the Phoenix")
         elif player.role.voldemort:
-            role = Role("voldemort")
+            role = Role("Voldemort")
         else:
             role = Role("Death Eater")
         return PlayerPublic(player_id=player_id,
                             alive=player.alive,
                             voted=get_player_vote_status(player_id),
+                            crucied=get_player_crucied(player_id),
                             last_vote=get_player_last_vote(player_id),
                             nickname=player.user.nickname,
                             position=player.position,
@@ -57,20 +66,27 @@ def get_player_public(player_id: int, c_player_id: int) -> PlayerPublic:
         return PlayerPublic(player_id=player_id,
                             alive=player.alive,
                             voted=get_player_vote_status(player_id),
+                            crucied=get_player_crucied(player_id),
                             last_vote=get_player_last_vote(player_id),
                             nickname=player.user.nickname,
                             position=player.position)
 
 
 # Can player a know the role of player b?
-def can_know_role_of(player_id_a: int, player_id_b: int) -> bool:
+def can_know_roles(player_id_a: int, player_id_b: int) -> bool:
     if player_id_a == player_id_b:
         return True
     player_a = Player.get(id=player_id_a)
-    player_b = Player.get(id=player_id_b)
-    # Aca más adelante iria la logica de si es voldemort puede saber el rol o
-    # no de los mortifagos
-    return not player_a.role.phoenix
+
+    result = False
+    if player_a and player_a.lobby.game.ended:
+        result = True
+    elif player_a and player_a.role.voldemort:
+        result = VOLDEMORT_PERMISSIONS[get_lobby_max_players(
+            lobby_id=player_a.lobby.id)]
+    elif player_a and not player_a.role.phoenix:
+        result = True
+    return result
 
 
 # Return the required player id.
@@ -79,13 +95,13 @@ def get_player_id(user_email: str, game_id: int) -> int:
     user = User.get(email=user_email)
     lobby = Lobby.get(id=game_id)
 
-    player = Player.get(user=user, lobby=lobby)
-
-    # If there's no player with user_email in game_id,
-    # it returns default the value.
     player_id = -1
-    if player is not None:
-        player_id = player.id
+    if user and lobby:
+        player = Player.get(user=user, lobby=lobby)
+        # If there's no player with user_email in game_id,
+        # it returns default the value.
+        if player:
+            player_id = player.id
 
     return player_id
 
@@ -146,7 +162,7 @@ def get_player_id_role(player_id: int) -> (bool, bool):
     player = Player.get(id=player_id)
 
     voldemort = phoenix = False
-    if player is not None and player.role is not None:
+    if player and player.role is not None:
         voldemort = player.role.voldemort
         phoenix = player.role.phoenix
 
@@ -175,6 +191,12 @@ def discharge_director(game_id: int):
     if director is not None:
         director.director = False
 
+        prev_director = Player.get(lobby=game_id, prev_director=True)
+        if prev_director is not None:
+            prev_director.prev_director = False
+
+        director.prev_director = True
+
     commit()
 
 
@@ -186,14 +208,32 @@ def minister_chooses_proc(game_id: int) -> bool:
     return game and game.in_session and not game.minister_proclaimed
 
 
+# Checks if player is alive
 @db_session
 def get_player_alive(player_id: int) -> bool:
     player = Player.get(id=player_id)
     return player.alive
 
 
+# Checks if the player is in the game
 @db_session
 def get_player_in_game(player_id: int, game_id: int) -> bool:
     player = Player.get(id=player_id, lobby=game_id)
 
     return player is not None
+
+
+@db_session
+def get_number_players_alive(game_id: int) -> int:
+    pid_list = list(select(
+        p.id for p in Player if game_id == p.lobby.id and p.alive))
+    return len(pid_list)
+
+
+@db_session
+def get_player_electable(player_id: int, game_id: int) -> bool:
+    player = Player.get(id=player_id, lobby=game_id)
+    lobby = Lobby.get(id=game_id)
+    game = lobby.game
+    return not player.prev_director and not player.minister and not (
+        player.prev_minister and get_number_players_alive(game_id) > 5)
